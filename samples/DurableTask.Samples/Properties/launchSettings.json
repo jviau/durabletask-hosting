@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DurableTask.Samples": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

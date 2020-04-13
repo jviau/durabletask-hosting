@@ -1,19 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.98
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DurableTask.DependencyInjection", "DurableTask.DependencyInjection", "{F7C54D09-8F90-40A6-A7ED-DBF11FD97354}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableTask.DependencyInjection", "DurableTask.DependencyInjection\src\DurableTask.DependencyInjection.csproj", "{1D82CC4A-FD8E-4ED8-8BAD-B9F4643C6E12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableTask.DependencyInjection", "DurableTask.DependencyInjection\src\DurableTask.DependencyInjection.csproj", "{1D82CC4A-FD8E-4ED8-8BAD-B9F4643C6E12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableTask.DependencyInjection.Tests", "DurableTask.DependencyInjection\test\DurableTask.DependencyInjection.Tests.csproj", "{E81CD176-2FDA-415A-8FA7-B4616B4D047B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableTask.DependencyInjection.Tests", "DurableTask.DependencyInjection\test\DurableTask.DependencyInjection.Tests.csproj", "{E81CD176-2FDA-415A-8FA7-B4616B4D047B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DurableTask.Hosting", "DurableTask.Hosting", "{C8249081-891E-47C4-AF67-3ED82A9AD21D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableTask.Hosting", "DurableTask.Hosting\src\DurableTask.Hosting.csproj", "{05AF8D03-18AE-432B-B542-A098684FE554}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableTask.Hosting", "DurableTask.Hosting\src\DurableTask.Hosting.csproj", "{05AF8D03-18AE-432B-B542-A098684FE554}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableTask.Hosting.Tests", "DurableTask.Hosting\test\DurableTask.Hosting.Tests.csproj", "{23EBDF12-1399-479F-BB2C-C2CB9F316077}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableTask.Hosting.Tests", "DurableTask.Hosting\test\DurableTask.Hosting.Tests.csproj", "{23EBDF12-1399-479F-BB2C-C2CB9F316077}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableTask.Samples", "..\samples\DurableTask.Samples\DurableTask.Samples.csproj", "{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{796C6FFF-5FB6-4918-88B7-61B6EA4D2801}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,9 +27,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1D82CC4A-FD8E-4ED8-8BAD-B9F4643C6E12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -76,11 +77,30 @@ Global
 		{23EBDF12-1399-479F-BB2C-C2CB9F316077}.Release|x64.Build.0 = Release|Any CPU
 		{23EBDF12-1399-479F-BB2C-C2CB9F316077}.Release|x86.ActiveCfg = Release|Any CPU
 		{23EBDF12-1399-479F-BB2C-C2CB9F316077}.Release|x86.Build.0 = Release|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Debug|x64.Build.0 = Debug|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Debug|x86.Build.0 = Debug|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Release|x64.ActiveCfg = Release|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Release|x64.Build.0 = Release|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Release|x86.ActiveCfg = Release|Any CPU
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1D82CC4A-FD8E-4ED8-8BAD-B9F4643C6E12} = {F7C54D09-8F90-40A6-A7ED-DBF11FD97354}
 		{E81CD176-2FDA-415A-8FA7-B4616B4D047B} = {F7C54D09-8F90-40A6-A7ED-DBF11FD97354}
 		{05AF8D03-18AE-432B-B542-A098684FE554} = {C8249081-891E-47C4-AF67-3ED82A9AD21D}
 		{23EBDF12-1399-479F-BB2C-C2CB9F316077} = {C8249081-891E-47C4-AF67-3ED82A9AD21D}
+		{1DBB74FA-AB4E-4CAB-B9A7-6D8FE071CD99} = {796C6FFF-5FB6-4918-88B7-61B6EA4D2801}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {65A5E590-4609-44E1-B012-0EA997E18DB7}
 	EndGlobalSection
 EndGlobal
