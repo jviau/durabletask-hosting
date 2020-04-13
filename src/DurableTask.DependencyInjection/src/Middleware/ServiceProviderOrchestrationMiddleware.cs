@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
+using DurableTask.DependencyInjection.Extensions;
 using DurableTask.DependencyInjection.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,7 +36,7 @@ namespace DurableTask.DependencyInjection.Middleware
             if (taskOrchestration is WrapperOrchestration wrapper)
             {
                 wrapper.InnerOrchestration = (TaskOrchestration)_serviceProvider
-                    .GetRequiredService(wrapper.InnerOrchestrationType);
+                    .GetServiceOrCreateInstance(wrapper.InnerOrchestrationType);
 
                 // update the context task orchestration with the real one.
                 context.SetProperty(wrapper.InnerOrchestration);

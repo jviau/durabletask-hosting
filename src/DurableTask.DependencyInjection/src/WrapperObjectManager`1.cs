@@ -12,7 +12,7 @@ namespace DurableTask.DependencyInjection
     /// <typeparam name="TObject">The type of object to create.</typeparam>
     internal class WrapperObjectManager<TObject> : INameVersionObjectManager<TObject>
     {
-        private readonly ITaskObjectCollection _descriptors;
+        private readonly ITaskObjectCollection<TObject> _descriptors;
         private readonly Func<Type, TObject> _factory;
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace DurableTask.DependencyInjection
         /// </summary>
         /// <param name="descriptors">The descriptors of.</param>
         /// <param name="factory">The factory function for creating the wrapper.</param>
-        public WrapperObjectManager(ITaskObjectCollection descriptors, Func<Type, TObject> factory)
+        public WrapperObjectManager(ITaskObjectCollection<TObject> descriptors, Func<Type, TObject> factory)
         {
             _descriptors = Check.NotNull(descriptors, nameof(descriptors));
             _factory = Check.NotNull(factory, nameof(factory));

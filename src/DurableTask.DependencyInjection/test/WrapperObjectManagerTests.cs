@@ -25,7 +25,8 @@ namespace DurableTask.DependencyInjection.Tests
         {
             // arrange, act
             ArgumentNullException ex = Capture<ArgumentNullException>(
-                () => new WrapperObjectManager<object>(Mock.Of<ITaskObjectCollection>(), null));
+                () => new WrapperObjectManager<object>(
+                    Mock.Of<ITaskObjectCollection<object>>(), null));
 
             // assert
             ex.Should().NotBeNull();
@@ -36,7 +37,7 @@ namespace DurableTask.DependencyInjection.Tests
         {
             // arrange
             var manager = new WrapperObjectManager<object>(
-                Mock.Of<ITaskObjectCollection>(), _ => new object());
+                Mock.Of<ITaskObjectCollection<object>>(), _ => new object());
 
             // act
             NotSupportedException ex = Capture<NotSupportedException>(
@@ -53,7 +54,7 @@ namespace DurableTask.DependencyInjection.Tests
             string name = "WrapperObjectManagerTests_Name";
             string version = "WrapperObjectManagerTests_Version";
 
-            var descriptors = new Mock<ITaskObjectCollection>();
+            var descriptors = new Mock<ITaskObjectCollection<MyType>>();
             descriptors.Setup(x => x[name, version]).Returns(typeof(MyType));
 
             var manager = new WrapperObjectManager<MyType>(descriptors.Object, t => new MyTypeWrapped(t));

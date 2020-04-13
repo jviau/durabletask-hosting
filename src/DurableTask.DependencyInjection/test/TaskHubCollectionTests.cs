@@ -12,8 +12,8 @@ namespace DurableTask.DependencyInjection.Tests
         public void AddSucceeds()
         {
             // arrange
-            var activity = TaskActivityDescriptor.Singleton<TestActivity>();
-            var descriptors = new TaskHubCollection();
+            var activity = new TaskActivityDescriptor(typeof(TestActivity));
+            var descriptors = new TaskHubCollection<TaskActivity>();
 
             // act
             bool result = descriptors.Add(activity);
@@ -28,8 +28,8 @@ namespace DurableTask.DependencyInjection.Tests
         public void AddDuplicate()
         {
             // arrange
-            var activity = TaskActivityDescriptor.Singleton<TestActivity>();
-            var descriptors = new TaskHubCollection();
+            var activity = new TaskActivityDescriptor(typeof(TestActivity));
+            var descriptors = new TaskHubCollection<TaskActivity>();
 
             // act
             descriptors.Add(activity);
@@ -45,8 +45,8 @@ namespace DurableTask.DependencyInjection.Tests
         public void GetByName()
         {
             // arrange
-            var activity = TaskActivityDescriptor.Singleton<TestActivity>();
-            var descriptors = new TaskHubCollection()
+            var activity = new TaskActivityDescriptor(typeof(TestActivity));
+            var descriptors = new TaskHubCollection<TaskActivity>()
             {
                 activity,
             };
@@ -63,9 +63,9 @@ namespace DurableTask.DependencyInjection.Tests
         public void GetByName2()
         {
             // arrange
-            var activity = TaskActivityDescriptor.Singleton<TestActivity>();
-            var activity2 = TaskActivityDescriptor.Singleton<TestActivity2>();
-            var descriptors = new TaskHubCollection()
+            var activity = new TaskActivityDescriptor(typeof(TestActivity));
+            var activity2 = new TaskActivityDescriptor(typeof(TestActivity2));
+            var descriptors = new TaskHubCollection<TaskActivity>()
             {
                 activity,
                 activity2,

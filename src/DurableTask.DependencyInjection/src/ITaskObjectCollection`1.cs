@@ -9,7 +9,8 @@ namespace DurableTask.DependencyInjection
     /// <summary>
     /// The collection of task types.
     /// </summary>
-    internal interface ITaskObjectCollection : IReadOnlyCollection<NamedServiceDescriptorWrapper>
+    /// <typeparam name="TDescribed">The described type in this collection.</typeparam>
+    internal interface ITaskObjectCollection<TDescribed> : IReadOnlyCollection<NamedTypeDescriptor<TDescribed>>
     {
         /// <summary>
         /// Gets the task object identified by <paramref name="taskName"/> and <paramref name="taskVersion"/>.

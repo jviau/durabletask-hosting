@@ -14,7 +14,7 @@ namespace DurableTask.DependencyInjection
     /// </summary>
     internal class OrchestrationScope : IOrchestrationScope
     {
-        private static readonly IDictionary<OrchestrationInstance, IOrchestrationScope> scopes
+        private static readonly IDictionary<OrchestrationInstance, IOrchestrationScope> s_scopes
             = new Dictionary<OrchestrationInstance, IOrchestrationScope>();
 
         private readonly IServiceScope _innerScope;
@@ -37,9 +37,9 @@ namespace DurableTask.DependencyInjection
         public static IOrchestrationScope GetScope(OrchestrationInstance orchestrationInstance)
         {
             Check.NotNull(orchestrationInstance, nameof(orchestrationInstance));
-            lock (scopes)
+            lock (s_scopes)
             {
-                return scopes[orchestrationInstance];
+                return s_scopes[orchestrationInstance];
             }
         }
 
@@ -55,16 +55,16 @@ namespace DurableTask.DependencyInjection
             Check.NotNull(orchestrationInstance, nameof(orchestrationInstance));
             Check.NotNull(serviceProvider, nameof(serviceProvider));
 
-            lock (scopes)
+            lock (s_scopes)
             {
-                if (scopes.ContainsKey(orchestrationInstance))
+                if (s_scopes.ContainsKey(orchestrationInstance))
                 {
                     throw new InvalidOperationException(
                         $"Scope already exists for orchestration {orchestrationInstance.InstanceId}");
                 }
 
                 IOrchestrationScope scope = new OrchestrationScope(serviceProvider.CreateScope());
-                scopes[orchestrationInstance] = scope;
+                s_scopes[orchestrationInstance] = scope;
                 return scope;
             }
         }
@@ -80,11 +80,11 @@ namespace DurableTask.DependencyInjection
             Check.NotNull(orchestrationInstance, nameof(orchestrationInstance));
 
             IOrchestrationScope scope;
-            lock (scopes)
+            lock (s_scopes)
             {
-                if (scopes.TryGetValue(orchestrationInstance, out scope))
+                if (s_scopes.TryGetValue(orchestrationInstance, out scope))
                 {
-                    scopes.Remove(orchestrationInstance);
+                    s_scopes.Remove(orchestrationInstance);
                 }
             }
 

@@ -43,41 +43,37 @@ namespace DurableTask.DependencyInjection.Tests
         [Fact]
         public void AddActivity()
         {
-            TaskActivityDescriptor descriptor = TaskActivityDescriptor.Singleton<TestActivity>();
             RunTest(
                 null,
-                b => b.AddActivity(descriptor),
-                (_, services) => services.Should().Contain(descriptor.Descriptor));
+                b => b.AddActivity(new TaskActivityDescriptor(typeof(TestActivity))),
+                (_, services) => services.Should().HaveCount(2));
         }
 
         [Fact]
         public void AddActivityMiddleware()
         {
-            TaskMiddlewareDescriptor descriptor = TaskMiddlewareDescriptor.Singleton<TestMiddleware>();
             RunTest(
                 null,
-                b => b.UseActivityMiddleware(descriptor),
-                (_, services) => services.Should().Contain(descriptor.Descriptor));
+                b => b.UseActivityMiddleware(new TaskMiddlewareDescriptor(typeof(TestMiddleware))),
+                (_, services) => services.Should().HaveCount(2));
         }
 
         [Fact]
         public void AddOrchestration()
         {
-            TaskOrchestrationDescriptor descriptor = TaskOrchestrationDescriptor.Singleton<TestOrchestration>();
             RunTest(
                 null,
-                b => b.AddOrchestration(descriptor),
-                (_, services) => services.Should().Contain(descriptor.Descriptor));
+                b => b.AddOrchestration(new TaskOrchestrationDescriptor(typeof(TaskOrchestration))),
+                (_, services) => services.Should().HaveCount(2));
         }
 
         [Fact]
         public void AddOrchestrationMiddleware()
         {
-            TaskMiddlewareDescriptor descriptor = TaskMiddlewareDescriptor.Singleton<TestMiddleware>();
             RunTest(
                 null,
-                b => b.UseOrchestrationMiddleware(descriptor),
-                (_, services) => services.Should().Contain(descriptor.Descriptor));
+                b => b.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(typeof(TestMiddleware))),
+                (_, services) => services.Should().HaveCount(2));
         }
 
         [Fact]

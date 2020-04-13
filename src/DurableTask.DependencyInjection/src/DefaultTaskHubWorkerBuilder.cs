@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using DurableTask.DependencyInjection.Activities;
+using DurableTask.DependencyInjection.Extensions;
 using DurableTask.DependencyInjection.Middleware;
 using DurableTask.DependencyInjection.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,8 +20,12 @@ namespace DurableTask.DependencyInjection
     /// </summary>
     public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     {
-        private readonly TaskHubCollection _activities = new TaskHubCollection();
-        private readonly TaskHubCollection _orchestrations = new TaskHubCollection();
+        private readonly TaskHubCollection<TaskActivity> _activities
+            = new TaskHubCollection<TaskActivity>();
+
+        private readonly TaskHubCollection<TaskOrchestration> _orchestrations
+            = new TaskHubCollection<TaskOrchestration>();
+
         private readonly List<Type> _activitiesMiddleware = new List<Type>();
         private readonly List<Type> _orchestrationsMiddleware = new List<Type>();
 
@@ -31,8 +36,8 @@ namespace DurableTask.DependencyInjection
         public DefaultTaskHubWorkerBuilder(IServiceCollection services)
         {
             Services = Check.NotNull(services, nameof(services));
-            Services.AddScoped<ServiceProviderOrchestrationMiddleware>();
-            Services.AddScoped<ServiceProviderActivityMiddleware>();
+            Services.TryAddScoped<ServiceProviderOrchestrationMiddleware>();
+            Services.TryAddScoped<ServiceProviderActivityMiddleware>();
         }
 
         /// <inheritdoc />
@@ -47,8 +52,6 @@ namespace DurableTask.DependencyInjection
         public ITaskHubWorkerBuilder AddActivity(TaskActivityDescriptor descriptor)
         {
             Check.NotNull(descriptor, nameof(descriptor));
-
-            Services.TryAdd(descriptor.Descriptor);
             _activities.Add(descriptor);
             return this;
         }
@@ -57,8 +60,6 @@ namespace DurableTask.DependencyInjection
         public ITaskHubWorkerBuilder UseActivityMiddleware(TaskMiddlewareDescriptor descriptor)
         {
             Check.NotNull(descriptor, nameof(descriptor));
-
-            Services.TryAdd(descriptor.Descriptor);
             _activitiesMiddleware.Add(descriptor.Type);
             return this;
         }
@@ -67,8 +68,6 @@ namespace DurableTask.DependencyInjection
         public ITaskHubWorkerBuilder AddOrchestration(TaskOrchestrationDescriptor descriptor)
         {
             Check.NotNull(descriptor, nameof(descriptor));
-
-            Services.TryAdd(descriptor.Descriptor);
             _orchestrations.Add(descriptor);
             return this;
         }
@@ -77,8 +76,6 @@ namespace DurableTask.DependencyInjection
         public ITaskHubWorkerBuilder UseOrchestrationMiddleware(TaskMiddlewareDescriptor descriptor)
         {
             Check.NotNull(descriptor, nameof(descriptor));
-
-            Services.TryAdd(descriptor.Descriptor);
             _orchestrationsMiddleware.Add(descriptor.Type);
             return this;
         }
@@ -124,7 +121,7 @@ namespace DurableTask.DependencyInjection
             return (context, next) =>
             {
                 IServiceScope scope = OrchestrationScope.GetScope(context.GetProperty<OrchestrationInstance>());
-                var middleware = (ITaskMiddleware)scope.ServiceProvider.GetRequiredService(middlewareType);
+                var middleware = (ITaskMiddleware)scope.ServiceProvider.GetServiceOrCreateInstance(middlewareType);
                 return middleware.InvokeAsync(context, next);
             };
         }

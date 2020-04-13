@@ -3,25 +3,24 @@
 
 using System;
 using DurableTask.Core;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DurableTask.DependencyInjection
 {
     /// <summary>
-    /// Describes a task hub activity or orchestration.
+    /// A descriptor for a type that includes a name and version.
     /// </summary>
-    public abstract class NamedServiceDescriptorWrapper : ServiceDescriptorWrapper
+    /// <typeparam name="TBase">The base type for this descriptor.</typeparam>
+    public class NamedTypeDescriptor<TBase> : TypeDescriptor<TBase>
     {
         private string _name;
         private string _version;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NamedServiceDescriptorWrapper"/> class.
+        /// Initializes a new instance of the <see cref="NamedTypeDescriptor{TBase}"/> class.
         /// </summary>
         /// <param name="type">The service type.</param>
-        /// <param name="descriptor">The service descriptor.</param>
-        protected NamedServiceDescriptorWrapper(Type type, ServiceDescriptor descriptor)
-            : base(type, descriptor)
+        protected NamedTypeDescriptor(Type type)
+            : base(type)
         {
         }
 

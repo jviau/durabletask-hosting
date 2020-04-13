@@ -11,10 +11,11 @@ namespace DurableTask.DependencyInjection
     /// <summary>
     /// Contains all task hub instances of the given type.
     /// </summary>
-    internal class TaskHubCollection : ITaskObjectCollection
+    /// <typeparam name="TDescribed">The described type in this collection.</typeparam>
+    internal class TaskHubCollection<TDescribed> : ITaskObjectCollection<TDescribed>
     {
-        private readonly HashSet<NamedServiceDescriptorWrapper> _descriptors
-            = new HashSet<NamedServiceDescriptorWrapper>();
+        private readonly HashSet<NamedTypeDescriptor<TDescribed>> _descriptors
+            = new HashSet<NamedTypeDescriptor<TDescribed>>();
 
         private readonly ConcurrentDictionary<TaskVersion, Type> _typeMap
             = new ConcurrentDictionary<TaskVersion, Type>();
@@ -27,7 +28,7 @@ namespace DurableTask.DependencyInjection
             => GetTaskType(taskName, taskVersion);
 
         /// <inheritdoc />
-        public IEnumerator<NamedServiceDescriptorWrapper> GetEnumerator()
+        public IEnumerator<NamedTypeDescriptor<TDescribed>> GetEnumerator()
             => _descriptors.GetEnumerator();
 
         /// <inheritdoc />
@@ -38,11 +39,11 @@ namespace DurableTask.DependencyInjection
         /// </summary>
         /// <param name="descriptor">The descriptor to add.</param>
         /// <returns>True if descriptor added, false otherwise.</returns>
-        public bool Add(NamedServiceDescriptorWrapper descriptor)
+        public bool Add(NamedTypeDescriptor<TDescribed> descriptor)
             => _descriptors.Add(descriptor);
 
         private bool IsTaskMatch(
-            string name, string version, NamedServiceDescriptorWrapper descriptor)
+            string name, string version, NamedTypeDescriptor<TDescribed> descriptor)
         {
             return string.Equals(name, descriptor.Name, StringComparison.Ordinal)
                 && string.Equals(version, descriptor.Version, StringComparison.Ordinal);
@@ -56,7 +57,7 @@ namespace DurableTask.DependencyInjection
                 return type;
             }
 
-            foreach (NamedServiceDescriptorWrapper descriptor in _descriptors)
+            foreach (NamedTypeDescriptor<TDescribed> descriptor in _descriptors)
             {
                 if (IsTaskMatch(name, version, descriptor))
                 {
