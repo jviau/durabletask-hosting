@@ -1,0 +1,35 @@
+﻿// Copyright (c) Jacob Viau. All rights reserved.
+// Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
+
+using System;
+using DurableTask.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+namespace DurableTask.DependencyInjection
+{
+    /// <summary>
+    /// Extension methods for adding task hub services to a service collection.
+    /// </summary>
+    public static class TaskHubServiceCollectionExtensions
+    {
+        /// <summary>
+        /// Adds a <see cref="TaskHubWorker"/> and related services to the service collection.
+        /// </summary>
+        /// <param name="services">The service collection to add to.</param>
+        /// <param name="configure">The action to configure the task hub builder with.</param>
+        /// <returns>The original service collection, with services added.</returns>
+        public static IServiceCollection AddTaskHubWorker(
+            this IServiceCollection services, Action<ITaskHubWorkerBuilder> configure)
+        {
+            Check.NotNull(services, nameof(services));
+            Check.NotNull(configure, nameof(configure));
+
+            var builder = new DefaultTaskHubWorkerBuilder(services);
+            configure(builder);
+            services.TryAddSingleton(sp => builder.Build(sp));
+
+            return services;
+        }
+    }
+}
