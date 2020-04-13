@@ -1,0 +1,32 @@
+<Project>
+
+  <!-- Azure -->
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Azure.DurableTask.Core" Version="2.2.4" />
+  </ItemGroup>
+
+  <!-- Microsoft Extensions -->
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="2.2.0" />
+    <PackageReference Update="Microsoft.Extensions.Http" Version="2.2.0" />
+  </ItemGroup>
+
+   <!-- Test projects -->
+  <ItemGroup>
+    <PackageReference Update="Bogus" Version="27.0.1" />
+    <PackageReference Update="coverlet.collector" Version="1.2.0" />
+    <PackageReference Update="FluentAssertions" Version="5.6.0" />
+    <PackageReference Update="Moq" Version="4.11.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Update="xunit" Version="2.4.0" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.1.74" Condition="'$(EnableGitVersioning)' != 'false'" />
+    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.1.118" Condition="'$(EnableStyleCop)' != 'false'" />
+    <GlobalPackageReference Include="StyleCop.CSharp.Async.Rules" Version="6.1.41" Condition="'$(EnableStyleCop)' != 'false'" />
+  </ItemGroup>
+
+</Project>

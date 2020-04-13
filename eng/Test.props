@@ -1,0 +1,9 @@
+<Project>
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <EnableStyleCop>false</EnableStyleCop>
+  </PropertyGroup>
+
+</Project>

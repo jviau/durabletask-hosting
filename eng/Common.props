@@ -1,0 +1,22 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>7.3</LangVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CodeAnalysisRuleSet>$(SrcRoot)Analyzers.ruleset</CodeAnalysisRuleSet>
+    <EnableStyleCop>true</EnableStyleCop>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TopLevelNamespace Condition="'$(TopLevelNamespace)' == ''">Ippetad</TopLevelNamespace>
+    <AssemblyName>$(TopLevelNamespace).$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace Condition="'$(RootNamespace)' == ''">$(MSBuildProjectName)</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Jacob Viau</Authors>
+    <Copyright>© Jacob Viau. All rights reserved.</Copyright>
+  </PropertyGroup>
+
+</Project>
