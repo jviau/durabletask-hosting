@@ -63,7 +63,7 @@ namespace DurableTask.DependencyInjection.Tests
         {
             RunTest(
                 null,
-                b => b.AddOrchestration(new TaskOrchestrationDescriptor(typeof(TaskOrchestration))),
+                b => b.AddOrchestration(new TaskOrchestrationDescriptor(typeof(TestOrchestration))),
                 (_, services) => services.Should().HaveCount(2));
         }
 

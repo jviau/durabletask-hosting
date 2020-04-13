@@ -68,7 +68,7 @@ namespace DurableTask.DependencyInjection.Tests
             wrapper.Type.Should().Be(typeof(MyType));
         }
 
-        private class MyType
+        public class MyType
         {
         }
 
