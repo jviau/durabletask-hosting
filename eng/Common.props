@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TopLevelNamespace Condition="'$(TopLevelNamespace)' == ''">Ippetad</TopLevelNamespace>
+    <TopLevelNamespace Condition="'$(TopLevelNamespace)' == ''">Vio</TopLevelNamespace>
     <AssemblyName>$(TopLevelNamespace).$(MSBuildProjectName)</AssemblyName>
     <RootNamespace Condition="'$(RootNamespace)' == ''">$(MSBuildProjectName)</RootNamespace>
   </PropertyGroup>

@@ -3,5 +3,5 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Ippetad.DurableTask.DependencyInjection.Tests")]
+[assembly: InternalsVisibleTo("Vio.DurableTask.DependencyInjection.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

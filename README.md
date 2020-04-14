@@ -8,7 +8,7 @@ A [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extens
 
 See [Samples](./samples/DurableTask.Samples) for a quick start example.
 
-1. Add nuget package: `dotnet add package Ippetad.DurableTask.Hosting`
+1. Add nuget package: `dotnet add package Vio.DurableTask.Hosting`
 2. Add to your host builder:
 
 ``` CSharp
