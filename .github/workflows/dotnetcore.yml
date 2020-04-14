@@ -31,10 +31,10 @@ jobs:
       run: dotnet build $solution --configuration Release --no-restore
       
     - name: Test
-      run: dotnet test $solution --no-build --verbosity normal
+      run: dotnet test $solution --no-restore --verbosity normal
       
     - name: Pack
-      run: dotnet pack $solution --no-build
+      run: dotnet pack $solution --no-restore
 
     - name: Upload
       uses: actions/upload-artifact@v1
