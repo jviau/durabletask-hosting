@@ -27,7 +27,13 @@ jobs:
 
     - name: Install dependencies
       run: dotnet restore $solution
-      
+
+    - name: Nbgv
+      id: nbgv
+      uses: aarnott/nbgv@0.3
+
+    - run: echo 'Build Version: ${{ steps.nbgv.outputs.CloudBuildNumber }}'
+
     - name: Build
       run: dotnet build $solution --configuration Release --no-restore
       
@@ -40,7 +46,7 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v1
       with:
-        name: pkg
+        name: pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}
         path: ./out/pkg
 
   release:
