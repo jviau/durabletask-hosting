@@ -32,7 +32,8 @@ jobs:
       id: nbgv
       uses: aarnott/nbgv@0.3
 
-    - run: echo 'Build Version: ${{ steps.nbgv.outputs.CloudBuildNumber }}'
+    - name: Version
+      run: echo 'Build Version: ${{ steps.nbgv.outputs.CloudBuildNumber }}'
 
     - name: Build
       run: dotnet build $solution --configuration Release --no-restore
