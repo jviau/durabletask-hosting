@@ -32,23 +32,32 @@ jobs:
       run: dotnet build $solution --configuration Release --no-restore
       
     - name: Test
-      run: dotnet test $solution --no-restore --verbosity normal
+      run: dotnet test $solution --no-restore
 
-    - if: github.event_name == 'release'
     - name: Pack
       run: dotnet pack $solution --no-restore
 
-    - if: github.event_name == 'release'
-    - name: Zip
-      run: zip -r out/pkg.zip ./out/pkg/
+    - name: Upload
+      uses: actions/upload-artifact@v1
+      with:
+        name: pkg
+        path: ./out/pkg
 
-    - if: github.event_name == 'release'
-      name: Get Release
+  release:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download pkg
+      uses: actions/download-artifact@v1
+      with:
+        name: pkg
+
+    - name: Get Release
       id: get_release
       uses: bruceadams/get-release@v1
 
-    - if: github.event_name == 'release'
-      name: Upload Release Artifacts
+    - name: Upload Release Artifacts
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
