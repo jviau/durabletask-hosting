@@ -19,5 +19,16 @@ namespace DurableTask.DependencyInjection
             : base(type)
         {
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TaskOrchestrationDescriptor"/> class.
+        /// </summary>
+        /// <param name="type">The service type.</param>
+        /// <param name="name">The name of the type.</param>
+        /// <param name="version">The version of the type.</param>
+        public TaskOrchestrationDescriptor(Type type, string name, string version)
+            : base(type, name, version)
+        {
+        }
     }
 }

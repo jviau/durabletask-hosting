@@ -12,63 +12,36 @@ namespace DurableTask.DependencyInjection
     /// <typeparam name="TBase">The base type for this descriptor.</typeparam>
     public class NamedTypeDescriptor<TBase> : TypeDescriptor<TBase>
     {
-        private string _name;
-        private string _version;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="NamedTypeDescriptor{TBase}"/> class.
         /// </summary>
         /// <param name="type">The service type.</param>
         protected NamedTypeDescriptor(Type type)
+            : this(type, NameVersionHelper.GetDefaultName(type), NameVersionHelper.GetDefaultName(type))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NamedTypeDescriptor{TBase}"/> class.
+        /// </summary>
+        /// <param name="type">The service type.</param>
+        /// <param name="name">The name of the type.</param>
+        /// <param name="version">The version of the type.</param>
+        protected NamedTypeDescriptor(Type type, string name, string version)
             : base(type)
         {
+            Name = Check.NotNullOrEmpty(name, nameof(name));
+            Version = Check.NotNull(version, nameof(version));
         }
 
         /// <summary>
-        /// Gets or sets the task name.
+        /// Gets the task name.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                Initialize();
-                return _name;
-            }
-
-            protected set
-            {
-                _name = value;
-            }
-        }
+        public string Name { get; }
 
         /// <summary>
-        /// Gets or sets the task version.
+        /// Gets the task version.
         /// </summary>
-        public string Version
-        {
-            get
-            {
-                Initialize();
-                return _version;
-            }
-
-            protected set
-            {
-                _version = value;
-            }
-        }
-
-        private void Initialize()
-        {
-            if (_name == null)
-            {
-                _name = NameVersionHelper.GetDefaultName(Type);
-            }
-
-            if (_version == null)
-            {
-                _version = NameVersionHelper.GetDefaultVersion(Type);
-            }
-        }
+        public string Version { get; }
     }
 }

@@ -10,12 +10,12 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
     public class TaskHubWorkerBuilderExtensionsTests
     {
         [Fact]
-        public void WithOrchestrationServiceNullBuilder()
+        public void WithOrchestrationService_ArgumentNull()
             => RunTestException<ArgumentNullException>(
                 _ => TaskHubWorkerBuilderExtensions.WithOrchestrationService(null, Mock.Of<IOrchestrationService>()));
 
         [Fact]
-        public void WithOrchestrationServiceIsSet()
+        public void WithOrchestration_ServiceIsSet()
             => RunTest(
                 builder =>
                 {

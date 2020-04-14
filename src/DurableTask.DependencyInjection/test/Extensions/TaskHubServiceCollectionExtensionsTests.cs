@@ -10,12 +10,12 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
     public class TaskHubServiceCollectionExtensionsTests
     {
         [Fact]
-        public void AddTaskHubWorkerNull()
+        public void AddTaskHubWorker_ArgumentNull()
             => RunTestException<ArgumentNullException>(
                 services => TaskHubServiceCollectionExtensions.AddTaskHubWorker(services, null));
 
         [Fact]
-        public void AddTaskHubWorkerFunc()
+        public void AddTaskHubWorker_Func()
             => RunTest(
                 null,
                 services => services.AddTaskHubWorker(
