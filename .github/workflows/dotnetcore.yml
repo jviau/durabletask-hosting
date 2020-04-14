@@ -5,6 +5,8 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  release:
+    types: [ created ]
 
 env:
   solution: ./src/DurableTask.Hosting.sln
@@ -31,12 +33,25 @@ jobs:
       
     - name: Test
       run: dotnet test $solution --no-restore --verbosity normal
-      
+
+    - if: github.event_name == 'release'
     - name: Pack
       run: dotnet pack $solution --no-restore
 
-    - name: Upload
-      uses: actions/upload-artifact@v1
+    - if: github.event_name == 'release'
+    - name: Zip
+      run: zip -r out/pkg.zip ./out/pkg/
+
+    - if: github.event_name == 'release'
+      name: Get Release
+      id: get_release
+      uses: bruceadams/get-release@v1
+
+    - if: github.event_name == 'release'
+      name: Upload Release Artifacts
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: pkg
-        path: ./out/pkg
+        upload_url: ${{ steps.get_release.outputs.upload_url }}
+        asset_path: ./out/pkg.zip
