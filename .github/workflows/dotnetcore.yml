@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  solution: ./src/DurableTask.Hosting.sln
+  
 jobs:
   build:
 
@@ -20,10 +23,10 @@ jobs:
       with:
         dotnet-version: 2.2.300
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore $solution
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build $solution --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test $solution --no-restore --verbosity normal
     - name: Pack
-      run: dotnet pack --no-build
+      run: dotnet pack $solution --no-build
