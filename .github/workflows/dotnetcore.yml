@@ -32,9 +32,7 @@ jobs:
       id: nbgv
       uses: aarnott/nbgv@v0.3
 
-    - run: echo 'Build Version - ${{ steps.nbgv.outputs.CloudBuildNumber }}'
-
-    - name: Build
+    - name: Build ${{ steps.nbgv.outputs.CloudBuildNumber }}
       run: dotnet build $solution --configuration Release --no-restore
       
     - name: Test
@@ -54,10 +52,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Nbgv
+      id: nbgv
+      uses: aarnott/nbgv@v0.3
+
     - name: Download pkg
       uses: actions/download-artifact@v1
       with:
-        name: pkg
+        name: pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}
 
     - name: Get Release
       id: get_release
@@ -71,4 +73,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_release.outputs.upload_url }}
-        asset_path: ./out/pkg.zip
+        asset_path: ./out/pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}.zip
