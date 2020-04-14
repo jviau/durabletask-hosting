@@ -8,25 +8,36 @@ on:
 
 env:
   solution: ./src/DurableTask.Hosting.sln
+  pkg: ./out/pkg
   
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.300
+
     - name: Install dependencies
       run: dotnet restore $solution
+      
     - name: Build
       run: dotnet build $solution --configuration Release --no-restore
+      
     - name: Test
-      run: dotnet test $solution --no-restore --verbosity normal
+      run: dotnet test $solution --no-build --verbosity normal
+      
     - name: Pack
       run: dotnet pack $solution --no-build
+
+    - name: Upload
+      uses: actions/upload-artifact@v1
+      with:
+        name: pkg
+        path: $pkg
