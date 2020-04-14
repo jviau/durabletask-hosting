@@ -41,3 +41,7 @@ Host.CreateDefaultBuilder()
 ```
 
 All orchestrations, activities, and middleware will now be constructed via dependency injection.
+
+## Service Scope
+
+A new `IServiceScope` is created for the duration of every `OrchestrationInstance` run. This scope will be used for all actions, middleware, and the orchestration itself and disposed after both the middleware & orchestration pipeline has finished execution. Scopes are not preserved between runs of the same `OrchestrationInstance`.
