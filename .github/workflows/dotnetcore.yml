@@ -30,7 +30,7 @@ jobs:
 
     - name: Nbgv
       id: nbgv
-      uses: aarnott/nbgv@0.3
+      uses: aarnott/nbgv@v0.3
 
     - run: echo 'Build Version - ${{ steps.nbgv.outputs.CloudBuildNumber }}'
 
