@@ -19,6 +19,10 @@
     <IsTestProject Condition="$(MSBuildProjectName.Contains('Test'))">true</IsTestProject>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <RunSettingsFilePath>$(SrcRoot)test.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+
   <Import Project="$(EngRoot)Common.props" />
   <Import Project="$(EngRoot)Test.props" Condition="'$(IsTestProject)' == 'true'" />
 

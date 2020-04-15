@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using DurableTask.Core;
-using Dynamitey.DynamicObjects;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;

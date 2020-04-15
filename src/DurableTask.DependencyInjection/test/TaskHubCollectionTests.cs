@@ -9,7 +9,7 @@ namespace DurableTask.DependencyInjection.Tests
     public class TaskHubCollectionTests
     {
         [Fact]
-        public void AddSucceeds()
+        public void Add_Succeeds()
         {
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
@@ -25,7 +25,7 @@ namespace DurableTask.DependencyInjection.Tests
         }
 
         [Fact]
-        public void AddDuplicate()
+        public void Add_Duplicate()
         {
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
@@ -42,7 +42,7 @@ namespace DurableTask.DependencyInjection.Tests
         }
 
         [Fact]
-        public void GetByName()
+        public void Get_ByName()
         {
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
@@ -60,7 +60,7 @@ namespace DurableTask.DependencyInjection.Tests
         }
 
         [Fact]
-        public void GetByName2()
+        public void Get_ByName2()
         {
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
@@ -77,6 +77,58 @@ namespace DurableTask.DependencyInjection.Tests
             // assert
             actual.Should().NotBeNull();
             actual.Should().Be(typeof(TestActivity2));
+        }
+
+        [Fact]
+        public void Get_Cached()
+        {
+            // arrange
+            var activity = new TaskActivityDescriptor(typeof(TestActivity));
+            var descriptors = new TaskHubCollection<TaskActivity>()
+            {
+                activity,
+            };
+
+            // act
+            Type actual = descriptors[activity.Name, activity.Version];
+            Type actual2 = descriptors[activity.Name, activity.Version];
+
+            // assert
+            actual.Should().NotBeNull();
+            actual.Should().Be(typeof(TestActivity));
+            actual.Should().Be(actual2);
+        }
+
+        [Fact]
+        public void Count_Zero()
+        {
+            // arrange
+            var descriptors = new TaskHubCollection<TaskActivity>();
+
+            // act
+            int count = descriptors.Count;
+
+            // assert
+            count.Should().Be(0);
+        }
+
+        [Fact]
+        public void Count_Multiple()
+        {
+            // arrange
+            var activity = new TaskActivityDescriptor(typeof(TestActivity));
+            var activity2 = new TaskActivityDescriptor(typeof(TestActivity2));
+            var descriptors = new TaskHubCollection<TaskActivity>()
+            {
+                activity,
+                activity2,
+            };
+
+            // act
+            int count = descriptors.Count;
+
+            // assert
+            count.Should().Be(2);
         }
 
         private class TestActivity : TaskActivity
