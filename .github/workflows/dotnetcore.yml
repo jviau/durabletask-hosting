@@ -55,6 +55,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 2.2.300
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API }}
+
     - name: Nbgv
       id: nbgv
       uses: aarnott/nbgv@v0.3
@@ -64,16 +71,14 @@ jobs:
       with:
         name: pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}
 
-    - name: Get Release
-      id: get_release
-      uses: bruceadams/get-release@v1.2.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Unzip pkg
+      run: unzip pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}
 
     - name: Upload Release Artifacts
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: csexton/release-asset-action@v2
       with:
-        upload_url: ${{ steps.get_release.outputs.upload_url }}
-        asset_path: ./out/pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}.zip
+        pattern: "pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}/*"
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    # - name: Push Nuget
+    #   run: dotnet nuget push pkg..${{ steps.nbgv.outputs.CloudBuildNumber }}/*.nupkg
