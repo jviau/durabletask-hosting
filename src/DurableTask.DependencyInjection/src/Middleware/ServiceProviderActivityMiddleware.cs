@@ -7,7 +7,6 @@ using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using DurableTask.DependencyInjection.Activities;
 using DurableTask.DependencyInjection.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DurableTask.DependencyInjection.Middleware
 {
@@ -31,6 +30,9 @@ namespace DurableTask.DependencyInjection.Middleware
         /// <inheritdoc />
         public async Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)
         {
+            Check.NotNull(context, nameof(context));
+            Check.NotNull(next, nameof(next));
+
             TaskActivity taskActivity = context.GetProperty<TaskActivity>();
 
             if (taskActivity is WrapperActivity wrapper)

@@ -7,10 +7,11 @@ using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using DurableTask.DependencyInjection.Extensions;
 using DurableTask.DependencyInjection.Orchestrations;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DurableTask.DependencyInjection.Middleware
 {
+    // TODO: Needs tests
+
     /// <summary>
     /// Middleware that constructs and injects the real orchestration or activity at the necessary time.
     /// </summary>
@@ -31,6 +32,9 @@ namespace DurableTask.DependencyInjection.Middleware
         /// <inheritdoc />
         public async Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)
         {
+            Check.NotNull(context, nameof(context));
+            Check.NotNull(next, nameof(next));
+
             TaskOrchestration taskOrchestration = context.GetProperty<TaskOrchestration>();
 
             if (taskOrchestration is WrapperOrchestration wrapper)

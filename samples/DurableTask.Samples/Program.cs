@@ -167,8 +167,8 @@ namespace DurableTask.Samples
 
             protected override async Task ExecuteAsync(CancellationToken stoppingToken)
             {
-                var instance = await _client.CreateOrchestrationInstanceAsync(typeof(GreetingsOrchestration), _instanceId, null);
-                var result = await _client.WaitForOrchestrationAsync(instance, TimeSpan.FromSeconds(60));
+                OrchestrationInstance instance = await _client.CreateOrchestrationInstanceAsync(typeof(GreetingsOrchestration), _instanceId, null);
+                OrchestrationState result = await _client.WaitForOrchestrationAsync(instance, TimeSpan.FromSeconds(60));
 
                 _console.WriteLine();
                 _console.WriteLine($"Orchestration finished.");

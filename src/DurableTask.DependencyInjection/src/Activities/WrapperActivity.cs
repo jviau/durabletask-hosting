@@ -19,6 +19,8 @@ namespace DurableTask.DependencyInjection.Activities
         public WrapperActivity(Type innerActivityType)
         {
             Check.NotNull(innerActivityType, nameof(innerActivityType));
+            Check.ConcreteType<TaskActivity>(innerActivityType, nameof(innerActivityType));
+
             InnerActivityType = innerActivityType;
         }
 
@@ -34,10 +36,24 @@ namespace DurableTask.DependencyInjection.Activities
 
         /// <inheritdoc />
         public override string Run(TaskContext context, string input)
-            => InnerActivity.Run(context, input);
+        {
+            CheckInnerActivity();
+            return InnerActivity.Run(context, input);
+        }
 
        /// <inheritdoc />
         public override Task<string> RunAsync(TaskContext context, string input)
-            => InnerActivity.RunAsync(context, input);
+        {
+            CheckInnerActivity();
+            return InnerActivity.RunAsync(context, input);
+        }
+
+        private void CheckInnerActivity()
+        {
+            if (InnerActivity == null)
+            {
+                throw new InvalidOperationException($"{InnerActivity} not set.");
+            }
+        }
     }
 }

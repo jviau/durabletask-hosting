@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using DurableTask.Core;
-using DurableTask.Emulator;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -13,15 +12,15 @@ namespace DurableTask.Hosting.Tests
 {
     public class TaskHubBackgroundServiceTests
     {
-        private static readonly ILogger<TaskHubBackgroundService> _logger =
+        private static readonly ILogger<TaskHubBackgroundService> s_logger =
             Mock.Of<ILogger<TaskHubBackgroundService>>();
 
         [Fact]
         public void Ctor_ArgumentNull()
         {
             // arrange, act
-            ArgumentNullException ex =
-                Capture<ArgumentNullException>(() => new TaskHubBackgroundService(null, null));
+            ArgumentNullException ex = Capture<ArgumentNullException>(
+                () => new TaskHubBackgroundService(null, null));
 
             // assert
             ex.Should().NotBeNull();
@@ -33,7 +32,7 @@ namespace DurableTask.Hosting.Tests
             // arrange
             Mock<IOrchestrationService> orchestrationMock = GetOrchestrationService();
             var taskHubWorker = new TaskHubWorker(orchestrationMock.Object);
-            var service = new TaskHubBackgroundService(taskHubWorker, _logger);
+            var service = new TaskHubBackgroundService(taskHubWorker, s_logger);
 
             // act
             await service.StartAsync(CancellationToken.None);
@@ -48,7 +47,7 @@ namespace DurableTask.Hosting.Tests
             // arrange
             Mock<IOrchestrationService> orchestrationMock = GetOrchestrationService();
             var taskHubWorker = new TaskHubWorker(orchestrationMock.Object);
-            var service = new TaskHubBackgroundService(taskHubWorker, _logger);
+            var service = new TaskHubBackgroundService(taskHubWorker, s_logger);
 
             // act
             await service.StartAsync(CancellationToken.None);
@@ -69,7 +68,7 @@ namespace DurableTask.Hosting.Tests
                 .Returns(Task.Delay(Timeout.Infinite));
 
             var taskHubWorker = new TaskHubWorker(orchestrationMock.Object);
-            var service = new TaskHubBackgroundService(taskHubWorker, _logger);
+            var service = new TaskHubBackgroundService(taskHubWorker, s_logger);
 
             // act
             await service.StartAsync(CancellationToken.None);

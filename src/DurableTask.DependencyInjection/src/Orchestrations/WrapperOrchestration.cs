@@ -18,7 +18,10 @@ namespace DurableTask.DependencyInjection.Orchestrations
         /// <param name="innerOrchestrationType">The inner orchestration type to use.</param>
         public WrapperOrchestration(Type innerOrchestrationType)
         {
-            InnerOrchestrationType = Check.NotNull(innerOrchestrationType, nameof(innerOrchestrationType));
+            Check.NotNull(innerOrchestrationType, nameof(innerOrchestrationType));
+            Check.ConcreteType<TaskOrchestration>(innerOrchestrationType, nameof(innerOrchestrationType));
+
+            InnerOrchestrationType = innerOrchestrationType;
         }
 
         /// <summary>
