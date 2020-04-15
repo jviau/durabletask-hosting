@@ -31,10 +31,6 @@ jobs:
     - name: Install dependencies
       run: dotnet restore $solution
 
-    - name: Nbgv
-      id: nbgv
-      uses: aarnott/nbgv@v0.3
-
     - name: Build ${{ steps.nbgv.outputs.CloudBuildNumber }}
       run: dotnet build $solution --configuration Release --no-restore
       
@@ -47,10 +43,11 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v1
       with:
-        name: pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}
+        name: pkg
         path: ./out/pkg
 
   release:
+    needs: build
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
 
@@ -62,23 +59,19 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API }}
 
-    - name: Nbgv
-      id: nbgv
-      uses: aarnott/nbgv@v0.3
-
     - name: Download pkg
       uses: actions/download-artifact@v1
       with:
-        name: pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}
+        name: pkg
 
     - name: Unzip pkg
-      run: unzip pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}
+      run: unzip pkg
 
     - name: Upload Release Artifacts
       uses: csexton/release-asset-action@v2
       with:
-        pattern: "pkg.${{ steps.nbgv.outputs.CloudBuildNumber }}/*"
+        pattern: "pkg/*"
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
     # - name: Push Nuget
-    #   run: dotnet nuget push pkg..${{ steps.nbgv.outputs.CloudBuildNumber }}/*.nupkg
+    #   run: dotnet nuget push pkg/*.nupkg
