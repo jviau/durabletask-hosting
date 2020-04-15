@@ -50,10 +50,6 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: pkg
-
-    - run: ls .
-    - run: ls pkg
-
   release:
     needs: build
     if: github.event_name == 'release'
