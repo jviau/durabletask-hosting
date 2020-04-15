@@ -74,9 +74,6 @@ jobs:
         name: pkg
         path: "."
 
-    - run: ls .
-    - run: ls pkg
-
     - name: Unzip pkg
       run: unzip pkg.zip
 
