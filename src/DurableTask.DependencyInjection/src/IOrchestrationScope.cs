@@ -9,7 +9,7 @@ namespace DurableTask.DependencyInjection
     /// <summary>
     /// The scope for a running orchestration instance.
     /// </summary>
-    public interface IOrchestrationScope : IServiceScope
+    internal interface IOrchestrationScope : IServiceScope
     {
         /// <summary>
         /// Signals that the middleware portion has completed, so the service scope can be disposed.
