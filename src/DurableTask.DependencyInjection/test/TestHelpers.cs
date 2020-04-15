@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DurableTask.DependencyInjection.Tests
+namespace DurableTask
 {
     public class TestHelpers
     {

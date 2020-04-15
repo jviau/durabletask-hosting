@@ -3,7 +3,7 @@
 
 using System;
 
-namespace DurableTask.DependencyInjection
+namespace DurableTask
 {
     /// <summary>
     /// Helpers for assertions.

@@ -6,7 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
-using static DurableTask.DependencyInjection.Tests.TestHelpers;
+using static DurableTask.TestHelpers;
 
 namespace DurableTask.DependencyInjection.Tests
 {

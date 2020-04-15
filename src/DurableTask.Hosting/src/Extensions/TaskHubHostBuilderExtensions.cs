@@ -21,6 +21,9 @@ namespace DurableTask.Hosting
         /// <returns>The original host builder with task hub worker configured.</returns>
         public static IHostBuilder ConfigureTaskHubWorker(this IHostBuilder builder, Action<ITaskHubWorkerBuilder> configure)
         {
+            Check.NotNull(builder, nameof(builder));
+            Check.NotNull(configure, nameof(configure));
+
             return builder.ConfigureTaskHubWorker((_, b) => configure(b));
         }
 
@@ -33,6 +36,9 @@ namespace DurableTask.Hosting
         public static IHostBuilder ConfigureTaskHubWorker(
             this IHostBuilder builder, Action<HostBuilderContext, ITaskHubWorkerBuilder> configure)
         {
+            Check.NotNull(builder, nameof(builder));
+            Check.NotNull(configure, nameof(configure));
+
             builder.ConfigureServices((context, services) =>
             {
                 services.AddTaskHubWorker(taskHubBuilder => configure(context, taskHubBuilder));

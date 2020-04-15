@@ -3,14 +3,19 @@ using System.Linq;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using static DurableTask.DependencyInjection.Tests.TestHelpers;
+using static DurableTask.TestHelpers;
 
 namespace DurableTask.DependencyInjection.Tests.Extensions
 {
     public class TaskHubServiceCollectionExtensionsTests
     {
         [Fact]
-        public void AddTaskHubWorker_ArgumentNull()
+        public void AddTaskHubWorker_ArgumentNullServices()
+            => RunTestException<ArgumentNullException>(
+                services => TaskHubServiceCollectionExtensions.AddTaskHubWorker(null, c => { }));
+
+        [Fact]
+        public void AddTaskHubWorker_ArgumentNullConfigure()
             => RunTestException<ArgumentNullException>(
                 services => TaskHubServiceCollectionExtensions.AddTaskHubWorker(services, null));
 
