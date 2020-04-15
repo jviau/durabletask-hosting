@@ -46,6 +46,15 @@ jobs:
         name: pkg
         path: ./out/pkg
 
+    - name: Download pkg
+      uses: actions/download-artifact@v1
+      with:
+        name: pkg
+        path: "."
+
+    - run: ls .
+    - run: ls pkg
+
   release:
     needs: build
     if: github.event_name == 'release'
@@ -63,9 +72,13 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: pkg
+        path: "."
+
+    - run: ls .
+    - run: ls pkg
 
     - name: Unzip pkg
-      run: unzip pkg
+      run: unzip pkg.zip
 
     - name: Upload Release Artifacts
       uses: csexton/release-asset-action@v2
