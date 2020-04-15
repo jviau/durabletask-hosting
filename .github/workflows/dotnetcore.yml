@@ -50,7 +50,6 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: pkg
-        path: "."
 
     - run: ls .
     - run: ls pkg
@@ -72,10 +71,6 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: pkg
-        path: "."
-
-    - name: Unzip pkg
-      run: unzip pkg.zip
 
     - name: Upload Release Artifacts
       uses: csexton/release-asset-action@v2
