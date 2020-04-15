@@ -6,4 +6,11 @@
     <EnableStyleCop>false</EnableStyleCop>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <CollectCoverage>true</CollectCoverage>
+    <CoverletOutput>$(OutRoot)TestResults/$(MSBuildProjectName)/</CoverletOutput>
+    <CoverletOutputFormat>lcov</CoverletOutputFormat>
+    <VSTestResultsDirectory>$(OutRoot)TestResults/</VSTestResultsDirectory>
+  </PropertyGroup>
+
 </Project>

@@ -28,6 +28,7 @@
   <ItemGroup>
     <PackageReference Update="Bogus" Version="27.0.1" />
     <PackageReference Update="coverlet.collector" Version="1.2.0" />
+    <PackageReference Update="coverlet.msbuild" Version="2.8.1" />
     <PackageReference Update="FluentAssertions" Version="5.6.0" />
     <PackageReference Update="Moq" Version="4.13.1" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.2.0" />

@@ -1,3 +1,6 @@
 <Project>
+
   <Import Project="$(EngRoot)Common.targets" />
+  <Import Project="$(EngRoot)Test.targets" Condition="'$(IsTestProject)' == 'true'" />
+
 </Project>
