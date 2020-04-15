@@ -37,10 +37,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         /// <inheritdoc />
         public override async Task<string> Execute(OrchestrationContext context, string input)
         {
-            if (InnerOrchestration == null)
-            {
-                throw new InvalidOperationException($"{InnerOrchestration} not set!");
-            }
+            CheckInnerOrchestration();
 
             try
             {
@@ -55,10 +52,24 @@ namespace DurableTask.DependencyInjection.Orchestrations
 
         /// <inheritdoc />
         public override string GetStatus()
-            => InnerOrchestration.GetStatus();
+        {
+            CheckInnerOrchestration();
+            return InnerOrchestration.GetStatus();
+        }
 
         /// <inheritdoc />
         public override void RaiseEvent(OrchestrationContext context, string name, string input)
-            => InnerOrchestration.RaiseEvent(context, name, input);
+        {
+            CheckInnerOrchestration();
+            InnerOrchestration.RaiseEvent(context, name, input);
+        }
+
+        private void CheckInnerOrchestration()
+        {
+            if (InnerOrchestration == null)
+            {
+                throw new InvalidOperationException($"{InnerOrchestration} not set.");
+            }
+        }
     }
 }

@@ -41,7 +41,7 @@ namespace DurableTask.DependencyInjection.Activities
             return InnerActivity.Run(context, input);
         }
 
-       /// <inheritdoc />
+        /// <inheritdoc />
         public override Task<string> RunAsync(TaskContext context, string input)
         {
             CheckInnerActivity();
