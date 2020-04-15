@@ -3,6 +3,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageTags>Azure Durable Orchestration Workflow DependencyInjection di</PackageTags>
+    <Description>
+      This package adds integration into Microsoft.Extensions.DependencyInjection for Microsoft.Azure.DurableTask.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

@@ -17,6 +17,9 @@
   <PropertyGroup>
     <Authors>Jacob Viau</Authors>
     <Copyright>© Jacob Viau. All rights reserved.</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <ReposityUrl>https://github.com/jviau/durabletask-hosting</ReposityUrl>
+    <ProjectUrl>$(ReposityUrl)</ProjectUrl>
   </PropertyGroup>
 
 </Project>

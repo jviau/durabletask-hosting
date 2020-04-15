@@ -3,6 +3,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageTags>Azure Durable Orchestration Workflow hosting</PackageTags>
+    <Description>
+      This packages adds integration into Microsoft.Extensions.Hosting for Microsoft.Azure.DurableTask.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>
