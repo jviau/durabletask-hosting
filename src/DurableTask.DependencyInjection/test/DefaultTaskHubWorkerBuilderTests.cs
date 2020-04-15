@@ -91,6 +91,23 @@ namespace DurableTask.DependencyInjection.Tests
                 null);
         }
 
+        [Fact]
+        public void BuildTaskHubWorker_WithMiddleware()
+        {
+            RunTest(
+                null,
+                b =>
+                {
+                    b.OrchestrationService = Mock.Of<IOrchestrationService>();
+                    b.UseActivityMiddleware(new TaskMiddlewareDescriptor(typeof(TestMiddleware)));
+                    b.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(typeof(TestMiddleware)));
+                    TaskHubWorker worker = b.Build(Mock.Of<IServiceProvider>());
+                    worker.Should().NotBeNull();
+                    worker.orchestrationService.Should().Be(b.OrchestrationService);
+                },
+                null);
+        }
+
         private static void RunTestException<TException>(Action<DefaultTaskHubWorkerBuilder> act)
             where TException : Exception
         {

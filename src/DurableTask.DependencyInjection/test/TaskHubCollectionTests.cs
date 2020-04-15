@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using DurableTask.Core;
 using FluentAssertions;
@@ -39,6 +41,64 @@ namespace DurableTask.DependencyInjection.Tests
             result.Should().BeFalse();
             descriptors.Should().HaveCount(1);
             descriptors.Single().Should().Be(activity);
+        }
+
+        [Fact]
+        public void EnumeratorOfT_ContainsAll()
+        {
+            // arrange
+            var activity = new TaskActivityDescriptor(typeof(TestActivity));
+            var descriptors = new TaskHubCollection<TaskActivity>()
+            {
+                activity,
+            };
+
+            // act
+            IEnumerator<NamedTypeDescriptor<TaskActivity>> enumerator = descriptors.GetEnumerator();
+
+            // assert
+            enumerator.Should().NotBeNull();
+            enumerator.MoveNext().Should().BeTrue();
+            enumerator.Current.Should().Be(activity);
+            enumerator.MoveNext().Should().BeFalse();
+            ((IEnumerable)descriptors).GetEnumerator().Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Enumerator_ContainsAll()
+        {
+            // arrange
+            var activity = new TaskActivityDescriptor(typeof(TestActivity));
+            var descriptors = new TaskHubCollection<TaskActivity>()
+            {
+                activity,
+            };
+
+            // act
+            IEnumerator enumerator = ((IEnumerable)descriptors).GetEnumerator();
+
+            // assert
+            enumerator.Should().NotBeNull();
+            enumerator.MoveNext().Should().BeTrue();
+            enumerator.Current.Should().Be(activity);
+            enumerator.MoveNext().Should().BeFalse();
+        }
+
+        [Fact]
+        public void Get_Null()
+        {
+            // arrange
+            var activity = new TaskActivityDescriptor(typeof(TestActivity));
+            var descriptors = new TaskHubCollection<TaskActivity>()
+            {
+                activity,
+            };
+
+            // act
+            Type actual = descriptors["DNE", string.Empty];
+
+            // assert
+            actual.Should().BeNull();
         }
 
         [Fact]
