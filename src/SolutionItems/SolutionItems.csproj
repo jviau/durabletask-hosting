@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.Build.NoTargets/1.0.53">
+  <!-- Container project alternative for solution items -->
+
+  <PropertyGroup>
+    <!-- This project has no output, but needs this to load in VS -->
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(RepoRoot)global.json" />
+    <None Include="$(RepoRoot).editorconfig" />
+    <None Include="$(RepoRoot)LICENSE" />
+    <None Include="$(RepoRoot)*.md" />
+    <None Include="$(RepoRoot)*.json" />
+    <None Include="$(RepoRoot)*.ruleset" />
+    <None Include="$(RepoRoot)*.props" />
+    <None Include="$(RepoRoot)*.targets" />
+    <None Include="$(RepoRoot)*.rsp" />
+    <None Include="$(SrcRoot)test.runsettings" LinkBase="src" />
+    <None Include="$(EngRoot)**" LinkBase="eng" />
+  </ItemGroup>
+
+</Project>
