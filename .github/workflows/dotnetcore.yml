@@ -70,4 +70,3 @@ jobs:
       run: dotnet nuget push pkg/**/*.nupkg
             --api-key $NUGET_API
             --source https://api.nuget.org/v3/index.json
-            --no-symbols true
