@@ -68,4 +68,4 @@ jobs:
         NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API }}
 
     - name: Push Nuget
-      run: dotnet nuget push pkg/*.nupkg --skip-duplicate
+      run: dotnet nuget push pkg/*.nupkg
