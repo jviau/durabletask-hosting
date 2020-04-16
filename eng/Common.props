@@ -24,6 +24,10 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PackageReleaseNotes>
+      - Fix package repo and project url
+      - Add nuget symbols and source link
+    </PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>
