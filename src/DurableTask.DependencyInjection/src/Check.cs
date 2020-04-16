@@ -2,6 +2,7 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System;
+using DurableTask.DependencyInjection.Properties;
 
 namespace DurableTask
 {
@@ -44,7 +45,7 @@ namespace DurableTask
 
             if (value.Length == 0 || value[0] == '\0')
             {
-                throw new ArgumentException($"{name} cannot be an empty string or start with the null character.", name);
+                throw new ArgumentException(Strings.StringEmpty(name), name);
             }
 
             return value;
@@ -63,7 +64,7 @@ namespace DurableTask
             if (!typeof(TImplements).IsAssignableFrom(type) || !type.IsClass || type.IsAbstract)
             {
                 throw new ArgumentException(
-                    $"Type parameter {name} [{type}] must inherit from {typeof(TImplements)}, be a class, and not be abstract", name);
+                    Strings.InvalidType(name, type, typeof(TImplements)), name);
             }
         }
     }

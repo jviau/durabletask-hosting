@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using DurableTask.Core;
+using DurableTask.DependencyInjection.Properties;
 
 namespace DurableTask.DependencyInjection.Orchestrations
 {
@@ -68,7 +69,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         {
             if (InnerOrchestration == null)
             {
-                throw new InvalidOperationException($"{InnerOrchestration} not set.");
+                throw new InvalidOperationException(Strings.InnerOrchestrationNull);
             }
         }
     }

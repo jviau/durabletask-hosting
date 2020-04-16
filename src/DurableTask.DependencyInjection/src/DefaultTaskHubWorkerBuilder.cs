@@ -10,6 +10,7 @@ using DurableTask.DependencyInjection.Activities;
 using DurableTask.DependencyInjection.Extensions;
 using DurableTask.DependencyInjection.Middleware;
 using DurableTask.DependencyInjection.Orchestrations;
+using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -91,7 +92,7 @@ namespace DurableTask.DependencyInjection
 
             if (OrchestrationService == null)
             {
-                throw new InvalidOperationException("Builder is not fully configured yet. OrchestrationService is null.");
+                throw new InvalidOperationException(Strings.OrchestrationInstanceNull);
             }
 
             var worker = new TaskHubWorker(

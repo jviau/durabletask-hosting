@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using DurableTask.Core;
+using DurableTask.DependencyInjection.Properties;
 
 namespace DurableTask.DependencyInjection.Activities
 {
@@ -52,7 +53,7 @@ namespace DurableTask.DependencyInjection.Activities
         {
             if (InnerActivity == null)
             {
-                throw new InvalidOperationException($"{InnerActivity} not set.");
+                throw new InvalidOperationException(Strings.InnerActivityNull);
             }
         }
     }

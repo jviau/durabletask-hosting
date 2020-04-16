@@ -3,6 +3,8 @@
 
 using System;
 using DurableTask.Core;
+using DurableTask.DependencyInjection.Properties;
+using Dynamitey;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DurableTask.DependencyInjection
@@ -42,7 +44,7 @@ namespace DurableTask.DependencyInjection
         {
             if (builder.OrchestrationService == null)
             {
-                throw new InvalidOperationException($"{nameof(builder.OrchestrationService)} is not set on {nameof(builder)}.");
+                throw new InvalidOperationException(Strings.OrchestrationInstanceNull);
             }
 
             if (builder.OrchestrationService is IOrchestrationServiceClient client)
@@ -51,8 +53,7 @@ namespace DurableTask.DependencyInjection
             }
 
             throw new InvalidOperationException(
-                $"Failed to add TaskHubClient. " +
-                $"{builder.OrchestrationService.GetType()} does not implement {typeof(IOrchestrationServiceClient)}.");
+                Strings.NotOrchestrationServiceClient(builder.OrchestrationService.GetType()));
         }
     }
 }

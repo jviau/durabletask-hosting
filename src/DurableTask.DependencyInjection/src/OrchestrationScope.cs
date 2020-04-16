@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DurableTask.Core;
+using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DurableTask.DependencyInjection
@@ -59,8 +60,7 @@ namespace DurableTask.DependencyInjection
             {
                 if (s_scopes.ContainsKey(orchestrationInstance))
                 {
-                    throw new InvalidOperationException(
-                        $"Scope already exists for orchestration {orchestrationInstance.InstanceId}");
+                    throw new InvalidOperationException(Strings.ScopeAlreadyExists(orchestrationInstance.InstanceId));
                 }
 
                 IOrchestrationScope scope = new OrchestrationScope(serviceProvider.CreateScope());
