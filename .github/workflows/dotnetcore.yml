@@ -63,8 +63,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.sdk }}
+        source-url: https://api.nuget.org/v3/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API }}
 
     - name: Push Nuget
-      run: dotnet nuget push pkg/*.nupkg
+      run: dotnet nuget push pkg/*.nupkg --skip-duplicate
