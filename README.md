@@ -1,6 +1,12 @@
 # DurableTask-Hosting
 
-![.NET Core Build](https://github.com/jviau/durabletask-hosting/workflows/.NET%20Core/badge.svg)
+[![Build](https://github.com/jviau/durabletask-hosting/workflows/.NET%20Core/badge.svg)](https://github.com/jviau/durabletask-hosting/actions?query=workflow%3A%22.NET+Core%22)
+
+Hosting: 
+[![Nuget Preview](https://img.shields.io/nuget/vpre/Vio.DurableTask.Hosting.svg)](https://www.nuget.org/packages/Vio.DurableTask.Hosting)
+
+Dependency Injection: 
+[![Nuget Preview](https://img.shields.io/nuget/vpre/Vio.DurableTask.DependencyInjection.svg)](https://www.nuget.org/packages/Vio.DurableTask.DependencyInjection)
 
 A [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting/) wrapper around the [azure/durabletask](https://github.com/azure/durabletask) framework.
 
