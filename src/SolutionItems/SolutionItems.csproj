@@ -4,6 +4,7 @@
   <PropertyGroup>
     <!-- This project has no output, but needs this to load in VS -->
     <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
