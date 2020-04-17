@@ -4,6 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using DurableTask.Core;
+using DurableTask.Hosting.Properties;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -31,7 +32,7 @@ namespace DurableTask.Hosting
         /// <inheritdoc />
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Starting task hub worker.");
+            _logger.LogDebug(Strings.TaskHubWorkerStarting);
             return _worker.StartAsync();
         }
 
@@ -39,11 +40,11 @@ namespace DurableTask.Hosting
         public async Task StopAsync(CancellationToken cancellationToken)
         {
             var cancel = Task.Delay(Timeout.Infinite, cancellationToken);
-            Task task = await Task.WhenAny(_worker.StopAsync(), cancel);
+            Task task = await Task.WhenAny(_worker.StopAsync(), cancel).ConfigureAwait(false);
 
             if (cancel == task)
             {
-                _logger.LogWarning("Unable to gracefully shutdown task hub worker in time.");
+                _logger.LogWarning(Strings.ForcedShutdown);
             }
         }
     }

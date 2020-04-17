@@ -1,0 +1,12 @@
+﻿<Project>
+ 
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory)..\, $(_DirectoryBuildPropsFile)))\$(_DirectoryBuildPropsFile)"
+          Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory)..\, $(_DirectoryBuildPropsFile)))' != '' " />
+
+  <PropertyGroup>
+    <EnableStyleCop>false</EnableStyleCop>
+    <IsPackable>false</IsPackable>
+    <EnableGitVersioning>false</EnableGitVersioning>
+  </PropertyGroup>
+
+</Project>

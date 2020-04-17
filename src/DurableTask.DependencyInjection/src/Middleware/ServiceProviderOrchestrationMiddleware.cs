@@ -44,11 +44,11 @@ namespace DurableTask.DependencyInjection.Middleware
 
                 // update the context task orchestration with the real one.
                 context.SetProperty(wrapper.InnerOrchestration);
-                await next();
+                await next().ConfigureAwait(false);
                 return;
             }
 
-            await next();
+            await next().ConfigureAwait(false);
         }
     }
 }

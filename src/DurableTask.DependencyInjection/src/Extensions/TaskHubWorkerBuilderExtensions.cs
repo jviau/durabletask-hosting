@@ -4,7 +4,6 @@
 using System;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
-using Dynamitey;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DurableTask.DependencyInjection

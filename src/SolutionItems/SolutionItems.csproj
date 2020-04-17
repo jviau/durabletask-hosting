@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.Build.NoTargets/1.0.53">
+﻿<Project Sdk="Microsoft.Build.NoTargets/1.0.53">
   <!-- Container project alternative for solution items -->
 
   <PropertyGroup>
@@ -17,6 +17,7 @@
     <None Include="$(RepoRoot)*.targets" />
     <None Include="$(RepoRoot)*.rsp" />
     <None Include="$(SrcRoot)test.runsettings" LinkBase="src" />
+    <None Include="$(RepoRoot)samples/*.props" LinkBase="samples" />
     <None Include="$(EngRoot)**" LinkBase="eng" />
   </ItemGroup>
 

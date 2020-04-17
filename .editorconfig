@@ -204,7 +204,20 @@ csharp_preserve_single_line_blocks = true
 # Code block
 csharp_prefer_braces = false:none
 
-[src/*Tests/**/*.cs]
+# StyleCop.Analyzers - currently does not work from .editorconfig
+dotnet_diagnostic.SA1101.severity = none
+dotnet_diagnostic.SA1308.severity = none
+dotnet_diagnostic.SA1309.severity = none
+dotnet_diagnostic.SA1309S.severity = none
+dotnet_diagnostic.SA1311.severity = none
+dotnet_diagnostic.SX1101.severity = warning
+dotnet_diagnostic.SX1309.severity = warning
+dotnet_diagnostic.SX1309S.severity = none
+
+# FxCop.Analyzers
+dotnet_diagnostic.CA1716.severity = none # Do not use reserved keyworks from other languages.
+
+[**/test/**/*.cs]
 # We allow usage of "var" inside tests as it reduces churn as we remove/rename types
 csharp_style_var_for_built_in_types = true:none
 csharp_style_var_elsewhere = true:none

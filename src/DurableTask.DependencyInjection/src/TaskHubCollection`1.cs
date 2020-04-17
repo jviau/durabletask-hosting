@@ -42,7 +42,7 @@ namespace DurableTask.DependencyInjection
         public bool Add(NamedTypeDescriptor<TDescribed> descriptor)
             => _descriptors.Add(descriptor);
 
-        private bool IsTaskMatch(
+        private static bool IsTaskMatch(
             string name, string version, NamedTypeDescriptor<TDescribed> descriptor)
         {
             return string.Equals(name, descriptor.Name, StringComparison.Ordinal)
@@ -102,7 +102,8 @@ namespace DurableTask.DependencyInjection
                 string n = Name ?? string.Empty;
                 string v = Version ?? string.Empty;
 
-                return n.ToUpper().GetHashCode() ^ v.ToUpper().GetHashCode();
+                return n.ToUpperInvariant().GetHashCode()
+                    ^ v.ToUpperInvariant().GetHashCode();
             }
         }
     }

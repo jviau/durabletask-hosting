@@ -42,11 +42,11 @@ namespace DurableTask.DependencyInjection.Middleware
 
                 // update the context task activity with the real one.
                 context.SetProperty(wrapper.InnerActivity);
-                await next();
+                await next().ConfigureAwait(false);
                 return;
             }
 
-            await next();
+            await next().ConfigureAwait(false);
         }
     }
 }

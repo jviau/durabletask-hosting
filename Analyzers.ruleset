@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Rules for Azule Lab Services" Description="Code analysis rules for Azule Lab Services." ToolsVersion="14.0">
+<RuleSet Name="Rules for DurableTask.Hosting" Description="Code analysis rules for DurableTask.Hosting." ToolsVersion="14.0">
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA1101" Action="None" />
     <Rule Id="SA1308" Action="None" />

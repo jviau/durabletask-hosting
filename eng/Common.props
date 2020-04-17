@@ -4,8 +4,8 @@
     <LangVersion>7.3</LangVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <CodeAnalysisRuleSet>$(RepoRoot)Analyzers.ruleset</CodeAnalysisRuleSet>
     <EnableStyleCop>true</EnableStyleCop>
+    <CodeAnalysisRuleSet>$(RepoRoot)Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup>

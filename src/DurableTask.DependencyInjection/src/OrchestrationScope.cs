@@ -63,9 +63,11 @@ namespace DurableTask.DependencyInjection
                     throw new InvalidOperationException(Strings.ScopeAlreadyExists(orchestrationInstance.InstanceId));
                 }
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
                 IOrchestrationScope scope = new OrchestrationScope(serviceProvider.CreateScope());
                 s_scopes[orchestrationInstance] = scope;
                 return scope;
+#pragma warning restore CA2000 // Dispose objects before losing scope
             }
         }
 
