@@ -16,8 +16,8 @@ namespace DurableTask.DependencyInjection
         /// Initializes a new instance of the <see cref="NamedTypeDescriptor{TBase}"/> class.
         /// </summary>
         /// <param name="type">The service type.</param>
-        protected NamedTypeDescriptor(Type type)
-            : this(type, NameVersionHelper.GetDefaultName(type), NameVersionHelper.GetDefaultName(type))
+        public NamedTypeDescriptor(Type type)
+            : this(type, NameVersionHelper.GetDefaultName(type), NameVersionHelper.GetDefaultVersion(type))
         {
         }
 
@@ -27,7 +27,7 @@ namespace DurableTask.DependencyInjection
         /// <param name="type">The service type.</param>
         /// <param name="name">The name of the type.</param>
         /// <param name="version">The version of the type.</param>
-        protected NamedTypeDescriptor(Type type, string name, string version)
+        public NamedTypeDescriptor(Type type, string name, string version)
             : base(type)
         {
             Name = Check.NotNullOrEmpty(name, nameof(name));
