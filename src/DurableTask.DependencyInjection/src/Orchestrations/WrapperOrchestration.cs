@@ -13,6 +13,9 @@ namespace DurableTask.DependencyInjection.Orchestrations
     /// </summary>
     internal class WrapperOrchestration : TaskOrchestration
     {
+        private readonly TaskCompletionSource<object> _scopeDisposal
+            = new TaskCompletionSource<object>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapperOrchestration"/> class.
         /// </summary>
@@ -35,20 +38,30 @@ namespace DurableTask.DependencyInjection.Orchestrations
         /// </summary>
         public TaskOrchestration InnerOrchestration { get; set; }
 
+        /// <summary>
+        /// Gets the scope disposal task.
+        /// </summary>
+        public Task ScopeDisposal => _scopeDisposal.Task;
+
         /// <inheritdoc />
-        public override async Task<string> Execute(OrchestrationContext context, string input)
+        public override Task<string> Execute(OrchestrationContext context, string input)
         {
             CheckInnerOrchestration();
 
-            try
+            // Durable task is very sensitive to how this task returns.
+            // Trying to perform addition awaits before returning will cause this
+            // orchestration to never complete, so all additional work must be fire & forget.
+            Task<string> inner = InnerOrchestration.Execute(context, input);
+
+            Task.Run(async () =>
             {
-                return await InnerOrchestration.Execute(context, input).ConfigureAwait(false);
-            }
-            finally
-            {
+                await inner.ConfigureAwait(false);
                 await OrchestrationScope.SafeDisposeScopeAsync(context.OrchestrationInstance)
                     .ConfigureAwait(false);
-            }
+                _scopeDisposal.TrySetResult(null);
+            });
+
+            return inner;
         }
 
         /// <inheritdoc />

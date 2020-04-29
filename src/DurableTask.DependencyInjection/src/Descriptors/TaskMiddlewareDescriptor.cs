@@ -8,7 +8,7 @@ namespace DurableTask.DependencyInjection
     /// <summary>
     /// A descriptor for <see cref="ITaskMiddleware"/>.
     /// </summary>
-    public class TaskMiddlewareDescriptor : TypeDescriptor<ITaskMiddleware>
+    public sealed class TaskMiddlewareDescriptor : TypeDescriptor<ITaskMiddleware>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskMiddlewareDescriptor"/> class.

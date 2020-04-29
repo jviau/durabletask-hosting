@@ -68,6 +68,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                     wrapper.InnerOrchestration =
                         (TaskOrchestration)Activator.CreateInstance(wrapper.InnerOrchestrationType, this);
                     await wrapper.Execute(s_orchestrationContext, Input);
+                    await wrapper.ScopeDisposal;
 
                     return Capture<KeyNotFoundException>(
                         () => OrchestrationScope.GetScope(s_orchestrationContext.OrchestrationInstance));

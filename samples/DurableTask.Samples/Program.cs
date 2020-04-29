@@ -12,8 +12,6 @@ using DurableTask.DependencyInjection;
 using DurableTask.Emulator;
 using DurableTask.Hosting;
 using DurableTask.Samples.Greetings;
-using DurableTask.ServiceBus;
-using DurableTask.ServiceBus.Tracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,7 +32,7 @@ namespace DurableTask.Samples
         /// <returns>A task that completes when this program is finished running.</returns>
         public static Task Main(string[] args)
         {
-            return CreateDefaultBuilder(args)
+            IHost host = CreateDefaultBuilder(args)
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton<IConsole, ConsoleWrapper>();
@@ -53,7 +51,14 @@ namespace DurableTask.Samples
                         .AddActivity<GetUserTask>()
                         .AddActivity<SendGreetingTask>();
                 })
-                .RunConsoleAsync();
+                .UseConsoleLifetime()
+                .Build();
+
+            using (DurableTaskEventListener listener
+                = ActivatorUtilities.CreateInstance<DurableTaskEventListener>(host.Services))
+            {
+                return host.RunAsync();
+            }
         }
 
         private static HostBuilder CreateDefaultBuilder(string[] args)
@@ -127,28 +132,28 @@ namespace DurableTask.Samples
             return builder;
         }
 
-        private static IOrchestrationService UseServiceBus(IConfiguration config)
-        {
-            string taskHubName = config.GetValue<string>("DurableTask:TaskHubName");
-            string azureStorageConnectionString = config.GetValue<string>("DurableTask:AzureStorage:ConnectionString");
-            string serviceBusConnectionString = config.GetValue<string>("DurableTask:ServiceBus:ConnectionString");
+        //private static IOrchestrationService UseServiceBus(IConfiguration config)
+        //{
+        //    string taskHubName = config.GetValue<string>("DurableTask:TaskHubName");
+        //    string azureStorageConnectionString = config.GetValue<string>("DurableTask:AzureStorage:ConnectionString");
+        //    string serviceBusConnectionString = config.GetValue<string>("DurableTask:ServiceBus:ConnectionString");
 
-            IOrchestrationServiceInstanceStore instanceStore =
-                new AzureTableInstanceStore(taskHubName, azureStorageConnectionString);
+        //    IOrchestrationServiceInstanceStore instanceStore =
+        //        new AzureTableInstanceStore(taskHubName, azureStorageConnectionString);
 
-            var orchestrationService =
-                new ServiceBusOrchestrationService(
-                    serviceBusConnectionString,
-                    taskHubName,
-                    instanceStore,
-                    null,
-                    null);
+        //    var orchestrationService =
+        //        new ServiceBusOrchestrationService(
+        //            serviceBusConnectionString,
+        //            taskHubName,
+        //            instanceStore,
+        //            null,
+        //            null);
 
-            // TODO: do by default via config
-            orchestrationService.CreateIfNotExistsAsync().GetAwaiter().GetResult();
+        //    // TODO: do by default via config
+        //    orchestrationService.CreateIfNotExistsAsync().GetAwaiter().GetResult();
 
-            return orchestrationService;
-        }
+        //    return orchestrationService;
+        //}
 
         private static IOrchestrationService UseLocalEmulator()
             => new LocalOrchestrationService();
