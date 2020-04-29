@@ -108,6 +108,7 @@ namespace DurableTask.DependencyInjection
                 worker.AddOrchestrationDispatcherMiddleware(WrapMiddleware(middlewareType));
             }
 
+            worker.AddActivityDispatcherMiddleware(BeginMiddlewareScope(serviceProvider));
             worker.AddActivityDispatcherMiddleware(WrapMiddleware(typeof(ServiceProviderActivityMiddleware)));
             foreach (Type middlewareType in _activitiesMiddleware)
             {
@@ -134,7 +135,7 @@ namespace DurableTask.DependencyInjection
                 IOrchestrationScope scope = null;
                 try
                 {
-                    scope = OrchestrationScope.CreateScope(context.GetProperty<OrchestrationInstance>(), serviceProvider);
+                    scope = OrchestrationScope.GetOrCreateScope(context.GetProperty<OrchestrationInstance>(), serviceProvider);
                     await next().ConfigureAwait(false);
                 }
                 finally

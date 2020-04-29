@@ -45,6 +45,26 @@ namespace DurableTask.DependencyInjection
         }
 
         /// <summary>
+        /// Gets or creates a new <see cref="IOrchestrationScope"/> for the orchestration instance.
+        /// </summary>
+        /// <param name="orchestrationInstance">The orchestration instance. Not null.</param>
+        /// <param name="serviceProvider">The service provider. Not null.</param>
+        /// <returns>The newly created scope.</returns>
+        public static IOrchestrationScope GetOrCreateScope(
+            OrchestrationInstance orchestrationInstance, IServiceProvider serviceProvider)
+        {
+            Check.NotNull(orchestrationInstance, nameof(orchestrationInstance));
+            Check.NotNull(serviceProvider, nameof(serviceProvider));
+
+            lock (s_scopes)
+            {
+                return s_scopes.ContainsKey(orchestrationInstance)
+                    ? GetScope(orchestrationInstance)
+                    : CreateScope(orchestrationInstance, serviceProvider);
+            }
+        }
+
+        /// <summary>
         /// Creates a new <see cref="IOrchestrationScope"/> for the orchestration instance.
         /// </summary>
         /// <param name="orchestrationInstance">The orchestration instance. Not null.</param>

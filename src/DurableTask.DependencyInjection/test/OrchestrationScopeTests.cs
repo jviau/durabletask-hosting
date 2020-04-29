@@ -101,6 +101,36 @@ namespace DurableTask.DependencyInjection.Tests
         }
 
         [Fact]
+        public void GetOrCreateScope_Created()
+        {
+            // arrange
+            var instance = new OrchestrationInstance();
+
+            // act
+            IOrchestrationScope scope = OrchestrationScope.GetOrCreateScope(instance, GetServiceProvider());
+
+            // assert
+            scope.Should().NotBeNull();
+            scope.ServiceProvider.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void GetOrCreateScope_Found()
+        {
+            // arrange
+            var instance = new OrchestrationInstance();
+
+            // act
+            IOrchestrationScope first = OrchestrationScope.CreateScope(instance, GetServiceProvider());
+            IOrchestrationScope second = OrchestrationScope.GetOrCreateScope(instance, GetServiceProvider());
+
+            // assert
+            second.Should().NotBeNull();
+            second.ServiceProvider.Should().NotBeNull();
+            second.Should().BeSameAs(first);
+        }
+
+        [Fact]
         public async Task SafeDisposeScopeAsync_ArgumentNull()
         {
             // arrange, act
