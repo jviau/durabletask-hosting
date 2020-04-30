@@ -14,4 +14,14 @@
     <AdditionalFiles Include="$(RepoRoot)stylecop.json" Visible="false" />
   </ItemGroup>
 
+  <Target Name="GetReleaseNotes" BeforeTargets="BeforeBuild">
+    <ReadLinesFromFile File="$(RepoRoot)releasenotes.md">
+      <Output TaskParameter="Lines" ItemName="_ReleaseNotesLines" />
+    </ReadLinesFromFile>
+
+    <PropertyGroup>
+      <PackageReleaseNotes>@(_ReleaseNotesLines, '%0D%0A')</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
+
 </Project>

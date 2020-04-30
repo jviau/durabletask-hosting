@@ -24,9 +24,6 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <PackageReleaseNotes>
-      - Fix task activity null scope.
-    </PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>

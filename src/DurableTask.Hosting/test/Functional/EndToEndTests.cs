@@ -73,7 +73,7 @@ namespace DurableTask.Hosting.Tests.Functional
             payload.Input.Should().Be(input);
             executionTracker.Executions.Should().HaveCount(1);
             executionTracker.Executions.Single().ExecutedType.Should().Be(typeof(TestOrchestration));
-            await host.StopAsync();
+            await TestHelpers.Capture<OperationCanceledException>(() => host.StopAsync());
         }
 
         private static IHost CreateHost(
