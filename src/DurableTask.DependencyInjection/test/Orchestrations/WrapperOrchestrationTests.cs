@@ -16,7 +16,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
     {
         private const string Input = "Input";
         private const string Event = "Event";
-        private const string InstanceId = "WrapperOrchestrationTests";
+        private const string InstanceId = "WrapperOrchestrationTests_InstanceId";
 
         private static readonly OrchestrationContext s_orchestrationContext
             = new TestOrchestrationContext(
@@ -64,13 +64,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 typeof(TestOrchestration),
                 async wrapper =>
                 {
-                    IServiceScopeFactory factory = Mock.Of<IServiceScopeFactory>(
-                        m => m.CreateScope() == Mock.Of<IServiceScope>());
-                    IServiceProvider serviceProvider = Mock.Of<IServiceProvider>(
-                        m => m.GetService(typeof(IServiceScopeFactory)) == factory);
-
-                    IOrchestrationScope scope = OrchestrationScope.CreateScope(
-                        InstanceId, serviceProvider);
+                    CreateScope();
                     wrapper.InnerOrchestration =
                         (TaskOrchestration)Activator.CreateInstance(wrapper.InnerOrchestrationType, this);
                     await wrapper.Execute(s_orchestrationContext, Input);
@@ -91,6 +85,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 type,
                 wrapper =>
                 {
+                    CreateScope();
                     wrapper.InnerOrchestration =
                         (TaskOrchestration)Activator.CreateInstance(wrapper.InnerOrchestrationType, this);
                     return wrapper.Execute(s_orchestrationContext, $"\"{Input}\"");
@@ -148,6 +143,16 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                     InvokedContext.Should().Be(s_orchestrationContext);
                     InvokedInput.Should().BeOneOf(Input, $"\"{Input}\"");
                 });
+
+        private static IOrchestrationScope CreateScope()
+        {
+            IServiceScopeFactory factory = Mock.Of<IServiceScopeFactory>(
+                m => m.CreateScope() == Mock.Of<IServiceScope>());
+            IServiceProvider serviceProvider = Mock.Of<IServiceProvider>(
+                m => m.GetService(typeof(IServiceScopeFactory)) == factory);
+
+            return OrchestrationScope.CreateScope(InstanceId, serviceProvider);
+        }
 
         private static void RunTestException<TException>(Action<WrapperOrchestration> act)
             where TException : Exception

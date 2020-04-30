@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Activities;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Xunit;
 using static DurableTask.TestHelpers;
 
@@ -10,10 +12,15 @@ namespace DurableTask.DependencyInjection.Tests.Activities
 {
     public class WrapperActivityTests
     {
+        private const string InstanceId = "WrapperActivityTests_InstanceId";
         private static readonly string s_input = "Input";
 
         private static readonly TaskContext s_taskContext
-            = new TaskContext(new OrchestrationInstance());
+            = new TaskContext(
+                new OrchestrationInstance
+                {
+                    InstanceId = InstanceId,
+                });
 
         private TaskContext InvokedContext { get; set; }
         private string InvokedInput { get; set; }
@@ -52,6 +59,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 typeof(TestActivity),
                 wrapper =>
                 {
+                    CreateScope();
                     wrapper.InnerActivity = (TaskActivity)Activator.CreateInstance(wrapper.InnerActivityType, this);
                     return wrapper.Run(s_taskContext, s_input);
                 },
@@ -75,6 +83,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 type,
                 wrapper =>
                 {
+                    CreateScope();
                     wrapper.InnerActivity = (TaskActivity)Activator.CreateInstance(wrapper.InnerActivityType, this);
                     return wrapper.RunAsync(s_taskContext, $"[ \"{s_input}\" ]");
                 },
@@ -84,6 +93,16 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                     InvokedContext.Should().Be(s_taskContext);
                     InvokedInput.Should().Be(s_input);
                 });
+
+        private static IOrchestrationScope CreateScope()
+        {
+            IServiceScopeFactory factory = Mock.Of<IServiceScopeFactory>(
+                m => m.CreateScope() == Mock.Of<IServiceScope>());
+            IServiceProvider serviceProvider = Mock.Of<IServiceProvider>(
+                m => m.GetService(typeof(IServiceScopeFactory)) == factory);
+
+            return OrchestrationScope.CreateScope(InstanceId, serviceProvider);
+        }
 
         private static void RunTestException<TException>(Action<WrapperActivity> act)
             where TException : Exception
