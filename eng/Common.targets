@@ -15,12 +15,8 @@
   </ItemGroup>
 
   <Target Name="GetReleaseNotes" BeforeTargets="BeforeBuild">
-    <ReadLinesFromFile File="$(RepoRoot)releasenotes.md">
-      <Output TaskParameter="Lines" ItemName="_ReleaseNotesLines" />
-    </ReadLinesFromFile>
-
     <PropertyGroup>
-      <PackageReleaseNotes>@(_ReleaseNotesLines, '%0D%0A')</PackageReleaseNotes>
+      <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(RepoRoot)releasenotes.md'))</PackageReleaseNotes>
     </PropertyGroup>
   </Target>
 
