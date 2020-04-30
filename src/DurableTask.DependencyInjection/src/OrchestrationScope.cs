@@ -3,8 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,122 +13,151 @@ namespace DurableTask.DependencyInjection
     /// </summary>
     internal class OrchestrationScope : IOrchestrationScope
     {
-        private static readonly IDictionary<OrchestrationInstance, IOrchestrationScope> s_scopes
-            = new Dictionary<OrchestrationInstance, IOrchestrationScope>();
+        private static readonly IDictionary<string, IOrchestrationScope> s_scopes
+            = new Dictionary<string, IOrchestrationScope>();
 
         private readonly IServiceScope _innerScope;
-        private readonly TaskCompletionSource<bool> _middlewareCompleted
-            = new TaskCompletionSource<bool>();
+        private readonly string _scopeId;
+        private int _references = 0;
 
-        private OrchestrationScope(IServiceScope scope)
+        private OrchestrationScope(IServiceScope scope, string scopeId)
         {
             _innerScope = Check.NotNull(scope, nameof(scope));
+            _scopeId = Check.NotNull(scopeId, nameof(scopeId));
         }
 
         /// <inheritdoc />
         public IServiceProvider ServiceProvider => _innerScope.ServiceProvider;
 
         /// <summary>
+        /// Enters the scope identified by <paramref name="orchestrationInstanceId"/>.
+        /// </summary>
+        /// <param name="orchestrationInstanceId">The orchestration instance id. Not null or empty.</param>
+        /// <returns>A disposalable that will exit the scope when disposed.</returns>
+        public static IDisposable EnterScope(string orchestrationInstanceId)
+        {
+            IOrchestrationScope scope = GetScope(orchestrationInstanceId);
+            return scope?.Enter() ?? EmptyDisposable.Instance;
+        }
+
+        /// <summary>
         /// Gets the current scope for the orchestration instance. Throws if not found.
         /// </summary>
-        /// <param name="orchestrationInstance">The orchestration instance. Not null.</param>
+        /// <param name="orchestrationInstanceId">The orchestration instance id. Not null or empty.</param>
         /// <returns>A non-null <see cref="IOrchestrationScope"/>.</returns>
-        public static IOrchestrationScope GetScope(OrchestrationInstance orchestrationInstance)
+        public static IOrchestrationScope GetScope(string orchestrationInstanceId)
         {
-            Check.NotNull(orchestrationInstance, nameof(orchestrationInstance));
+            Check.NotNullOrEmpty(orchestrationInstanceId, nameof(orchestrationInstanceId));
             lock (s_scopes)
             {
-                return s_scopes[orchestrationInstance];
+                return s_scopes[orchestrationInstanceId];
             }
         }
 
         /// <summary>
         /// Gets or creates a new <see cref="IOrchestrationScope"/> for the orchestration instance.
         /// </summary>
-        /// <param name="orchestrationInstance">The orchestration instance. Not null.</param>
+        /// <param name="orchestrationInstanceId">The orchestration instance id. Not null or empty.</param>
         /// <param name="serviceProvider">The service provider. Not null.</param>
         /// <returns>The newly created scope.</returns>
         public static IOrchestrationScope GetOrCreateScope(
-            OrchestrationInstance orchestrationInstance, IServiceProvider serviceProvider)
+            string orchestrationInstanceId, IServiceProvider serviceProvider)
         {
-            Check.NotNull(orchestrationInstance, nameof(orchestrationInstance));
+            Check.NotNullOrEmpty(orchestrationInstanceId, nameof(orchestrationInstanceId));
             Check.NotNull(serviceProvider, nameof(serviceProvider));
 
             lock (s_scopes)
             {
-                return s_scopes.ContainsKey(orchestrationInstance)
-                    ? GetScope(orchestrationInstance)
-                    : CreateScope(orchestrationInstance, serviceProvider);
+                return s_scopes.ContainsKey(orchestrationInstanceId)
+                    ? GetScope(orchestrationInstanceId)
+                    : CreateScope(orchestrationInstanceId, serviceProvider);
             }
         }
 
         /// <summary>
         /// Creates a new <see cref="IOrchestrationScope"/> for the orchestration instance.
         /// </summary>
-        /// <param name="orchestrationInstance">The orchestration instance. Not null.</param>
+        /// <param name="orchestrationInstanceId">The orchestration instance id. Not null or empty.</param>
         /// <param name="serviceProvider">The service provider. Not null.</param>
         /// <returns>The newly created scope.</returns>
         public static IOrchestrationScope CreateScope(
-            OrchestrationInstance orchestrationInstance, IServiceProvider serviceProvider)
+            string orchestrationInstanceId, IServiceProvider serviceProvider)
         {
-            Check.NotNull(orchestrationInstance, nameof(orchestrationInstance));
+            Check.NotNullOrEmpty(orchestrationInstanceId, nameof(orchestrationInstanceId));
             Check.NotNull(serviceProvider, nameof(serviceProvider));
 
             lock (s_scopes)
             {
-                if (s_scopes.ContainsKey(orchestrationInstance))
+                if (s_scopes.ContainsKey(orchestrationInstanceId))
                 {
-                    throw new InvalidOperationException(Strings.ScopeAlreadyExists(orchestrationInstance.InstanceId));
+                    throw new InvalidOperationException(Strings.ScopeAlreadyExists(orchestrationInstanceId));
                 }
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                IOrchestrationScope scope = new OrchestrationScope(serviceProvider.CreateScope());
-                s_scopes[orchestrationInstance] = scope;
+                IOrchestrationScope scope = new OrchestrationScope(serviceProvider.CreateScope(), orchestrationInstanceId);
+                s_scopes[orchestrationInstanceId] = scope;
                 return scope;
 #pragma warning restore CA2000 // Dispose objects before losing scope
             }
         }
 
-        /// <summary>
-        /// Waits for middleware completion then disposes the <see cref="IOrchestrationScope"/>
-        /// for the provided orchestration instance, if found.
-        /// </summary>
-        /// <param name="orchestrationInstance">The orchestration instance, not null.</param>
-        /// <returns>A task that completes when the orchestration scope is disposed.</returns>
-        public static async Task SafeDisposeScopeAsync(OrchestrationInstance orchestrationInstance)
-        {
-            Check.NotNull(orchestrationInstance, nameof(orchestrationInstance));
+        /// <inheritdoc />
+        public IDisposable Enter() => new ScopeRef(this);
 
-            IOrchestrationScope scope;
+        /// <inheritdoc />
+        public void Dispose() => _innerScope.Dispose();
+
+        private void Increment()
+        {
             lock (s_scopes)
             {
-                if (s_scopes.TryGetValue(orchestrationInstance, out scope))
-                {
-                    s_scopes.Remove(orchestrationInstance);
-                }
-            }
-
-            if (scope != null)
-            {
-                await scope.WaitForMiddlewareCompletionAsync().ConfigureAwait(false);
-                scope.Dispose();
+                _references++;
             }
         }
 
-        /// <inheritdoc />
-        public void SignalMiddlewareCompletion() => _middlewareCompleted.TrySetResult(true);
-
-        /// <inheritdoc />
-        public Task WaitForMiddlewareCompletionAsync() => _middlewareCompleted.Task;
-
-        /// <inheritdoc />
-        public void Dispose()
+        private void Decrement()
         {
-            _innerScope.Dispose();
-
-            if (!_middlewareCompleted.Task.IsCompleted)
+            bool dispose = false;
+            lock (s_scopes)
             {
-                _middlewareCompleted.TrySetCanceled();
+                _references--;
+                if (_references == 0)
+                {
+                    dispose = true;
+                    s_scopes.Remove(_scopeId);
+                }
+            }
+
+            if (dispose)
+            {
+                Dispose();
+            }
+        }
+
+        private readonly struct ScopeRef : IDisposable
+        {
+            private readonly OrchestrationScope _scope;
+
+            public ScopeRef(OrchestrationScope scope)
+            {
+                _scope = scope;
+                scope.Increment();
+            }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                _scope.Decrement();
+            }
+        }
+
+        private class EmptyDisposable : IDisposable
+        {
+            public static IDisposable Instance { get; } = new EmptyDisposable();
+
+            public void Dispose()
+            {
+                // no op
             }
         }
     }

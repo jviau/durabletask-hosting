@@ -122,7 +122,8 @@ namespace DurableTask.DependencyInjection
         {
             return (context, next) =>
             {
-                IServiceScope scope = OrchestrationScope.GetScope(context.GetProperty<OrchestrationInstance>());
+                IServiceScope scope = OrchestrationScope.GetScope(
+                    context.GetProperty<OrchestrationInstance>().InstanceId);
                 var middleware = (ITaskMiddleware)scope.ServiceProvider.GetServiceOrCreateInstance(middlewareType);
                 return middleware.InvokeAsync(context, next);
             };
@@ -132,15 +133,12 @@ namespace DurableTask.DependencyInjection
         {
             return async (context, next) =>
             {
-                IOrchestrationScope scope = null;
-                try
+                IOrchestrationScope scope = OrchestrationScope.GetOrCreateScope(
+                    context.GetProperty<OrchestrationInstance>().InstanceId, serviceProvider);
+
+                using (scope.Enter())
                 {
-                    scope = OrchestrationScope.GetOrCreateScope(context.GetProperty<OrchestrationInstance>(), serviceProvider);
                     await next().ConfigureAwait(false);
-                }
-                finally
-                {
-                    scope?.SignalMiddlewareCompletion();
                 }
             };
         }

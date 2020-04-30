@@ -16,7 +16,7 @@ namespace DurableTask.DependencyInjection.Tests
         public void GetScope_ArgumentNull()
         {
             // arrange, act
-            ArgumentNullException ex = Capture<ArgumentNullException>(
+            var ex = Capture<ArgumentNullException>(
                 () => OrchestrationScope.GetScope(null));
 
             // assert
@@ -27,8 +27,8 @@ namespace DurableTask.DependencyInjection.Tests
         public void GetScope_KeyNotFound()
         {
             // arrange, act
-            KeyNotFoundException ex = Capture<KeyNotFoundException>(
-                () => OrchestrationScope.GetScope(new OrchestrationInstance()));
+            var ex = Capture<KeyNotFoundException>(
+                () => OrchestrationScope.GetScope(Guid.NewGuid().ToString()));
 
             // assert
             ex.Should().NotBeNull();
@@ -38,11 +38,11 @@ namespace DurableTask.DependencyInjection.Tests
         public void GetScope_ScopeFound()
         {
             // arrange
-            var instance = new OrchestrationInstance();
-            OrchestrationScope.CreateScope(instance, GetServiceProvider());
+            string instanceId = Guid.NewGuid().ToString();
+            OrchestrationScope.CreateScope(instanceId, GetServiceProvider());
 
             // act
-            IOrchestrationScope scope = OrchestrationScope.GetScope(instance);
+            IOrchestrationScope scope = OrchestrationScope.GetScope(instanceId);
 
             // assert
             scope.Should().NotBeNull();
@@ -65,7 +65,7 @@ namespace DurableTask.DependencyInjection.Tests
         {
             // arrange, act
             ArgumentNullException ex = Capture<ArgumentNullException>(
-                () => OrchestrationScope.CreateScope(new OrchestrationInstance(), null));
+                () => OrchestrationScope.CreateScope(Guid.NewGuid().ToString(), null));
 
             // assert
             ex.Should().NotBeNull();
@@ -75,12 +75,12 @@ namespace DurableTask.DependencyInjection.Tests
         public void CreateScope_AlreadyExists()
         {
             // arrange
-            var instance = new OrchestrationInstance();
-            OrchestrationScope.CreateScope(instance, GetServiceProvider());
+            string instanceId = Guid.NewGuid().ToString();
+            OrchestrationScope.CreateScope(instanceId, GetServiceProvider());
 
             // act
             InvalidOperationException ex = Capture<InvalidOperationException>(
-                () => OrchestrationScope.CreateScope(instance, GetServiceProvider()));
+                () => OrchestrationScope.CreateScope(instanceId, GetServiceProvider()));
 
             // assert
             ex.Should().NotBeNull();
@@ -90,10 +90,10 @@ namespace DurableTask.DependencyInjection.Tests
         public void CreateScope_Created()
         {
             // arrange
-            var instance = new OrchestrationInstance();
+            string instanceId = Guid.NewGuid().ToString();
 
             // act
-            IOrchestrationScope scope = OrchestrationScope.CreateScope(instance, GetServiceProvider());
+            IOrchestrationScope scope = OrchestrationScope.CreateScope(instanceId, GetServiceProvider());
 
             // assert
             scope.Should().NotBeNull();
@@ -104,10 +104,10 @@ namespace DurableTask.DependencyInjection.Tests
         public void GetOrCreateScope_Created()
         {
             // arrange
-            var instance = new OrchestrationInstance();
+            string instanceId = Guid.NewGuid().ToString();
 
             // act
-            IOrchestrationScope scope = OrchestrationScope.GetOrCreateScope(instance, GetServiceProvider());
+            IOrchestrationScope scope = OrchestrationScope.GetOrCreateScope(instanceId, GetServiceProvider());
 
             // assert
             scope.Should().NotBeNull();
@@ -118,44 +118,16 @@ namespace DurableTask.DependencyInjection.Tests
         public void GetOrCreateScope_Found()
         {
             // arrange
-            var instance = new OrchestrationInstance();
+            string instanceId = Guid.NewGuid().ToString();
 
             // act
-            IOrchestrationScope first = OrchestrationScope.CreateScope(instance, GetServiceProvider());
-            IOrchestrationScope second = OrchestrationScope.GetOrCreateScope(instance, GetServiceProvider());
+            IOrchestrationScope first = OrchestrationScope.CreateScope(instanceId, GetServiceProvider());
+            IOrchestrationScope second = OrchestrationScope.GetOrCreateScope(instanceId, GetServiceProvider());
 
             // assert
             second.Should().NotBeNull();
             second.ServiceProvider.Should().NotBeNull();
             second.Should().BeSameAs(first);
-        }
-
-        [Fact]
-        public async Task SafeDisposeScopeAsync_ArgumentNull()
-        {
-            // arrange, act
-            ArgumentNullException ex = await Capture<ArgumentNullException>(
-                () => OrchestrationScope.SafeDisposeScopeAsync(null));
-
-            // assert
-            ex.Should().NotBeNull();
-        }
-
-        [Fact]
-        public async Task SafeDisposeScopeAsync_WaitsForMiddleware()
-        {
-            // arrange
-            var instance = new OrchestrationInstance();
-            IOrchestrationScope scope = OrchestrationScope.CreateScope(instance, GetServiceProvider());
-
-            // act
-            Task task = OrchestrationScope.SafeDisposeScopeAsync(instance);
-            bool isCompleted = task.IsCompleted;
-            scope.SignalMiddlewareCompletion();
-            await task;
-
-            // assert
-            isCompleted.Should().BeFalse();
         }
 
         private static IServiceProvider GetServiceProvider()

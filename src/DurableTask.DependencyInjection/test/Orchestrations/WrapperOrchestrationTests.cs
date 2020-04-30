@@ -16,9 +16,15 @@ namespace DurableTask.DependencyInjection.Tests.Activities
     {
         private const string Input = "Input";
         private const string Event = "Event";
+        private const string InstanceId = "WrapperOrchestrationTests";
 
         private static readonly OrchestrationContext s_orchestrationContext
-            = new TestOrchestrationContext(new OrchestrationInstance());
+            = new TestOrchestrationContext(
+                new OrchestrationInstance
+                {
+                    InstanceId = InstanceId,
+                });
+
 
         private OrchestrationContext InvokedContext { get; set; }
         private string InvokedInput { get; set; }
@@ -63,15 +69,14 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                     IServiceProvider serviceProvider = Mock.Of<IServiceProvider>(
                         m => m.GetService(typeof(IServiceScopeFactory)) == factory);
 
-                    IOrchestrationScope scope = OrchestrationScope.CreateScope(s_orchestrationContext.OrchestrationInstance, serviceProvider);
-                    scope.SignalMiddlewareCompletion();
+                    IOrchestrationScope scope = OrchestrationScope.CreateScope(
+                        InstanceId, serviceProvider);
                     wrapper.InnerOrchestration =
                         (TaskOrchestration)Activator.CreateInstance(wrapper.InnerOrchestrationType, this);
                     await wrapper.Execute(s_orchestrationContext, Input);
-                    await wrapper.ScopeDisposal;
 
                     return Capture<KeyNotFoundException>(
-                        () => OrchestrationScope.GetScope(s_orchestrationContext.OrchestrationInstance));
+                        () => OrchestrationScope.GetScope(InstanceId));
                 },
                 (wrapper, ex) =>
                 {

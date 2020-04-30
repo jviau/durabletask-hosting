@@ -39,14 +39,20 @@ namespace DurableTask.DependencyInjection.Activities
         public override string Run(TaskContext context, string input)
         {
             CheckInnerActivity();
-            return InnerActivity.Run(context, input);
+            using (OrchestrationScope.EnterScope(context.OrchestrationInstance.InstanceId))
+            {
+                return InnerActivity.Run(context, input);
+            }
         }
 
         /// <inheritdoc />
-        public override Task<string> RunAsync(TaskContext context, string input)
+        public override async Task<string> RunAsync(TaskContext context, string input)
         {
             CheckInnerActivity();
-            return InnerActivity.RunAsync(context, input);
+            using (OrchestrationScope.EnterScope(context.OrchestrationInstance.InstanceId))
+            {
+                return await InnerActivity.RunAsync(context, input).ConfigureAwait(false);
+            }
         }
 
         private void CheckInnerActivity()

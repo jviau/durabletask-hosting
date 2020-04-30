@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
-using System.Threading.Tasks;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DurableTask.DependencyInjection
@@ -12,14 +12,9 @@ namespace DurableTask.DependencyInjection
     internal interface IOrchestrationScope : IServiceScope
     {
         /// <summary>
-        /// Signals that the middleware portion has completed, so the service scope can be disposed.
+        /// Enters the scope.
         /// </summary>
-        void SignalMiddlewareCompletion();
-
-        /// <summary>
-        /// Wait for middleware to complete processing.
-        /// </summary>
-        /// <returns>A task that completes when middleware is done.</returns>
-        Task WaitForMiddlewareCompletionAsync();
+        /// <returns>A disposable that exits this scope.</returns>
+        IDisposable Enter();
     }
 }

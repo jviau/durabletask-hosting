@@ -9,6 +9,7 @@ using DurableTask.Emulator;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace DurableTask.Hosting.Tests.Functional
@@ -32,7 +33,7 @@ namespace DurableTask.Hosting.Tests.Functional
             hostedServices.Single().Should().BeOfType(typeof(TaskHubBackgroundService));
         }
 
-        [Theory(Skip = "Client does not send message in test")]
+        [Theory]
         [InlineData((ServiceLifetime)(-1))]
         [InlineData(ServiceLifetime.Singleton)]
         [InlineData(ServiceLifetime.Scoped)]
@@ -66,7 +67,10 @@ namespace DurableTask.Hosting.Tests.Functional
             OrchestrationState result = await client
                 .WaitForOrchestrationAsync(instance, TimeSpan.FromSeconds(60));
 
-            result.Output.Should().Be(input);
+            TestPayload payload = JsonConvert.DeserializeObject<TestPayload>(result.Output);
+
+            payload.Should().NotBeNull();
+            payload.Input.Should().Be(input);
             executionTracker.Executions.Should().HaveCount(1);
             executionTracker.Executions.Single().ExecutedType.Should().Be(typeof(TestOrchestration));
             await host.StopAsync();
@@ -91,7 +95,12 @@ namespace DurableTask.Hosting.Tests.Functional
             return builder;
         }
 
-        private class TestOrchestration : TaskOrchestration<string, string>
+        private class TestPayload
+        {
+            public string Input { get; set; }
+        }
+
+        private class TestOrchestration : TaskOrchestration<TestPayload, string>
         {
             private readonly ExecutionTracker _tracker;
 
@@ -100,10 +109,13 @@ namespace DurableTask.Hosting.Tests.Functional
                 _tracker = tracker;
             }
 
-            public override Task<string> RunTask(OrchestrationContext context, string input)
+            public override Task<TestPayload> RunTask(OrchestrationContext context, string input)
             {
                 _tracker.Add(typeof(TestOrchestration), context, input);
-                return Task.FromResult(input);
+                return Task.FromResult(new TestPayload
+                {
+                    Input = input,
+                });
             }
         }
 
