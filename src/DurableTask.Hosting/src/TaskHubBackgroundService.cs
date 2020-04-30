@@ -7,6 +7,7 @@ using DurableTask.Core;
 using DurableTask.Hosting.Properties;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DurableTask.Hosting
 {
@@ -17,23 +18,35 @@ namespace DurableTask.Hosting
     {
         private readonly TaskHubWorker _worker;
         private readonly ILogger _logger;
+        private readonly IOptions<TaskHubOptions> _options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskHubBackgroundService"/> class.
         /// </summary>
         /// <param name="worker">The task hub worker. Not null.</param>
         /// <param name="logger">The logger. Not null.</param>
-        public TaskHubBackgroundService(TaskHubWorker worker, ILogger<TaskHubBackgroundService> logger)
+        /// <param name="options">The task hub options.</param>
+        public TaskHubBackgroundService(
+            TaskHubWorker worker,
+            ILogger<TaskHubBackgroundService> logger,
+            IOptions<TaskHubOptions> options)
         {
             _worker = Check.NotNull(worker, nameof(worker));
             _logger = Check.NotNull(logger, nameof(logger));
+            _options = Check.NotNull(options, nameof(options));
         }
 
         /// <inheritdoc />
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogDebug(Strings.TaskHubWorkerStarting);
-            return _worker.StartAsync();
+
+            if (_options.Value.CreateIfNotExists)
+            {
+                await _worker.orchestrationService.CreateIfNotExistsAsync().ConfigureAwait(false);
+            }
+
+            await _worker.StartAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
