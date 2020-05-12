@@ -3,6 +3,7 @@
 
 using System;
 using DurableTask.DependencyInjection;
+using DurableTask.Hosting.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

@@ -4,6 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using DurableTask.Core;
+using DurableTask.Hosting.Options;
 using DurableTask.Hosting.Properties;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -36,17 +37,21 @@ namespace DurableTask.Hosting
             _options = Check.NotNull(options, nameof(options));
         }
 
+        private TaskHubOptions Options => _options.Value;
+
         /// <inheritdoc />
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogDebug(Strings.TaskHubWorkerStarting);
 
-            if (_options.Value.CreateIfNotExists)
+            if (Options.CreateIfNotExists)
             {
                 await _worker.orchestrationService.CreateIfNotExistsAsync().ConfigureAwait(false);
             }
 
             await _worker.StartAsync().ConfigureAwait(false);
+            _worker.TaskActivityDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(IncludeDetails.Activities);
+            _worker.TaskOrchestrationDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(IncludeDetails.Orchestrations);
         }
 
         /// <inheritdoc />
