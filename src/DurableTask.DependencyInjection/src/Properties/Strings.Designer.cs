@@ -11,6 +11,12 @@ namespace DurableTask.DependencyInjection.Properties
             = new ResourceManager("DurableTask.DependencyInjection.Properties.Strings", typeof(Strings).Assembly);
 
         /// <summary>
+        ///     Add is not supported. Use the &lt;c&gt;ITaskHubWorkerBuilder&lt;/c&gt; instead.
+        /// </summary>
+        public static string AddToObjectManagerNotSupported
+            => GetString("AddToObjectManagerNotSupported");
+
+        /// <summary>
         ///     InnerActivity is null.
         /// </summary>
         public static string InnerActivityNull

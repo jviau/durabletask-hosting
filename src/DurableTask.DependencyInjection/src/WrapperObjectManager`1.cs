@@ -3,6 +3,7 @@
 
 using System;
 using DurableTask.Core;
+using DurableTask.DependencyInjection.Properties;
 
 namespace DurableTask.DependencyInjection
 {
@@ -29,7 +30,7 @@ namespace DurableTask.DependencyInjection
         /// <inheritdoc />
         public void Add(ObjectCreator<TObject> creator)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException(Strings.AddToObjectManagerNotSupported);
         }
 
         /// <inheritdoc />
