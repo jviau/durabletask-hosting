@@ -1,3 +1,3 @@
-- Add `TaskHubOptions`. Initial version allows for `CreateIfNotExists`.
-    * binds to `TaskHub` config section.
-- Fix `IServiceScope` disposal during task orchestration.
+- Moves `TaskHubOptions` to `DurableTask.Hosting.Options` namespace.
+- Adds `IncludeDetails` flags configuration.
+- Add error message to `WrapperObjectManager.Add`
