@@ -43,5 +43,17 @@ namespace DurableTask.DependencyInjection
         /// Gets the task version.
         /// </summary>
         public string Version { get; }
+
+        /// <summary>
+        /// Checks if this descriptor is a match to the provided name and version.
+        /// </summary>
+        /// <param name="name">The name to match.</param>
+        /// <param name="version">The version to match.</param>
+        /// <returns>True if match, false otherwise.</returns>
+        internal bool IsMatch(string name, string version)
+        {
+            return string.Equals(name, Name, StringComparison.Ordinal)
+                && string.Equals(version, Version, StringComparison.Ordinal);
+        }
     }
 }

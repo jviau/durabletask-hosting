@@ -109,7 +109,22 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
                     builder.Should().NotBeNull();
                     builder.Should().BeSameAs(mock.Object);
                     mock.Verify(m => m.AddActivity(
-                        IsActivityDescriptor(typeof(TestActivity))), Times.Once);
+                        IsActivityDescriptor(typeof(TestActivity))), Times.Exactly(3));
+                    mock.VerifyNoOtherCalls();
+                });
+
+        [Theory]
+        [InlineData(false, 1)]
+        [InlineData(true, 3)]
+        public void AddActivityType_Added2(bool includeAliases, int count)
+            => RunTest(
+                builder => builder.AddActivity(typeof(TestActivity), includeAliases),
+                (mock, builder) =>
+                {
+                    builder.Should().NotBeNull();
+                    builder.Should().BeSameAs(mock.Object);
+                    mock.Verify(m => m.AddActivity(
+                        IsActivityDescriptor(typeof(TestActivity))), Times.Exactly(count));
                     mock.VerifyNoOtherCalls();
                 });
 
@@ -137,7 +152,22 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
                     builder.Should().NotBeNull();
                     builder.Should().BeSameAs(mock.Object);
                     mock.Verify(m => m.AddActivity(
-                        IsActivityDescriptor(typeof(TestActivity))), Times.Once);
+                        IsActivityDescriptor(typeof(TestActivity))), Times.Exactly(3));
+                    mock.VerifyNoOtherCalls();
+                });
+
+        [Theory]
+        [InlineData(false, 1)]
+        [InlineData(true, 3)]
+        public void AddActivityGeneric_Added2(bool includeAliases, int count)
+            => RunTest(
+                builder => builder.AddActivity<TestActivity>(includeAliases),
+                (mock, builder) =>
+                {
+                    builder.Should().NotBeNull();
+                    builder.Should().BeSameAs(mock.Object);
+                    mock.Verify(m => m.AddActivity(
+                        IsActivityDescriptor(typeof(TestActivity))), Times.Exactly(count));
                     mock.VerifyNoOtherCalls();
                 });
 
@@ -257,6 +287,8 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
             => Match.Create<TaskMiddlewareDescriptor>(
                 descriptor => descriptor.Type == type);
 
+        [TaskAlias(Name)]
+        [TaskAlias(Name, Version)]
         private class TestActivity : TaskActivity
         {
             public override string Run(TaskContext context, string input)

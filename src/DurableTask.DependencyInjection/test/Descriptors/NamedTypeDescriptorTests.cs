@@ -121,6 +121,37 @@ namespace DurableTask.DependencyInjection.Tests.Descriptors
             descriptor.Version.Should().Be(string.Empty);
         }
 
+        [Theory]
+        [InlineData(Name, "")]
+        [InlineData(Name, Version)]
+        public void IsMatch_Match(string name, string version)
+        {
+            // arrange
+            var descriptor = new NamedTypeDescriptor<IInterfaceType>(
+                typeof(ConcreteType), name, version);
+
+            // act, assert
+            descriptor.IsMatch(name, version).Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData(Name, "")]
+        [InlineData(Name, Version)]
+        public void IsMatch_NoMatch(string name, string version)
+        {
+            // arrange
+            var descriptor = new NamedTypeDescriptor<IInterfaceType>(
+                typeof(ConcreteType), name, version);
+
+            // act, assert
+            descriptor.IsMatch(name + "1", null).Should().BeFalse();
+            descriptor.IsMatch(name.ToLower(), null).Should().BeFalse();
+            descriptor.IsMatch(name.ToUpper(), null).Should().BeFalse();
+            descriptor.IsMatch(name + "1", version + "1").Should().BeFalse();
+            descriptor.IsMatch(name.ToLower(), version?.ToLower()).Should().BeFalse();
+            descriptor.IsMatch(name.ToUpper(), version?.ToUpper()).Should().BeFalse();
+        }
+
         private class ConcreteType : AbstractType
         {
         }

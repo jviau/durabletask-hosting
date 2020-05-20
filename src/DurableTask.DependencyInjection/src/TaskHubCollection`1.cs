@@ -42,13 +42,6 @@ namespace DurableTask.DependencyInjection
         public bool Add(NamedTypeDescriptor<TDescribed> descriptor)
             => _descriptors.Add(descriptor);
 
-        private static bool IsTaskMatch(
-            string name, string version, NamedTypeDescriptor<TDescribed> descriptor)
-        {
-            return string.Equals(name, descriptor.Name, StringComparison.Ordinal)
-                && string.Equals(version, descriptor.Version, StringComparison.Ordinal);
-        }
-
         private Type GetTaskType(string name, string version)
         {
             var taskVersion = new TaskVersion(name, version);
@@ -59,7 +52,7 @@ namespace DurableTask.DependencyInjection
 
             foreach (NamedTypeDescriptor<TDescribed> descriptor in _descriptors)
             {
-                if (IsTaskMatch(name, version, descriptor))
+                if (descriptor.IsMatch(name, version))
                 {
                     _typeMap.TryAdd(taskVersion, descriptor.Type);
                     return descriptor.Type;

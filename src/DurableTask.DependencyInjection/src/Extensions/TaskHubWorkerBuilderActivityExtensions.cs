@@ -3,6 +3,7 @@
 
 using System;
 using DurableTask.Core;
+using DurableTask.DependencyInjection.Extensions;
 
 namespace DurableTask.DependencyInjection
 {
@@ -13,15 +14,36 @@ namespace DurableTask.DependencyInjection
     {
         /// <summary>
         /// Adds the provided activity type to the builder.
+        /// Includes <see cref="TaskAliasAttribute"/>.
         /// </summary>
         /// <param name="builder">The builder to add to, not null.</param>
         /// <param name="type">The activity type to add, not null.</param>
         /// <returns>The original builder with activity added.</returns>
         public static ITaskHubWorkerBuilder AddActivity(this ITaskHubWorkerBuilder builder, Type type)
+            => AddActivity(builder, type, includeAliases: true);
+
+        /// <summary>
+        /// Adds the provided activity type to the builder.
+        /// </summary>
+        /// <param name="builder">The builder to add to, not null.</param>
+        /// <param name="type">The activity type to add, not null.</param>
+        /// <param name="includeAliases">Include <see cref="TaskAliasAttribute"/>.</param>
+        /// <returns>The original builder with activity added.</returns>
+        public static ITaskHubWorkerBuilder AddActivity(
+            this ITaskHubWorkerBuilder builder, Type type, bool includeAliases)
         {
             Check.NotNull(builder, nameof(builder));
 
             builder.AddActivity(new TaskActivityDescriptor(type));
+
+            if (includeAliases)
+            {
+                foreach ((string name, string version) in type.GetTaskAliases())
+                {
+                    builder.AddActivity(new TaskActivityDescriptor(type, name, version));
+                }
+            }
+
             return builder;
         }
 
@@ -46,6 +68,7 @@ namespace DurableTask.DependencyInjection
 
         /// <summary>
         /// Adds the provided activity type to the builder.
+        /// Includes <see cref="TaskAliasAttribute"/>.
         /// </summary>
         /// <param name="builder">The builder to add to, not null.</param>
         /// <typeparam name="TActivity">The activity type to add.</typeparam>
@@ -53,6 +76,18 @@ namespace DurableTask.DependencyInjection
         public static ITaskHubWorkerBuilder AddActivity<TActivity>(this ITaskHubWorkerBuilder builder)
             where TActivity : TaskActivity
             => AddActivity(builder, typeof(TActivity));
+
+        /// <summary>
+        /// Adds the provided activity type to the builder.
+        /// </summary>
+        /// <param name="builder">The builder to add to, not null.</param>
+        /// <param name="includeAliases">Include <see cref="TaskAliasAttribute"/>.</param>
+        /// <typeparam name="TActivity">The activity type to add.</typeparam>
+        /// <returns>The original builder with activity added.</returns>
+        public static ITaskHubWorkerBuilder AddActivity<TActivity>(
+            this ITaskHubWorkerBuilder builder, bool includeAliases)
+            where TActivity : TaskActivity
+            => AddActivity(builder, typeof(TActivity), includeAliases);
 
         /// <summary>
         /// Adds the provided activity type to the builder.
