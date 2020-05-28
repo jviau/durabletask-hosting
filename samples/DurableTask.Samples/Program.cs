@@ -2,6 +2,7 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -12,6 +13,7 @@ using DurableTask.DependencyInjection;
 using DurableTask.Emulator;
 using DurableTask.Hosting;
 using DurableTask.Samples.Greetings;
+using Dynamitey.DynamicObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,6 +48,13 @@ namespace DurableTask.Samples
                     builder.WithOrchestrationService(orchestrationService);
 
                     builder.AddClient();
+
+                    builder.UseOrchestrationMiddleware<OrchestrationInstanceExMiddleware>();
+                    builder.UseOrchestrationMiddleware<SampleMiddleware>();
+
+                    builder.UseActivityMiddleware<ActivityInstanceExMiddleware>();
+                    builder.UseActivityMiddleware<SampleMiddleware>();
+
                     builder.AddOrchestration<GreetingsOrchestration>();
                     builder
                         .AddActivity<GetUserTask>()
@@ -63,7 +72,7 @@ namespace DurableTask.Samples
 
         private static HostBuilder CreateDefaultBuilder(string[] args)
         {
-            // Host.CreateDefaultBuilder() is not available before .netcore 3.0.
+            // Host.CreateDefaultBuilder() is not available before Microsoft.Extensions.Hosting 3.0.
             // So this is a copied from https://github.com/dotnet/extensions
             var builder = new HostBuilder();
 
@@ -173,7 +182,15 @@ namespace DurableTask.Samples
             protected override async Task ExecuteAsync(CancellationToken stoppingToken)
             {
                 OrchestrationInstance instance = await _client.CreateOrchestrationInstanceAsync(
-                        typeof(GreetingsOrchestration), _instanceId, null);
+                        NameVersionHelper.GetDefaultName(typeof(GreetingsOrchestration)),
+                        NameVersionHelper.GetDefaultVersion(typeof(GreetingsOrchestration)),
+                        _instanceId,
+                        null,
+                        new Dictionary<string, string>()
+                        {
+                            ["CorrelationId"] = Guid.NewGuid().ToString(),
+                        });
+
                 OrchestrationState result = await _client.WaitForOrchestrationAsync(
                     instance, TimeSpan.FromSeconds(60));
 
