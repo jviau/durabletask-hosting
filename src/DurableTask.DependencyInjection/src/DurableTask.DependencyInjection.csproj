@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <None Update="Properties\Strings.Designer.tt">
-      <CustomToolNamespace></CustomToolNamespace>
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </None>

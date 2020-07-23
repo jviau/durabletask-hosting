@@ -111,7 +111,7 @@ namespace DurableTask.DependencyInjection
         /// <param name="assembly">The assembly to discover types from. Not null.</param>
         /// <param name="includePrivate">True to include private/protected/internal types, false for public only.</param>
         /// <returns>The original builder with activity added.</returns>
-        public static ITaskHubWorkerBuilder AddActivitesFromAssembly(
+        public static ITaskHubWorkerBuilder AddActivitiesFromAssembly(
             this ITaskHubWorkerBuilder builder, Assembly assembly, bool includePrivate = false)
         {
             Check.NotNull(builder, nameof(builder));
@@ -133,9 +133,9 @@ namespace DurableTask.DependencyInjection
         /// <param name="includePrivate">True to also include private/protected/internal types, false for public only.</param>
         /// <typeparam name="T">The type contained in the assembly to discover types from.</typeparam>
         /// <returns>The original builder with activity added.</returns>
-        public static ITaskHubWorkerBuilder AddActivitesFromAssembly<T>(
+        public static ITaskHubWorkerBuilder AddActivitiesFromAssembly<T>(
             this ITaskHubWorkerBuilder builder, bool includePrivate = false)
-            => AddActivitesFromAssembly(builder, typeof(T).Assembly, includePrivate);
+            => AddActivitiesFromAssembly(builder, typeof(T).Assembly, includePrivate);
 
         /// <summary>
         /// Adds the provided activity middleware to the builder.

@@ -1,3 +1,2 @@
-- Moves `TaskHubOptions` to `DurableTask.Hosting.Options` namespace.
-- Adds `IncludeDetails` flags configuration.
-- Add error message to `WrapperObjectManager.Add`
+- Add assembly scanning extensions for including orchestrations and activities.
+- Add `TaskAliasAttribute`
