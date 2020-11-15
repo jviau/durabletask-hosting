@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using DurableTask.Core;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,31 +24,23 @@ namespace DurableTask.DependencyInjection
         IOrchestrationService OrchestrationService { get; set; }
 
         /// <summary>
-        /// Adds the provided descriptor of an activity to the builder.
+        /// Gets the activity middleware.
         /// </summary>
-        /// <param name="descriptor">The activity descriptor to add.</param>
-        /// <returns>This instance, for chaining calls.</returns>
-        ITaskHubWorkerBuilder AddActivity(TaskActivityDescriptor descriptor);
+        IList<TaskMiddlewareDescriptor> ActivityMiddleware { get; }
 
         /// <summary>
-        /// Adds the provided middleware for task activities.
+        /// Gets the orchestration middleware.
         /// </summary>
-        /// <param name="descriptor">The middleware descriptor to add.</param>
-        /// <returns>This instance, for chaining calls.</returns>
-        ITaskHubWorkerBuilder UseActivityMiddleware(TaskMiddlewareDescriptor descriptor);
+        IList<TaskMiddlewareDescriptor> OrchestrationMiddleware { get; }
 
         /// <summary>
-        /// Adds the provided descriptor to the builder.
+        /// Gets the activities.
         /// </summary>
-        /// <param name="descriptor">The descriptor to add.</param>
-        /// <returns>This instance, for chaining calls.</returns>
-        ITaskHubWorkerBuilder AddOrchestration(TaskOrchestrationDescriptor descriptor);
+        IList<TaskActivityDescriptor> Activities { get; }
 
         /// <summary>
-        /// Adds the provided middleware for task orchestrations.
+        /// Gets the orchestrations.
         /// </summary>
-        /// <param name="descriptor">The middleware descriptor to add.</param>
-        /// <returns>This instance, for chaining calls.</returns>
-        ITaskHubWorkerBuilder UseOrchestrationMiddleware(TaskMiddlewareDescriptor descriptor);
+        IList<TaskOrchestrationDescriptor> Orchestrations { get; }
     }
 }

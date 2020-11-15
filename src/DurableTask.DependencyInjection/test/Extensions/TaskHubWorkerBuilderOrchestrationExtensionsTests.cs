@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 using static DurableTask.TestHelpers;
@@ -13,6 +15,12 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
     {
         private const string Name = "TaskHubWorkerBuilderOrchestrationExtensionsTests_Name";
         private const string Version = "TaskHubWorkerBuilderOrchestrationExtensionsTests_Version";
+
+        [Fact]
+        public void AddOrchestrationDescriptor_ArgumentNullBuilder()
+            => RunTestException<ArgumentNullException>(
+                _ => TaskHubWorkerBuilderOrchestrationExtensions.AddOrchestration(
+                    null, new TaskOrchestrationDescriptor(typeof(TestOrchestration))));
 
         [Fact]
         public void AddOrchestrationType_ArgumentNullBuilder()
@@ -26,10 +34,16 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
                     null, typeof(TestOrchestration), Name, Version));
 
         [Fact]
+        public void AddOrchestrationDescriptor_ArgumentNullDescriptor()
+            => RunTestException<ArgumentNullException>(
+                _ => TaskHubWorkerBuilderOrchestrationExtensions.AddOrchestration(
+                    Mock.Of<ITaskHubWorkerBuilder>(), (TaskOrchestrationDescriptor)null));
+
+        [Fact]
         public void AddOrchestrationType_ArgumentNullType()
             => RunTestException<ArgumentNullException>(
                 _ => TaskHubWorkerBuilderOrchestrationExtensions.AddOrchestration(
-                    Mock.Of<ITaskHubWorkerBuilder>(), null));
+                    Mock.Of<ITaskHubWorkerBuilder>(), (Type)null));
 
         [Theory]
         [InlineData(null, Name, Version)]
@@ -104,13 +118,32 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddOrchestrationType_Added()
             => RunTest(
                 builder => builder.AddOrchestration(typeof(TestOrchestration)),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddOrchestration(
-                        IsOrchestrationDescriptor(typeof(TestOrchestration))), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Orchestrations.Should().HaveCount(3);
+                    original.Orchestrations.Should().OnlyContain(x => x.Type == typeof(TestOrchestration));
+                    original.Activities.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
+                });
+
+        [Theory]
+        [InlineData(false, 1)]
+        [InlineData(true, 3)]
+        public void AddOrchestrationType_Added2(bool includeAliases, int count)
+            => RunTest(
+                builder => builder.AddOrchestration(typeof(TestOrchestration), includeAliases),
+                (original, result) =>
+                {
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Orchestrations.Should().HaveCount(count);
+                    original.Orchestrations.Should().OnlyContain(x => x.Type == typeof(TestOrchestration));
+                    original.Activities.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Theory]
@@ -119,26 +152,52 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddOrchestrationTypeNamed_Added(string name, string version)
             => RunTest(
                 builder => builder.AddOrchestration(typeof(TestOrchestration), name, version),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddOrchestration(
-                        IsOrchestrationDescriptor(typeof(TestOrchestration), name, version)), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Orchestrations.Should().HaveCount(1);
+
+                    TaskOrchestrationDescriptor descriptor = original.Orchestrations.Single();
+                    descriptor.Type.Should().Be(typeof(TestOrchestration));
+                    descriptor.Name.Should().Be(name);
+                    descriptor.Version.Should().Be(version);
+
+                    original.Activities.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Fact]
         public void AddOrchestrationGeneric_Added()
             => RunTest(
                 builder => builder.AddOrchestration<TestOrchestration>(),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddOrchestration(
-                        IsOrchestrationDescriptor(typeof(TestOrchestration))), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Orchestrations.Should().HaveCount(3);
+                    original.Orchestrations.Should().OnlyContain(x => x.Type == typeof(TestOrchestration));
+                    original.Activities.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
+                });
+
+        [Theory]
+        [InlineData(false, 1)]
+        [InlineData(true, 3)]
+        public void AddOrchestrationGeneric_Added2(bool includeAliases, int count)
+            => RunTest(
+                builder => builder.AddOrchestration<TestOrchestration>(includeAliases),
+                (original, result) =>
+                {
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Orchestrations.Should().HaveCount(count);
+                    original.Orchestrations.Should().OnlyContain(x => x.Type == typeof(TestOrchestration));
+                    original.Activities.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Theory]
@@ -147,13 +206,20 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddOrchestrationGenericNamed_Added(string name, string version)
             => RunTest(
                 builder => builder.AddOrchestration<TestOrchestration>(name, version),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddOrchestration(
-                        IsOrchestrationDescriptor(typeof(TestOrchestration), name, version)), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Orchestrations.Should().HaveCount(1);
+
+                    TaskOrchestrationDescriptor descriptor = original.Orchestrations.Single();
+                    descriptor.Type.Should().Be(typeof(TestOrchestration));
+                    descriptor.Name.Should().Be(name);
+                    descriptor.Version.Should().Be(version);
+
+                    original.Activities.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Fact]
@@ -163,10 +229,22 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
                     null, typeof(TestMiddleware)));
 
         [Fact]
+        public void AddMiddlewareDescriptor_ArgumentNullBuilder()
+            => RunTestException<ArgumentNullException>(
+                _ => TaskHubWorkerBuilderOrchestrationExtensions.UseOrchestrationMiddleware(
+                    null, typeof(TestMiddleware)));
+
+        [Fact]
+        public void AddMiddlewareDescriptor_ArgumentNullDescriptor()
+            => RunTestException<ArgumentNullException>(
+                _ => TaskHubWorkerBuilderOrchestrationExtensions.UseOrchestrationMiddleware(
+                    Mock.Of<ITaskHubWorkerBuilder>(), (TaskMiddlewareDescriptor)null));
+
+        [Fact]
         public void AddMiddlewareType_ArgumentNullType()
             => RunTestException<ArgumentNullException>(
                 _ => TaskHubWorkerBuilderOrchestrationExtensions.UseOrchestrationMiddleware(
-                    Mock.Of<ITaskHubWorkerBuilder>(), null));
+                    Mock.Of<ITaskHubWorkerBuilder>(), (Type)null));
 
         [Theory]
         [InlineData(typeof(object))]
@@ -191,26 +269,30 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddMiddlewareType_Added()
             => RunTest(
                 builder => builder.UseOrchestrationMiddleware(typeof(TestMiddleware)),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.UseOrchestrationMiddleware(
-                        IsMiddlewareDescriptor(typeof(TestMiddleware))), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.OrchestrationMiddleware.Should().HaveCount(2);
+                    original.OrchestrationMiddleware.Last().Type.Should().Be(typeof(TestMiddleware));
+                    original.Activities.Should().BeEmpty();
+                    original.Orchestrations.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
                 });
 
         [Fact]
         public void AddMiddlewareGeneric_Added()
             => RunTest(
                 builder => builder.UseOrchestrationMiddleware<TestMiddleware>(),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.UseOrchestrationMiddleware(
-                        IsMiddlewareDescriptor(typeof(TestMiddleware))), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.OrchestrationMiddleware.Should().HaveCount(2);
+                    original.OrchestrationMiddleware.Last().Type.Should().Be(typeof(TestMiddleware));
+                    original.Activities.Should().BeEmpty();
+                    original.Orchestrations.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
                 });
 
         private static void RunTestException<TException>(Action<ITaskHubWorkerBuilder> act)
@@ -228,35 +310,15 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
 
         private static void RunTest<TResult>(
             Func<ITaskHubWorkerBuilder, TResult> act,
-            Action<Mock<ITaskHubWorkerBuilder>, TResult> verify)
+            Action<ITaskHubWorkerBuilder, TResult> verify)
         {
-            var mock = new Mock<ITaskHubWorkerBuilder>();
-            mock
-                .Setup(m => m.AddOrchestration(It.IsAny<TaskOrchestrationDescriptor>()))
-                .Returns(mock.Object);
-
-            mock
-                .Setup(m => m.UseOrchestrationMiddleware(It.IsAny<TaskMiddlewareDescriptor>()))
-                .Returns(mock.Object);
-
-            TResult result = act(mock.Object);
-            verify?.Invoke(mock, result);
+            var builder = new DefaultTaskHubWorkerBuilder(new ServiceCollection());
+            TResult result = act(builder);
+            verify?.Invoke(builder, result);
         }
 
-        private TaskOrchestrationDescriptor IsOrchestrationDescriptor(Type type)
-            => Match.Create<TaskOrchestrationDescriptor>(
-                descriptor => descriptor.Type == type);
-
-        private TaskOrchestrationDescriptor IsOrchestrationDescriptor(Type type, string name, string version)
-            => Match.Create<TaskOrchestrationDescriptor>(
-                descriptor => descriptor.Name == name
-                    && descriptor.Version == version
-                    && descriptor.Type == type);
-
-        private TaskMiddlewareDescriptor IsMiddlewareDescriptor(Type type)
-            => Match.Create<TaskMiddlewareDescriptor>(
-                descriptor => descriptor.Type == type);
-
+        [TaskAlias(Name)]
+        [TaskAlias(Name, Version)]
         private class TestOrchestration : TaskOrchestration
         {
             public override Task<string> Execute(OrchestrationContext context, string input)

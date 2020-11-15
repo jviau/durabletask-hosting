@@ -14,6 +14,22 @@ namespace DurableTask.DependencyInjection
     public static class TaskHubWorkerBuilderOrchestrationExtensions
     {
         /// <summary>
+        /// Adds the provided descriptor to the builder.
+        /// </summary>
+        /// <param name="builder">The builder to add to, not null.</param>
+        /// <param name="descriptor">The descriptor to add.</param>
+        /// <returns>This instance, for chaining calls.</returns>
+        public static ITaskHubWorkerBuilder AddOrchestration(
+            this ITaskHubWorkerBuilder builder, TaskOrchestrationDescriptor descriptor)
+        {
+            Check.NotNull(builder, nameof(builder));
+            Check.NotNull(descriptor, nameof(descriptor));
+
+            builder.Orchestrations.Add(descriptor);
+            return builder;
+        }
+
+        /// <summary>
         /// Adds the provided orchestration type to the builder.
         /// Includes <see cref="TaskAliasAttribute"/>.
         /// </summary>
@@ -135,6 +151,22 @@ namespace DurableTask.DependencyInjection
         public static ITaskHubWorkerBuilder AddOrchestrationsFromAssembly<T>(
             this ITaskHubWorkerBuilder builder, bool includePrivate = false)
             => AddOrchestrationsFromAssembly(builder, typeof(T).Assembly, includePrivate);
+
+        /// <summary>
+        /// Adds the provided middleware for task orchestrations.
+        /// </summary>
+        /// <param name="builder">The builder to add to, not null.</param>
+        /// <param name="descriptor">The middleware descriptor to add.</param>
+        /// <returns>This instance, for chaining calls.</returns>
+        public static ITaskHubWorkerBuilder UseOrchestrationMiddleware(
+            this ITaskHubWorkerBuilder builder, TaskMiddlewareDescriptor descriptor)
+        {
+            Check.NotNull(builder, nameof(builder));
+            Check.NotNull(descriptor, nameof(descriptor));
+
+            builder.OrchestrationMiddleware.Add(descriptor);
+            return builder;
+        }
 
         /// <summary>
         /// Adds the provided orchestration middleware to the builder.

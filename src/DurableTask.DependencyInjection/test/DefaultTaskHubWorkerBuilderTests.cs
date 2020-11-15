@@ -17,20 +17,19 @@ namespace DurableTask.DependencyInjection.Tests
             => RunTestException<ArgumentNullException>(_ => new DefaultTaskHubWorkerBuilder(null));
 
         [Fact]
-        public void AddActivityNull()
-            => RunTestException<ArgumentNullException>(b => b.AddActivity(null));
-
-        [Fact]
-        public void AddActivityMiddlewareNull()
-            => RunTestException<ArgumentNullException>(b => b.UseActivityMiddleware(null));
-
-        [Fact]
-        public void AddOrchestrationNull()
-            => RunTestException<ArgumentNullException>(b => b.AddOrchestration(null));
-
-        [Fact]
-        public void AddOrchestrationMiddlewareNull()
-            => RunTestException<ArgumentNullException>(b => b.UseOrchestrationMiddleware(null));
+        public void CtorPropertiesSet()
+        {
+            RunTest(
+                null,
+                b => { },
+                (b, s) =>
+                {
+                    b.Activities.Should().NotBeNull();
+                    b.ActivityMiddleware.Should().NotBeNull();
+                    b.Orchestrations.Should().NotBeNull();
+                    b.OrchestrationMiddleware.Should().NotBeNull();
+                });
+        }
 
         [Fact]
         public void BuildNullServiceProvider()

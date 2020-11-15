@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 using static DurableTask.TestHelpers;
@@ -13,6 +15,12 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
     {
         private const string Name = "TaskHubWorkerBuilderActivityExtensionsTests_Name";
         private const string Version = "TaskHubWorkerBuilderActivityExtensionsTests_Version";
+
+        [Fact]
+        public void AddActivityDescriptor_ArgumentNullBuilder()
+            => RunTestException<ArgumentNullException>(
+                _ => TaskHubWorkerBuilderActivityExtensions.AddActivity(
+                    null, new TaskActivityDescriptor(typeof(TestActivity))));
 
         [Fact]
         public void AddActivityType_ArgumentNullBuilder()
@@ -26,10 +34,16 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
                     null, typeof(TestActivity), Name, Version));
 
         [Fact]
+        public void AddActivityDescriptor_ArgumentNullDescriptor()
+            => RunTestException<ArgumentNullException>(
+                _ => TaskHubWorkerBuilderActivityExtensions.AddActivity(
+                    Mock.Of<ITaskHubWorkerBuilder>(), (TaskActivityDescriptor)null));
+
+        [Fact]
         public void AddActivityType_ArgumentNullType()
             => RunTestException<ArgumentNullException>(
                 _ => TaskHubWorkerBuilderActivityExtensions.AddActivity(
-                    Mock.Of<ITaskHubWorkerBuilder>(), null));
+                    Mock.Of<ITaskHubWorkerBuilder>(), (Type)null));
 
         [Theory]
         [InlineData(null, Name, Version)]
@@ -104,13 +118,15 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddActivityType_Added()
             => RunTest(
                 builder => builder.AddActivity(typeof(TestActivity)),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddActivity(
-                        IsActivityDescriptor(typeof(TestActivity))), Times.Exactly(3));
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Activities.Should().HaveCount(3);
+                    original.Activities.Should().OnlyContain(x => x.Type == typeof(TestActivity));
+                    original.Orchestrations.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Theory]
@@ -119,13 +135,15 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddActivityType_Added2(bool includeAliases, int count)
             => RunTest(
                 builder => builder.AddActivity(typeof(TestActivity), includeAliases),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddActivity(
-                        IsActivityDescriptor(typeof(TestActivity))), Times.Exactly(count));
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Activities.Should().HaveCount(count);
+                    original.Activities.Should().OnlyContain(x => x.Type == typeof(TestActivity));
+                    original.Orchestrations.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Theory]
@@ -134,26 +152,35 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddActivityTypeNamed_Added(string name, string version)
             => RunTest(
                 builder => builder.AddActivity(typeof(TestActivity), name, version),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddActivity(
-                        IsActivityDescriptor(typeof(TestActivity), name, version)), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Activities.Should().HaveCount(1);
+
+                    TaskActivityDescriptor descriptor = original.Activities.Single();
+                    descriptor.Type.Should().Be(typeof(TestActivity));
+                    descriptor.Name.Should().Be(name);
+                    descriptor.Version.Should().Be(version);
+
+                    original.Orchestrations.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Fact]
         public void AddActivityGeneric_Added()
             => RunTest(
                 builder => builder.AddActivity<TestActivity>(),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddActivity(
-                        IsActivityDescriptor(typeof(TestActivity))), Times.Exactly(3));
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Activities.Should().HaveCount(3);
+                    original.Activities.Should().OnlyContain(x => x.Type == typeof(TestActivity));
+                    original.Orchestrations.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Theory]
@@ -162,13 +189,15 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddActivityGeneric_Added2(bool includeAliases, int count)
             => RunTest(
                 builder => builder.AddActivity<TestActivity>(includeAliases),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddActivity(
-                        IsActivityDescriptor(typeof(TestActivity))), Times.Exactly(count));
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Activities.Should().HaveCount(count);
+                    original.Activities.Should().OnlyContain(x => x.Type == typeof(TestActivity));
+                    original.Orchestrations.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Theory]
@@ -177,14 +206,27 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddActivityGenericNamed_Added(string name, string version)
             => RunTest(
                 builder => builder.AddActivity<TestActivity>(name, version),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.AddActivity(
-                        IsActivityDescriptor(typeof(TestActivity), name, version)), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.Activities.Should().HaveCount(1);
+
+                    TaskActivityDescriptor descriptor = original.Activities.Single();
+                    descriptor.Type.Should().Be(typeof(TestActivity));
+                    descriptor.Name.Should().Be(name);
+                    descriptor.Version.Should().Be(version);
+
+                    original.Orchestrations.Should().BeEmpty();
+                    original.ActivityMiddleware.Should().HaveCount(1);
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
+
+        [Fact]
+        public void AddMiddlewareDescriptor_ArgumentNullBuilder()
+            => RunTestException<ArgumentNullException>(
+                _ => TaskHubWorkerBuilderActivityExtensions.UseActivityMiddleware(
+                    null, new TaskMiddlewareDescriptor(typeof(TestMiddleware))));
 
         [Fact]
         public void AddMiddlewareType_ArgumentNullBuilder()
@@ -193,10 +235,16 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
                     null, typeof(TestMiddleware)));
 
         [Fact]
+        public void AddMiddlewareDescriptor_ArgumentNullDescriptor()
+            => RunTestException<ArgumentNullException>(
+                _ => TaskHubWorkerBuilderActivityExtensions.UseActivityMiddleware(
+                    Mock.Of<ITaskHubWorkerBuilder>(), (TaskMiddlewareDescriptor)null));
+
+        [Fact]
         public void AddMiddlewareType_ArgumentNullType()
             => RunTestException<ArgumentNullException>(
                 _ => TaskHubWorkerBuilderActivityExtensions.UseActivityMiddleware(
-                    Mock.Of<ITaskHubWorkerBuilder>(), null));
+                    Mock.Of<ITaskHubWorkerBuilder>(), (Type)null));
 
         [Theory]
         [InlineData(typeof(object))]
@@ -221,26 +269,30 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
         public void AddMiddlewareType_Added()
             => RunTest(
                 builder => builder.UseActivityMiddleware(typeof(TestMiddleware)),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.UseActivityMiddleware(
-                        IsMiddlewareDescriptor(typeof(TestMiddleware))), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.ActivityMiddleware.Should().HaveCount(2);
+                    original.ActivityMiddleware.Last().Type.Should().Be(typeof(TestMiddleware));
+                    original.Activities.Should().BeEmpty();
+                    original.Orchestrations.Should().BeEmpty();
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         [Fact]
         public void AddMiddlewareGeneric_Added()
             => RunTest(
                 builder => builder.UseActivityMiddleware<TestMiddleware>(),
-                (mock, builder) =>
+                (original, result) =>
                 {
-                    builder.Should().NotBeNull();
-                    builder.Should().BeSameAs(mock.Object);
-                    mock.Verify(m => m.UseActivityMiddleware(
-                        IsMiddlewareDescriptor(typeof(TestMiddleware))), Times.Once);
-                    mock.VerifyNoOtherCalls();
+                    result.Should().NotBeNull();
+                    result.Should().BeSameAs(original);
+                    original.ActivityMiddleware.Should().HaveCount(2);
+                    original.ActivityMiddleware.Last().Type.Should().Be(typeof(TestMiddleware));
+                    original.Activities.Should().BeEmpty();
+                    original.Orchestrations.Should().BeEmpty();
+                    original.OrchestrationMiddleware.Should().HaveCount(1);
                 });
 
         private static void RunTestException<TException>(Action<ITaskHubWorkerBuilder> act)
@@ -258,34 +310,12 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
 
         private static void RunTest<TResult>(
             Func<ITaskHubWorkerBuilder, TResult> act,
-            Action<Mock<ITaskHubWorkerBuilder>, TResult> verify)
+            Action<ITaskHubWorkerBuilder, TResult> verify)
         {
-            var mock = new Mock<ITaskHubWorkerBuilder>();
-            mock
-                .Setup(m => m.AddActivity(It.IsAny<TaskActivityDescriptor>()))
-                .Returns(mock.Object);
-
-            mock
-                .Setup(m => m.UseActivityMiddleware(It.IsAny<TaskMiddlewareDescriptor>()))
-                .Returns(mock.Object);
-
-            TResult result = act(mock.Object);
-            verify?.Invoke(mock, result);
+            var builder = new DefaultTaskHubWorkerBuilder(new ServiceCollection());
+            TResult result = act(builder);
+            verify?.Invoke(builder, result);
         }
-
-        private TaskActivityDescriptor IsActivityDescriptor(Type type)
-            => Match.Create<TaskActivityDescriptor>(
-                descriptor => descriptor.Type == type);
-
-        private TaskActivityDescriptor IsActivityDescriptor(Type type, string name, string version)
-            => Match.Create<TaskActivityDescriptor>(
-                descriptor => descriptor.Name == name
-                    && descriptor.Version == version
-                    && descriptor.Type == type);
-
-        private TaskMiddlewareDescriptor IsMiddlewareDescriptor(Type type)
-            => Match.Create<TaskMiddlewareDescriptor>(
-                descriptor => descriptor.Type == type);
 
         [TaskAlias(Name)]
         [TaskAlias(Name, Version)]
