@@ -71,6 +71,19 @@ namespace DurableTask.DependencyInjection
                 throw new InvalidOperationException(Strings.OrchestrationInstanceNull);
             }
 
+            // Verify we still have our ServiceProvider middleware
+            if (OrchestrationMiddleware.FirstOrDefault(x => x.Type == typeof(ServiceProviderOrchestrationMiddleware)) is null)
+            {
+                throw new InvalidOperationException(Strings.ExpectedMiddlewareMissing(
+                    typeof(ServiceProviderOrchestrationMiddleware), nameof(OrchestrationMiddleware)));
+            }
+
+            if (ActivityMiddleware.FirstOrDefault(x => x.Type == typeof(ServiceProviderActivityMiddleware)) is null)
+            {
+                throw new InvalidOperationException(Strings.ExpectedMiddlewareMissing(
+                    typeof(ServiceProviderActivityMiddleware), nameof(ActivityMiddleware)));
+            }
+
             var worker = new TaskHubWorker(
                 OrchestrationService,
                 new WrapperObjectManager<TaskOrchestration>(
