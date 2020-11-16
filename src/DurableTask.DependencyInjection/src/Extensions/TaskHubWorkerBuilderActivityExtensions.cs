@@ -14,6 +14,22 @@ namespace DurableTask.DependencyInjection
     public static class TaskHubWorkerBuilderActivityExtensions
     {
         /// <summary>
+        /// Adds the provided descriptor of an activity to the builder.
+        /// </summary>
+        /// <param name="builder">The builder to add to, not null.</param>
+        /// <param name="descriptor">The activity descriptor to add.</param>
+        /// <returns>This instance, for chaining calls.</returns>
+        public static ITaskHubWorkerBuilder AddActivity(
+            this ITaskHubWorkerBuilder builder, TaskActivityDescriptor descriptor)
+        {
+            Check.NotNull(builder, nameof(builder));
+            Check.NotNull(descriptor, nameof(descriptor));
+
+            builder.Activities.Add(descriptor);
+            return builder;
+        }
+
+        /// <summary>
         /// Adds the provided activity type to the builder.
         /// Includes <see cref="TaskAliasAttribute"/>.
         /// </summary>
@@ -36,7 +52,6 @@ namespace DurableTask.DependencyInjection
             Check.NotNull(builder, nameof(builder));
 
             builder.AddActivity(new TaskActivityDescriptor(type));
-
             if (includeAliases)
             {
                 foreach ((string name, string version) in type.GetTaskAliases())
@@ -136,6 +151,22 @@ namespace DurableTask.DependencyInjection
         public static ITaskHubWorkerBuilder AddActivitiesFromAssembly<T>(
             this ITaskHubWorkerBuilder builder, bool includePrivate = false)
             => AddActivitiesFromAssembly(builder, typeof(T).Assembly, includePrivate);
+
+        /// <summary>
+        /// Adds the provided middleware for task activities.
+        /// </summary>
+        /// <param name="builder">The builder to add to, not null.</param>
+        /// <param name="descriptor">The middleware descriptor to add.</param>
+        /// <returns>This instance, for chaining calls.</returns>
+        public static ITaskHubWorkerBuilder UseActivityMiddleware(
+            this ITaskHubWorkerBuilder builder, TaskMiddlewareDescriptor descriptor)
+        {
+            Check.NotNull(builder, nameof(builder));
+            Check.NotNull(descriptor, nameof(descriptor));
+
+            builder.ActivityMiddleware.Add(descriptor);
+            return builder;
+        }
 
         /// <summary>
         /// Adds the provided activity middleware to the builder.

@@ -11,47 +11,11 @@ namespace DurableTask.DependencyInjection.Tests
     public class TaskHubCollectionTests
     {
         [Fact]
-        public void Add_Succeeds()
-        {
-            // arrange
-            var activity = new TaskActivityDescriptor(typeof(TestActivity));
-            var descriptors = new TaskHubCollection<TaskActivity>();
-
-            // act
-            bool result = descriptors.Add(activity);
-
-            // assert
-            result.Should().BeTrue();
-            descriptors.Should().HaveCount(1);
-            descriptors.Single().Should().Be(activity);
-        }
-
-        [Fact]
-        public void Add_Duplicate()
-        {
-            // arrange
-            var activity = new TaskActivityDescriptor(typeof(TestActivity));
-            var descriptors = new TaskHubCollection<TaskActivity>();
-
-            // act
-            descriptors.Add(activity);
-            bool result = descriptors.Add(activity);
-
-            // assert
-            result.Should().BeFalse();
-            descriptors.Should().HaveCount(1);
-            descriptors.Single().Should().Be(activity);
-        }
-
-        [Fact]
         public void EnumeratorOfT_ContainsAll()
         {
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
-            var descriptors = new TaskHubCollection<TaskActivity>()
-            {
-                activity,
-            };
+            var descriptors = new TaskHubCollection<TaskActivity>(new[] { activity });
 
             // act
             IEnumerator<NamedTypeDescriptor<TaskActivity>> enumerator = descriptors.GetEnumerator();
@@ -69,10 +33,7 @@ namespace DurableTask.DependencyInjection.Tests
         {
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
-            var descriptors = new TaskHubCollection<TaskActivity>()
-            {
-                activity,
-            };
+            var descriptors = new TaskHubCollection<TaskActivity>(new[] { activity });
 
             // act
             IEnumerator enumerator = ((IEnumerable)descriptors).GetEnumerator();
@@ -89,10 +50,7 @@ namespace DurableTask.DependencyInjection.Tests
         {
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
-            var descriptors = new TaskHubCollection<TaskActivity>()
-            {
-                activity,
-            };
+            var descriptors = new TaskHubCollection<TaskActivity>(new[] { activity });
 
             // act
             Type actual = descriptors["DNE", string.Empty];
@@ -106,10 +64,7 @@ namespace DurableTask.DependencyInjection.Tests
         {
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
-            var descriptors = new TaskHubCollection<TaskActivity>()
-            {
-                activity,
-            };
+            var descriptors = new TaskHubCollection<TaskActivity>(new[] { activity });
 
             // act
             Type actual = descriptors[activity.Name, activity.Version];
@@ -125,11 +80,7 @@ namespace DurableTask.DependencyInjection.Tests
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
             var activity2 = new TaskActivityDescriptor(typeof(TestActivity2));
-            var descriptors = new TaskHubCollection<TaskActivity>()
-            {
-                activity,
-                activity2,
-            };
+            var descriptors = new TaskHubCollection<TaskActivity>(new[] { activity, activity2 });
 
             // act
             Type actual = descriptors[activity2.Name, activity2.Version];
@@ -144,10 +95,7 @@ namespace DurableTask.DependencyInjection.Tests
         {
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
-            var descriptors = new TaskHubCollection<TaskActivity>()
-            {
-                activity,
-            };
+            var descriptors = new TaskHubCollection<TaskActivity>(new[] { activity });
 
             // act
             Type actual = descriptors[activity.Name, activity.Version];
@@ -163,7 +111,7 @@ namespace DurableTask.DependencyInjection.Tests
         public void Count_Zero()
         {
             // arrange
-            var descriptors = new TaskHubCollection<TaskActivity>();
+            var descriptors = new TaskHubCollection<TaskActivity>(Enumerable.Empty<TaskActivityDescriptor>());
 
             // act
             int count = descriptors.Count;
@@ -178,11 +126,7 @@ namespace DurableTask.DependencyInjection.Tests
             // arrange
             var activity = new TaskActivityDescriptor(typeof(TestActivity));
             var activity2 = new TaskActivityDescriptor(typeof(TestActivity2));
-            var descriptors = new TaskHubCollection<TaskActivity>()
-            {
-                activity,
-                activity2,
-            };
+            var descriptors = new TaskHubCollection<TaskActivity>(new[] { activity, activity2 });
 
             // act
             int count = descriptors.Count;

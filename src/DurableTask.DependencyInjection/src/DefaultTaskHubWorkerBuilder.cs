@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
@@ -21,15 +22,6 @@ namespace DurableTask.DependencyInjection
     /// </summary>
     public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     {
-        private readonly TaskHubCollection<TaskActivity> _activities
-            = new TaskHubCollection<TaskActivity>();
-
-        private readonly TaskHubCollection<TaskOrchestration> _orchestrations
-            = new TaskHubCollection<TaskOrchestration>();
-
-        private readonly List<Type> _activitiesMiddleware = new List<Type>();
-        private readonly List<Type> _orchestrationsMiddleware = new List<Type>();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultTaskHubWorkerBuilder"/> class.
         /// </summary>
@@ -37,49 +29,33 @@ namespace DurableTask.DependencyInjection
         public DefaultTaskHubWorkerBuilder(IServiceCollection services)
         {
             Services = Check.NotNull(services, nameof(services));
-            Services.TryAddScoped<ServiceProviderOrchestrationMiddleware>();
             Services.TryAddScoped<ServiceProviderActivityMiddleware>();
+            Services.TryAddScoped<ServiceProviderOrchestrationMiddleware>();
         }
 
         /// <inheritdoc />
         public IServiceCollection Services { get; }
 
-        /// <summary>
-        /// Gets or sets the current orchestration service.
-        /// </summary>
+        /// <inheritdoc />
         public IOrchestrationService OrchestrationService { get; set; }
 
         /// <inheritdoc />
-        public ITaskHubWorkerBuilder AddActivity(TaskActivityDescriptor descriptor)
+        public IList<TaskMiddlewareDescriptor> ActivityMiddleware { get; } = new List<TaskMiddlewareDescriptor>
         {
-            Check.NotNull(descriptor, nameof(descriptor));
-            _activities.Add(descriptor);
-            return this;
-        }
+            new TaskMiddlewareDescriptor(typeof(ServiceProviderActivityMiddleware)),
+        };
 
         /// <inheritdoc />
-        public ITaskHubWorkerBuilder UseActivityMiddleware(TaskMiddlewareDescriptor descriptor)
+        public IList<TaskMiddlewareDescriptor> OrchestrationMiddleware { get; } = new List<TaskMiddlewareDescriptor>
         {
-            Check.NotNull(descriptor, nameof(descriptor));
-            _activitiesMiddleware.Add(descriptor.Type);
-            return this;
-        }
+            new TaskMiddlewareDescriptor(typeof(ServiceProviderOrchestrationMiddleware)),
+        };
 
-        /// <inheritdoc />
-        public ITaskHubWorkerBuilder AddOrchestration(TaskOrchestrationDescriptor descriptor)
-        {
-            Check.NotNull(descriptor, nameof(descriptor));
-            _orchestrations.Add(descriptor);
-            return this;
-        }
+        /// <inheritdoc/>
+        public IList<TaskActivityDescriptor> Activities { get; } = new List<TaskActivityDescriptor>();
 
-        /// <inheritdoc />
-        public ITaskHubWorkerBuilder UseOrchestrationMiddleware(TaskMiddlewareDescriptor descriptor)
-        {
-            Check.NotNull(descriptor, nameof(descriptor));
-            _orchestrationsMiddleware.Add(descriptor.Type);
-            return this;
-        }
+        /// <inheritdoc/>
+        public IList<TaskOrchestrationDescriptor> Orchestrations { get; } = new List<TaskOrchestrationDescriptor>();
 
         /// <summary>
         /// Builds and returns a <see cref="TaskHubWorker"/> using the configurations from this instance.
@@ -95,22 +71,35 @@ namespace DurableTask.DependencyInjection
                 throw new InvalidOperationException(Strings.OrchestrationInstanceNull);
             }
 
+            // Verify we still have our ServiceProvider middleware
+            if (OrchestrationMiddleware.FirstOrDefault(x => x.Type == typeof(ServiceProviderOrchestrationMiddleware)) is null)
+            {
+                throw new InvalidOperationException(Strings.ExpectedMiddlewareMissing(
+                    typeof(ServiceProviderOrchestrationMiddleware), nameof(OrchestrationMiddleware)));
+            }
+
+            if (ActivityMiddleware.FirstOrDefault(x => x.Type == typeof(ServiceProviderActivityMiddleware)) is null)
+            {
+                throw new InvalidOperationException(Strings.ExpectedMiddlewareMissing(
+                    typeof(ServiceProviderActivityMiddleware), nameof(ActivityMiddleware)));
+            }
+
             var worker = new TaskHubWorker(
                 OrchestrationService,
-                new WrapperObjectManager<TaskOrchestration>(_orchestrations, type => new WrapperOrchestration(type)),
-                new WrapperObjectManager<TaskActivity>(_activities, type => new WrapperActivity(type)));
+                new WrapperObjectManager<TaskOrchestration>(
+                    new TaskHubCollection<TaskOrchestration>(Orchestrations), type => new WrapperOrchestration(type)),
+                new WrapperObjectManager<TaskActivity>(
+                    new TaskHubCollection<TaskActivity>(Activities), type => new WrapperActivity(type)));
 
             // The first middleware added begins the service scope for all further middleware, the orchestration, and activities.
             worker.AddOrchestrationDispatcherMiddleware(BeginMiddlewareScope(serviceProvider));
-            worker.AddOrchestrationDispatcherMiddleware(WrapMiddleware(typeof(ServiceProviderOrchestrationMiddleware)));
-            foreach (Type middlewareType in _orchestrationsMiddleware)
+            foreach (Type middlewareType in OrchestrationMiddleware.Select(x => x.Type))
             {
                 worker.AddOrchestrationDispatcherMiddleware(WrapMiddleware(middlewareType));
             }
 
             worker.AddActivityDispatcherMiddleware(BeginMiddlewareScope(serviceProvider));
-            worker.AddActivityDispatcherMiddleware(WrapMiddleware(typeof(ServiceProviderActivityMiddleware)));
-            foreach (Type middlewareType in _activitiesMiddleware)
+            foreach (Type middlewareType in ActivityMiddleware.Select(x => x.Type))
             {
                 worker.AddActivityDispatcherMiddleware(WrapMiddleware(middlewareType));
             }

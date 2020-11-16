@@ -17,6 +17,15 @@ namespace DurableTask.DependencyInjection.Properties
             => GetString("AddToObjectManagerNotSupported");
 
         /// <summary>
+        ///     Expected middleware of type '{type}' to be present in '{list}'.
+        /// </summary>
+        public static string ExpectedMiddlewareMissing(object type, object list)
+            => string.Format(
+                GetString("ExpectedMiddlewareMissing", nameof(type), nameof(list)),
+                type, list,
+                CultureInfo.CurrentUICulture);
+
+        /// <summary>
         ///     InnerActivity is null.
         /// </summary>
         public static string InnerActivityNull

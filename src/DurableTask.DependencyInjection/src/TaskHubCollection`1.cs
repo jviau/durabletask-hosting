@@ -14,11 +14,19 @@ namespace DurableTask.DependencyInjection
     /// <typeparam name="TDescribed">The described type in this collection.</typeparam>
     internal class TaskHubCollection<TDescribed> : ITaskObjectCollection<TDescribed>
     {
-        private readonly HashSet<NamedTypeDescriptor<TDescribed>> _descriptors
-            = new HashSet<NamedTypeDescriptor<TDescribed>>();
+        private readonly HashSet<NamedTypeDescriptor<TDescribed>> _descriptors;
 
         private readonly ConcurrentDictionary<TaskVersion, Type> _typeMap
             = new ConcurrentDictionary<TaskVersion, Type>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TaskHubCollection{TDescribed}"/> class.
+        /// </summary>
+        /// <param name="descriptors">The list of current descriptors.</param>
+        public TaskHubCollection(IEnumerable<NamedTypeDescriptor<TDescribed>> descriptors)
+        {
+            _descriptors = new HashSet<NamedTypeDescriptor<TDescribed>>(descriptors);
+        }
 
         /// <inheritdoc />
         public int Count => _descriptors.Count;
@@ -33,14 +41,6 @@ namespace DurableTask.DependencyInjection
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        /// <summary>
-        /// Adds the descriptor to this collection.
-        /// </summary>
-        /// <param name="descriptor">The descriptor to add.</param>
-        /// <returns>True if descriptor added, false otherwise.</returns>
-        public bool Add(NamedTypeDescriptor<TDescribed> descriptor)
-            => _descriptors.Add(descriptor);
 
         private Type GetTaskType(string name, string version)
         {

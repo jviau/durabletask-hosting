@@ -120,6 +120,9 @@
   <data name="AddToObjectManagerNotSupported" xml:space="preserve">
     <value>Add is not supported. Use the &lt;c&gt;ITaskHubWorkerBuilder&lt;/c&gt; instead.</value>
   </data>
+  <data name="ExpectedMiddlewareMissing" xml:space="preserve">
+    <value>Expected middleware of type '{type}' to be present in '{list}'.</value>
+  </data>
   <data name="InnerActivityNull" xml:space="preserve">
     <value>InnerActivity is null.</value>
   </data>
