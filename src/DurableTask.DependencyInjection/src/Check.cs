@@ -21,7 +21,7 @@ namespace DurableTask
         /// <returns>The original element.</returns>
         public static T NotNull<T>([ValidatedNotNull]T t, string name)
         {
-            if (t == null)
+            if (t is null)
             {
                 throw new ArgumentNullException(name);
             }
@@ -38,7 +38,7 @@ namespace DurableTask
         /// <returns>The original string.</returns>
         public static string NotNullOrEmpty([ValidatedNotNull]string value, string name)
         {
-            if (value == null)
+            if (value is null)
             {
                 throw new ArgumentNullException(name);
             }
