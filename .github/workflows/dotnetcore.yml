@@ -12,7 +12,7 @@ on:
       - published
 
 env:
-  sdk: "2.2.300"
+  sdk: "3.1.404"
   solution: ./src/DurableTask.Hosting.sln
   config: Release
   

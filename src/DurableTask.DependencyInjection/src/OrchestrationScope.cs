@@ -18,7 +18,7 @@ namespace DurableTask.DependencyInjection
 
         private readonly IServiceScope _innerScope;
         private readonly string _scopeId;
-        private int _references = 0;
+        private int _references;
 
         private OrchestrationScope(IServiceScope scope, string scopeId)
         {

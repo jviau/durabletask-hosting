@@ -44,10 +44,10 @@
 
   <!-- Global -->
   <ItemGroup>
-    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.1.74" Condition="'$(EnableGitVersioning)' != 'false'" />
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.3.37" Condition="'$(EnableGitVersioning)' != 'false'" />
     <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.1.118" Condition="'$(EnableStyleCop)' != 'false'" />
     <GlobalPackageReference Include="StyleCop.CSharp.Async.Rules" Version="6.1.41" Condition="'$(EnableStyleCop)' != 'false'" />
-    <GlobalPackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8" Condition="'$(EnableStyleCop)' != 'false'" />
+    <GlobalPackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" Condition="'$(EnableStyleCop)' != 'false'" />
   </ItemGroup>
 
 </Project>
