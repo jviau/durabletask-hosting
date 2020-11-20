@@ -19,7 +19,8 @@ namespace DurableTask
         /// <param name="name">The name of the element for the exception.</param>
         /// <typeparam name="T">The type of element to check.</typeparam>
         /// <returns>The original element.</returns>
-        public static T NotNull<T>([ValidatedNotNull]T t, string name)
+        public static T NotNull<T>([ValidatedNotNull] T t, string name)
+            where T : class
         {
             if (t is null)
             {
@@ -36,7 +37,7 @@ namespace DurableTask
         /// <param name="value">The string to check.</param>
         /// <param name="name">The name of the string for the exception.</param>
         /// <returns>The original string.</returns>
-        public static string NotNullOrEmpty([ValidatedNotNull]string value, string name)
+        public static string NotNullOrEmpty([ValidatedNotNull] string value, string name)
         {
             if (value is null)
             {
