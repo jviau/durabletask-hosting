@@ -39,8 +39,7 @@ namespace DurableTask.DependencyInjection.Middleware
 
             if (taskOrchestration is WrapperOrchestration wrapper)
             {
-                wrapper.InnerOrchestration = (TaskOrchestration)_serviceProvider
-                    .GetServiceOrCreateInstance(wrapper.InnerOrchestrationType);
+                wrapper.CreateInnerOrchestration(_serviceProvider);
 
                 // update the context task orchestration with the real one.
                 context.SetProperty(wrapper.InnerOrchestration);

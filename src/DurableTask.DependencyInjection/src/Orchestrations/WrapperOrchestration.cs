@@ -2,9 +2,11 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DurableTask.DependencyInjection.Orchestrations
 {
@@ -13,6 +15,9 @@ namespace DurableTask.DependencyInjection.Orchestrations
     /// </summary>
     internal class WrapperOrchestration : TaskOrchestration
     {
+        private static readonly ConcurrentDictionary<Type, ObjectFactory> s_factories
+            = new ConcurrentDictionary<Type, ObjectFactory>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapperOrchestration"/> class.
         /// </summary>
@@ -31,9 +36,28 @@ namespace DurableTask.DependencyInjection.Orchestrations
         public Type InnerOrchestrationType { get; }
 
         /// <summary>
-        /// Gets or sets the inner orchestration.
+        /// Gets the inner orchestration.
         /// </summary>
-        public TaskOrchestration InnerOrchestration { get; set; }
+        public TaskOrchestration InnerOrchestration { get; private set; }
+
+        /// <summary>
+        /// Creates the inner orchestration, setting <see cref="InnerOrchestration" />.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider. Not null.</param>
+        public void CreateInnerOrchestration(IServiceProvider serviceProvider)
+        {
+            Check.NotNull(serviceProvider, nameof(serviceProvider));
+
+            if (serviceProvider.GetService(InnerOrchestrationType) is TaskOrchestration orchestration)
+            {
+                InnerOrchestration = orchestration;
+                return;
+            }
+
+            ObjectFactory factory = s_factories.GetOrAdd(
+                InnerOrchestrationType, t => ActivatorUtilities.CreateFactory(t, Array.Empty<Type>()));
+            InnerOrchestration = (TaskOrchestration)factory.Invoke(serviceProvider, Array.Empty<object>());
+        }
 
         /// <inheritdoc />
         public override Task<string> Execute(OrchestrationContext context, string input)

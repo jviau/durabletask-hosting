@@ -65,8 +65,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 async wrapper =>
                 {
                     CreateScope();
-                    wrapper.InnerOrchestration =
-                        (TaskOrchestration)Activator.CreateInstance(wrapper.InnerOrchestrationType, this);
+                    wrapper.CreateInnerOrchestration(CreateServiceProvider());
                     await wrapper.Execute(s_orchestrationContext, Input);
 
                     return Capture<KeyNotFoundException>(
@@ -86,8 +85,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 wrapper =>
                 {
                     CreateScope();
-                    wrapper.InnerOrchestration =
-                        (TaskOrchestration)Activator.CreateInstance(wrapper.InnerOrchestrationType, this);
+                    wrapper.CreateInnerOrchestration(CreateServiceProvider());
                     return wrapper.Execute(s_orchestrationContext, $"\"{Input}\"");
                 },
                 (wrapper, result) =>
@@ -110,8 +108,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 type,
                 wrapper =>
                 {
-                    wrapper.InnerOrchestration =
-                        (TaskOrchestration)Activator.CreateInstance(wrapper.InnerOrchestrationType, this);
+                    wrapper.CreateInnerOrchestration(CreateServiceProvider());
                     return wrapper.GetStatus();
                 },
                 (wrapper, result) =>
@@ -132,8 +129,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 type,
                 wrapper =>
                 {
-                    wrapper.InnerOrchestration =
-                        (TaskOrchestration)Activator.CreateInstance(wrapper.InnerOrchestrationType, this);
+                    wrapper.CreateInnerOrchestration(CreateServiceProvider());
                     wrapper.RaiseEvent(s_orchestrationContext, Event, $"\"{Input}\"");
                     return true;
                 },
@@ -200,6 +196,13 @@ namespace DurableTask.DependencyInjection.Tests.Activities
             var services = new WrapperOrchestration(innerType);
             TResult result = await act(services);
             verify?.Invoke(services, result);
+        }
+
+        private IServiceProvider CreateServiceProvider()
+        {
+            var services = new ServiceCollection();
+            services.AddSingleton(this);
+            return services.BuildServiceProvider();
         }
 
         private class TestOrchestration : TaskOrchestration

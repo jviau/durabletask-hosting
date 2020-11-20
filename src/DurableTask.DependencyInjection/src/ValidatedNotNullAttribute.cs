@@ -11,7 +11,7 @@ namespace DurableTask
     /// </summary>
     [ExcludeFromCodeCoverage]
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-    public sealed class ValidatedNotNullAttribute : Attribute
+    internal sealed class ValidatedNotNullAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidatedNotNullAttribute"/> class.

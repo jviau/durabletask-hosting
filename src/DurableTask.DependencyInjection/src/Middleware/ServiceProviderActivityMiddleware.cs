@@ -37,8 +37,7 @@ namespace DurableTask.DependencyInjection.Middleware
 
             if (taskActivity is WrapperActivity wrapper)
             {
-                wrapper.InnerActivity = (TaskActivity)_serviceProvider
-                    .GetServiceOrCreateInstance(wrapper.InnerActivityType);
+                wrapper.CreateInnerActivity(_serviceProvider);
 
                 // update the context task activity with the real one.
                 context.SetProperty(wrapper.InnerActivity);

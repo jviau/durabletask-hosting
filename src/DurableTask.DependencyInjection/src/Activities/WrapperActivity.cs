@@ -2,9 +2,11 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DurableTask.DependencyInjection.Activities
 {
@@ -13,6 +15,9 @@ namespace DurableTask.DependencyInjection.Activities
     /// </summary>
     internal class WrapperActivity : TaskActivity
     {
+        private static readonly ConcurrentDictionary<Type, ObjectFactory> s_factories
+            = new ConcurrentDictionary<Type, ObjectFactory>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapperActivity"/> class.
         /// </summary>
@@ -31,9 +36,28 @@ namespace DurableTask.DependencyInjection.Activities
         public Type InnerActivityType { get; }
 
         /// <summary>
-        /// Gets or sets the inner activity.
+        /// Gets the inner activity.
         /// </summary>
-        public TaskActivity InnerActivity { get; set; }
+        public TaskActivity InnerActivity { get; private set; }
+
+        /// <summary>
+        /// Creates the inner activity, setting <see cref="InnerActivity" />.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider. Not null.</param>
+        public void CreateInnerActivity(IServiceProvider serviceProvider)
+        {
+            Check.NotNull(serviceProvider, nameof(serviceProvider));
+
+            if (serviceProvider.GetService(InnerActivityType) is TaskActivity activity)
+            {
+                InnerActivity = activity;
+                return;
+            }
+
+            ObjectFactory factory = s_factories.GetOrAdd(
+                InnerActivityType, t => ActivatorUtilities.CreateFactory(t, Array.Empty<Type>()));
+            InnerActivity = (TaskActivity)factory.Invoke(serviceProvider, Array.Empty<object>());
+        }
 
         /// <inheritdoc />
         public override string Run(TaskContext context, string input)

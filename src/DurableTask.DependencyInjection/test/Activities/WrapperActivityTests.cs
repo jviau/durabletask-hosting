@@ -60,7 +60,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 wrapper =>
                 {
                     CreateScope();
-                    wrapper.InnerActivity = (TaskActivity)Activator.CreateInstance(wrapper.InnerActivityType, this);
+                    wrapper.CreateInnerActivity(CreateServiceProvider());
                     return wrapper.Run(s_taskContext, s_input);
                 },
                 (wrapper, result) =>
@@ -84,7 +84,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 wrapper =>
                 {
                     CreateScope();
-                    wrapper.InnerActivity = (TaskActivity)Activator.CreateInstance(wrapper.InnerActivityType, this);
+                    wrapper.CreateInnerActivity(CreateServiceProvider());
                     return wrapper.RunAsync(s_taskContext, $"[ \"{s_input}\" ]");
                 },
                 (wrapper, result) =>
@@ -151,6 +151,14 @@ namespace DurableTask.DependencyInjection.Tests.Activities
             TResult result = await act(services);
             verify?.Invoke(services, result);
         }
+
+        private IServiceProvider CreateServiceProvider()
+        {
+            var services = new ServiceCollection();
+            services.AddSingleton(this);
+            return services.BuildServiceProvider();
+        }
+
 
         private class TestActivity : TaskActivity
         {
