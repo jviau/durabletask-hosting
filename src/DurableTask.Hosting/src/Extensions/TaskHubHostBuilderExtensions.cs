@@ -80,6 +80,9 @@ namespace DurableTask.Hosting
 
             builder.ConfigureServices((context, services) =>
             {
+                services.AddOptions();
+                services.AddLogging();
+
                 services
                     .AddOptions<TaskHubOptions>()
                     .Bind(context.Configuration.GetSection("TaskHub"))

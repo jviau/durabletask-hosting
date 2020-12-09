@@ -2,7 +2,10 @@
 using System.Linq;
 using DurableTask.Core;
 using FluentAssertions;
+using FluentAssertions.Common;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 using static DurableTask.TestHelpers;
@@ -40,9 +43,10 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
                 (mock, builder) =>
                 {
                     builder.Should().Be(mock.Object);
-                    builder.Services.Should().HaveCount(1);
-                    builder.Services.Single().Lifetime.Should().Be(ServiceLifetime.Singleton);
-                    builder.Services.Single().ServiceType.Should().Be(typeof(TaskHubClient));
+                    builder.Services.Should().HaveCount(2);
+                    var client = builder.Services.FirstOrDefault(x => x.ServiceType == typeof(TaskHubClient));
+                    client.Should().NotBeNull();
+                    client.Lifetime.Should().Be(ServiceLifetime.Singleton);
                 });
 
         [Fact]
@@ -106,7 +110,10 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
             Action<Mock<ITaskHubWorkerBuilder>, TResult> verify)
         {
             var mock = new Mock<ITaskHubWorkerBuilder>();
-            mock.Setup(x => x.Services).Returns(new ServiceCollection());
+
+            var services = new ServiceCollection();
+            services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance);
+            mock.Setup(x => x.Services).Returns(services);
 
             TResult result = act(mock.Object);
             verify?.Invoke(mock, result);

@@ -4,7 +4,9 @@
 using System;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace DurableTask.DependencyInjection
 {
@@ -35,11 +37,11 @@ namespace DurableTask.DependencyInjection
         public static ITaskHubWorkerBuilder AddClient(this ITaskHubWorkerBuilder builder)
         {
             Check.NotNull(builder, nameof(builder));
-            builder.Services.TryAddSingleton(_ => ClientFactory(builder));
+            builder.Services.TryAddSingleton(sp => ClientFactory(builder, sp));
             return builder;
         }
 
-        private static TaskHubClient ClientFactory(ITaskHubWorkerBuilder builder)
+        private static TaskHubClient ClientFactory(ITaskHubWorkerBuilder builder, IServiceProvider serviceProvider)
         {
             if (builder.OrchestrationService == null)
             {
@@ -48,7 +50,8 @@ namespace DurableTask.DependencyInjection
 
             if (builder.OrchestrationService is IOrchestrationServiceClient client)
             {
-                return new TaskHubClient(client);
+                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+                return new TaskHubClient(client, loggerFactory: loggerFactory);
             }
 
             throw new InvalidOperationException(
