@@ -4,6 +4,8 @@ using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 using static DurableTask.TestHelpers;
@@ -37,7 +39,7 @@ namespace DurableTask.DependencyInjection.Tests
 
         [Fact]
         public void BuildOrchestrationNotSet()
-            => RunTestException<InvalidOperationException>(b => b.Build(Mock.Of<IServiceProvider>()));
+            => RunTestException<InvalidOperationException>(b => b.Build(CreateServiceProvider()));
 
         [Fact]
         public void AddActivity()
@@ -83,7 +85,7 @@ namespace DurableTask.DependencyInjection.Tests
                 b =>
                 {
                     b.OrchestrationService = Mock.Of<IOrchestrationService>();
-                    TaskHubWorker worker = b.Build(Mock.Of<IServiceProvider>());
+                    TaskHubWorker worker = b.Build(CreateServiceProvider());
                     worker.Should().NotBeNull();
                     worker.orchestrationService.Should().Be(b.OrchestrationService);
                 },
@@ -100,7 +102,7 @@ namespace DurableTask.DependencyInjection.Tests
                     b.OrchestrationService = Mock.Of<IOrchestrationService>();
                     b.UseActivityMiddleware(new TaskMiddlewareDescriptor(typeof(TestMiddleware)));
                     b.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(typeof(TestMiddleware)));
-                    TaskHubWorker worker = b.Build(Mock.Of<IServiceProvider>());
+                    TaskHubWorker worker = b.Build(CreateServiceProvider());
                     worker.Should().NotBeNull();
                     worker.orchestrationService.Should().Be(b.OrchestrationService);
                 },
@@ -126,6 +128,13 @@ namespace DurableTask.DependencyInjection.Tests
             act(builder);
 
             verify?.Invoke(builder, services);
+        }
+
+        private static IServiceProvider CreateServiceProvider()
+        {
+            var services = new ServiceCollection();
+            services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance);
+            return services.BuildServiceProvider();
         }
 
         private class TestOrchestration : TaskOrchestration

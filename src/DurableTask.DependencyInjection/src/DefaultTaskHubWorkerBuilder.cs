@@ -14,6 +14,7 @@ using DurableTask.DependencyInjection.Orchestrations;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace DurableTask.DependencyInjection
 {
@@ -84,12 +85,14 @@ namespace DurableTask.DependencyInjection
                     typeof(ServiceProviderActivityMiddleware), nameof(ActivityMiddleware)));
             }
 
+            ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             var worker = new TaskHubWorker(
                 OrchestrationService,
                 new WrapperObjectManager<TaskOrchestration>(
                     new TaskHubCollection<TaskOrchestration>(Orchestrations), type => new WrapperOrchestration(type)),
                 new WrapperObjectManager<TaskActivity>(
-                    new TaskHubCollection<TaskActivity>(Activities), type => new WrapperActivity(type)));
+                    new TaskHubCollection<TaskActivity>(Activities), type => new WrapperActivity(type)),
+                loggerFactory);
 
             // The first middleware added begins the service scope for all further middleware, the orchestration, and activities.
             worker.AddOrchestrationDispatcherMiddleware(BeginMiddlewareScope(serviceProvider));
