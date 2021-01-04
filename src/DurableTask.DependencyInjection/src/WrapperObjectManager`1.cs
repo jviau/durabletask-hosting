@@ -38,7 +38,7 @@ namespace DurableTask.DependencyInjection
         {
             Type type = _descriptors[name, version];
 
-            if (type == null)
+            if (type is null)
             {
                 return default;
             }

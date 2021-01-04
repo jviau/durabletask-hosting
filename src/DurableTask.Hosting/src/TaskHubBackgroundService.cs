@@ -51,7 +51,8 @@ namespace DurableTask.Hosting
 
             await _worker.StartAsync().ConfigureAwait(false);
             _worker.TaskActivityDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(IncludeDetails.Activities);
-            _worker.TaskOrchestrationDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(IncludeDetails.Orchestrations);
+            _worker.TaskOrchestrationDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(
+                IncludeDetails.Orchestrations);
         }
 
         /// <inheritdoc />
