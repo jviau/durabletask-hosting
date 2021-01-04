@@ -47,7 +47,7 @@ namespace DurableTask.DependencyInjection.Tests
             RunTest(
                 null,
                 b => b.AddActivity(new TaskActivityDescriptor(typeof(TestActivity))),
-                (_, services) => services.Should().HaveCount(2));
+                (_, services) => services.Should().HaveCount(0));
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace DurableTask.DependencyInjection.Tests
             RunTest(
                 null,
                 b => b.UseActivityMiddleware(new TaskMiddlewareDescriptor(typeof(TestMiddleware))),
-                (_, services) => services.Should().HaveCount(2));
+                (_, services) => services.Should().HaveCount(0));
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace DurableTask.DependencyInjection.Tests
             RunTest(
                 null,
                 b => b.AddOrchestration(new TaskOrchestrationDescriptor(typeof(TestOrchestration))),
-                (_, services) => services.Should().HaveCount(2));
+                (_, services) => services.Should().HaveCount(0));
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace DurableTask.DependencyInjection.Tests
             RunTest(
                 null,
                 b => b.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(typeof(TestMiddleware))),
-                (_, services) => services.Should().HaveCount(2));
+                (_, services) => services.Should().HaveCount(0));
         }
 
         [Fact]

@@ -12,7 +12,6 @@ using DurableTask.DependencyInjection.Middleware;
 using DurableTask.DependencyInjection.Orchestrations;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace DurableTask.DependencyInjection
@@ -29,8 +28,6 @@ namespace DurableTask.DependencyInjection
         public DefaultTaskHubWorkerBuilder(IServiceCollection services)
         {
             Services = Check.NotNull(services, nameof(services));
-            Services.TryAddScoped<ServiceProviderActivityMiddleware>();
-            Services.TryAddScoped<ServiceProviderOrchestrationMiddleware>();
         }
 
         /// <inheritdoc />
