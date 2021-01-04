@@ -6,19 +6,19 @@ using System;
 namespace DurableTask.DependencyInjection
 {
     /// <summary>
-    /// A descriptor for a type, enforcing it implements the declared base.
+    /// A descriptor for <see cref="ITaskMiddleware"/>.
     /// </summary>
-    /// <typeparam name="TBase">The base type it must implement.</typeparam>
-    public class TypeDescriptor<TBase>
+    public sealed class TaskMiddlewareDescriptor
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TypeDescriptor{TBase}"/> class.
+        /// Initializes a new instance of the <see cref="TaskMiddlewareDescriptor"/> class.
         /// </summary>
-        /// <param name="type">The type for this descriptor.</param>
-        public TypeDescriptor(Type type)
+        /// <param name="type">The type to describe.</param>
+        public TaskMiddlewareDescriptor(Type type)
         {
             Check.NotNull(type, nameof(type));
-            Check.ConcreteType<TBase>(type, nameof(type));
+            Check.ConcreteType<ITaskMiddleware>(type, nameof(type));
+
             Type = type;
         }
 
