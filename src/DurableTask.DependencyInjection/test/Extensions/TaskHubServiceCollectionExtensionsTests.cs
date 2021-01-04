@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using DurableTask.Core;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -32,11 +33,12 @@ namespace DurableTask.DependencyInjection.Tests.Extensions
                 {
                     returned.Should().NotBeNull();
                     returned.Should().BeSameAs(original);
-                    returned.Should().HaveCount(3);
+                    returned.Should().ContainSingle(sd => sd.ServiceType == typeof(ITaskHubWorkerBuilder)
+                        && sd.ImplementationInstance.GetType() == typeof(DefaultTaskHubWorkerBuilder)
+                        && sd.Lifetime == ServiceLifetime.Singleton);
 
-                    ServiceDescriptor descriptor = original.Last();
-                    descriptor.Lifetime.Should().Be(ServiceLifetime.Singleton);
-                    descriptor.ImplementationFactory.Should().NotBeNull();
+                    returned.Should().ContainSingle(sd => sd.ServiceType == typeof(TaskHubWorker)
+                        && sd.ImplementationFactory != null && sd.Lifetime == ServiceLifetime.Singleton);
                 });
 
         private static void RunTestException<TException>(Action<IServiceCollection> act)

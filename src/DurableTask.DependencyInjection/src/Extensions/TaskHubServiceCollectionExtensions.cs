@@ -2,6 +2,7 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq;
 using DurableTask.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -25,11 +26,29 @@ namespace DurableTask.DependencyInjection
             Check.NotNull(services, nameof(services));
             Check.NotNull(configure, nameof(configure));
 
-            var builder = new DefaultTaskHubWorkerBuilder(services);
+            ITaskHubWorkerBuilder builder = services.AddTaskHubWorkerCore();
             configure(builder);
-            services.TryAddSingleton(sp => builder.Build(sp));
 
             return services;
+        }
+
+        private static ITaskHubWorkerBuilder AddTaskHubWorkerCore(this IServiceCollection services)
+        {
+            services.AddLogging();
+
+            // This is added as a singleton implementation instance as we will fetch this out of the service collection
+            // during subsequent calls to AddTaskHubWorker.
+            var builder = new DefaultTaskHubWorkerBuilder(services);
+            services.TryAddSingleton<ITaskHubWorkerBuilder>(builder);
+            services.TryAddSingleton(sp => builder.Build(sp));
+
+            return services.GetTaskHubBuilder();
+        }
+
+        private static ITaskHubWorkerBuilder GetTaskHubBuilder(this IServiceCollection services)
+        {
+            return (ITaskHubWorkerBuilder)services.Single(sd => sd.ServiceType == typeof(ITaskHubWorkerBuilder))
+                .ImplementationInstance;
         }
     }
 }

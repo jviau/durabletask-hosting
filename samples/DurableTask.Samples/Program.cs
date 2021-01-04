@@ -63,11 +63,7 @@ namespace DurableTask.Samples
                 .UseConsoleLifetime()
                 .Build();
 
-            using (DurableTaskEventListener listener
-                = ActivatorUtilities.CreateInstance<DurableTaskEventListener>(host.Services))
-            {
-                return host.RunAsync();
-            }
+            return host.RunAsync();
         }
 
         private static HostBuilder CreateDefaultBuilder(string[] args)
