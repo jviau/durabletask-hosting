@@ -20,7 +20,7 @@ namespace DurableTask.DependencyInjection
         public TaskActivityDescriptor(Type type, string name = null, string version = null)
         {
             Check.NotNull(type, nameof(type));
-            Check.ConcreteType<TaskOrchestration>(type, nameof(type));
+            Check.ConcreteType<TaskActivity>(type, nameof(type));
 
             Type = type;
             Name = name ?? NameVersionHelper.GetDefaultName(type);
