@@ -30,21 +30,15 @@ namespace DurableTask.DependencyInjection.Tests.Activities
             => RunTestException<ArgumentNullException>(
                 _ => new WrapperActivity(null));
 
-        [Theory]
-        [InlineData(typeof(object))]
-        [InlineData(typeof(TaskActivity))]
-        public void Ctor_ArgumentInvalidType(Type type)
-            => RunTestException<ArgumentException>(
-                _ => new WrapperActivity(type));
-
         [Fact]
         public void Ctor_InnerActivityTypeSet()
             => RunTest(
                 typeof(TestActivity),
-                _ => new WrapperActivity(typeof(TestActivity)),
+                _ => new WrapperActivity(new TaskActivityDescriptor(typeof(TestActivity))),
                 (_, wrapper) =>
                 {
-                    wrapper.InnerActivityType.Should().Be(typeof(TestActivity));
+                    wrapper.Descriptor.Should().NotBeNull();
+                    wrapper.Descriptor.Type.Should().Be(typeof(TestActivity));
                     wrapper.InnerActivity.Should().BeNull();
                 });
 
@@ -60,7 +54,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 wrapper =>
                 {
                     CreateScope();
-                    wrapper.CreateInnerActivity(CreateServiceProvider());
+                    wrapper.Initialize(CreateServiceProvider());
                     return wrapper.Run(s_taskContext, s_input);
                 },
                 (wrapper, result) =>
@@ -84,7 +78,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 wrapper =>
                 {
                     CreateScope();
-                    wrapper.CreateInnerActivity(CreateServiceProvider());
+                    wrapper.Initialize(CreateServiceProvider());
                     return wrapper.RunAsync(s_taskContext, $"[ \"{s_input}\" ]");
                 },
                 (wrapper, result) =>
@@ -137,7 +131,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
             Func<WrapperActivity, TResult> act,
             Action<WrapperActivity, TResult> verify)
         {
-            var services = new WrapperActivity(innerType);
+            var services = new WrapperActivity(new TaskActivityDescriptor(innerType));
             TResult result = act(services);
             verify?.Invoke(services, result);
         }
@@ -147,7 +141,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
             Func<WrapperActivity, Task<TResult>> act,
             Action<WrapperActivity, TResult> verify)
         {
-            var services = new WrapperActivity(innerType);
+            var services = new WrapperActivity(new TaskActivityDescriptor(innerType));
             TResult result = await act(services);
             verify?.Invoke(services, result);
         }

@@ -47,7 +47,8 @@ namespace DurableTask.Hosting.Tests.Functional
 
                     if ((int)serviceLifetime != -1)
                     {
-                        s.Add(new ServiceDescriptor(typeof(TestOrchestration), typeof(TestOrchestration), serviceLifetime));
+                        s.Add(new ServiceDescriptor(
+                            typeof(TestOrchestration), typeof(TestOrchestration), serviceLifetime));
                     }
                 },
                 b =>

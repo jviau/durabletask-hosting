@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using DurableTask.DependencyInjection.Activities;
-using DurableTask.DependencyInjection.Extensions;
 
 namespace DurableTask.DependencyInjection.Middleware
 {
@@ -37,7 +36,7 @@ namespace DurableTask.DependencyInjection.Middleware
 
             if (taskActivity is WrapperActivity wrapper)
             {
-                wrapper.CreateInnerActivity(_serviceProvider);
+                wrapper.Initialize(_serviceProvider);
 
                 // update the context task activity with the real one.
                 context.SetProperty(wrapper.InnerActivity);

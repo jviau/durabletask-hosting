@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using DurableTask.DependencyInjection.Activities;
-using DurableTask.DependencyInjection.Extensions;
 using DurableTask.DependencyInjection.Middleware;
 using DurableTask.DependencyInjection.Orchestrations;
 using DurableTask.DependencyInjection.Properties;
@@ -73,7 +72,8 @@ namespace DurableTask.DependencyInjection
             }
 
             // Verify we still have our ServiceProvider middleware
-            if (OrchestrationMiddleware.FirstOrDefault(x => x.Type == typeof(ServiceProviderOrchestrationMiddleware)) is null)
+            if (OrchestrationMiddleware.FirstOrDefault(x => x.Type == typeof(ServiceProviderOrchestrationMiddleware))
+                is null)
             {
                 throw new InvalidOperationException(Strings.ExpectedMiddlewareMissing(
                     typeof(ServiceProviderOrchestrationMiddleware), nameof(OrchestrationMiddleware)));
@@ -86,42 +86,35 @@ namespace DurableTask.DependencyInjection
             }
 
             ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            var worker = new TaskHubWorker(
-                OrchestrationService,
-                new WrapperObjectManager<TaskOrchestration>(
-                    new TaskHubCollection<TaskOrchestration>(Orchestrations), type => new WrapperOrchestration(type)),
-                new WrapperObjectManager<TaskActivity>(
-                    new TaskHubCollection<TaskActivity>(Activities), type => new WrapperActivity(type)),
-                loggerFactory);
+            var worker = new TaskHubWorker(OrchestrationService, loggerFactory);
+            worker.AddTaskOrchestrations(Orchestrations.Select(x => new OrchestrationObjectCreator(x)).ToArray());
+            worker.AddTaskActivities(Activities.Select(x => new ActivityObjectCreator(x)).ToArray());
 
-            // The first middleware added begins the service scope for all further middleware, the orchestration, and activities.
+            // The first middleware added begins the service scope for all further middleware, the orchestration, and
+            // activities.
             worker.AddOrchestrationDispatcherMiddleware(BeginMiddlewareScope(serviceProvider));
-            foreach (Type middlewareType in OrchestrationMiddleware.Select(x => x.Type))
+            foreach (TaskMiddlewareDescriptor middlewareDescriptor in OrchestrationMiddleware)
             {
-                worker.AddOrchestrationDispatcherMiddleware(WrapMiddleware(middlewareType));
+                worker.AddOrchestrationDispatcherMiddleware(WrapMiddleware(middlewareDescriptor));
             }
 
             worker.AddActivityDispatcherMiddleware(BeginMiddlewareScope(serviceProvider));
-            foreach (Type middlewareType in ActivityMiddleware.Select(x => x.Type))
+            foreach (TaskMiddlewareDescriptor middlewareDescriptor in ActivityMiddleware)
             {
-                worker.AddActivityDispatcherMiddleware(WrapMiddleware(middlewareType));
+                worker.AddActivityDispatcherMiddleware(WrapMiddleware(middlewareDescriptor));
             }
 
             return worker;
         }
 
-        private static Func<DispatchMiddlewareContext, Func<Task>, Task> WrapMiddleware(Type middlewareType)
+        private static Func<DispatchMiddlewareContext, Func<Task>, Task> WrapMiddleware(
+            TaskMiddlewareDescriptor descriptor)
         {
-            return (context, next) =>
-            {
-                IServiceScope scope = OrchestrationScope.GetScope(
-                    context.GetProperty<OrchestrationInstance>().InstanceId);
-                var middleware = (ITaskMiddleware)scope.ServiceProvider.GetServiceOrCreateInstance(middlewareType);
-                return middleware.InvokeAsync(context, next);
-            };
+            return (context, next) => TaskMiddlewareRunner.RunAsync(descriptor, context, next);
         }
 
-        private static Func<DispatchMiddlewareContext, Func<Task>, Task> BeginMiddlewareScope(IServiceProvider serviceProvider)
+        private static Func<DispatchMiddlewareContext, Func<Task>, Task> BeginMiddlewareScope(
+            IServiceProvider serviceProvider)
         {
             return async (context, next) =>
             {
