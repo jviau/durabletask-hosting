@@ -35,21 +35,15 @@ namespace DurableTask.DependencyInjection.Tests.Activities
             => RunTestException<ArgumentNullException>(
                 _ => new WrapperOrchestration(null));
 
-        [Theory]
-        [InlineData(typeof(object))]
-        [InlineData(typeof(TaskActivity))]
-        public void Ctor_ArgumentInvalidType(Type type)
-            => RunTestException<ArgumentException>(
-                _ => new WrapperOrchestration(type));
-
         [Fact]
         public void Ctor_InnerActivityTypeSet()
             => RunTest(
                 typeof(TestOrchestration),
-                _ => new WrapperOrchestration(typeof(TestOrchestration)),
+                _ => new WrapperOrchestration(new TaskOrchestrationDescriptor(typeof(TestOrchestration))),
                 (_, wrapper) =>
                 {
-                    wrapper.InnerOrchestrationType.Should().Be(typeof(TestOrchestration));
+                    wrapper.Descriptor.Should().NotBeNull();
+                    wrapper.Descriptor.Type.Should().Be(typeof(TestOrchestration));
                     wrapper.InnerOrchestration.Should().BeNull();
                 });
 
@@ -65,7 +59,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 async wrapper =>
                 {
                     CreateScope();
-                    wrapper.CreateInnerOrchestration(CreateServiceProvider());
+                    wrapper.Initialize(CreateServiceProvider());
                     await wrapper.Execute(s_orchestrationContext, Input);
 
                     return Capture<KeyNotFoundException>(
@@ -85,7 +79,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 wrapper =>
                 {
                     CreateScope();
-                    wrapper.CreateInnerOrchestration(CreateServiceProvider());
+                    wrapper.Initialize(CreateServiceProvider());
                     return wrapper.Execute(s_orchestrationContext, $"\"{Input}\"");
                 },
                 (wrapper, result) =>
@@ -108,7 +102,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 type,
                 wrapper =>
                 {
-                    wrapper.CreateInnerOrchestration(CreateServiceProvider());
+                    wrapper.Initialize(CreateServiceProvider());
                     return wrapper.GetStatus();
                 },
                 (wrapper, result) =>
@@ -129,7 +123,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 type,
                 wrapper =>
                 {
-                    wrapper.CreateInnerOrchestration(CreateServiceProvider());
+                    wrapper.Initialize(CreateServiceProvider());
                     wrapper.RaiseEvent(s_orchestrationContext, Event, $"\"{Input}\"");
                     return true;
                 },
@@ -183,7 +177,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
             Func<WrapperOrchestration, TResult> act,
             Action<WrapperOrchestration, TResult> verify)
         {
-            var services = new WrapperOrchestration(innerType);
+            var services = new WrapperOrchestration(new TaskOrchestrationDescriptor(innerType));
             TResult result = act(services);
             verify?.Invoke(services, result);
         }
@@ -193,7 +187,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
             Func<WrapperOrchestration, Task<TResult>> act,
             Action<WrapperOrchestration, TResult> verify)
         {
-            var services = new WrapperOrchestration(innerType);
+            var services = new WrapperOrchestration(new TaskOrchestrationDescriptor(innerType));
             TResult result = await act(services);
             verify?.Invoke(services, result);
         }

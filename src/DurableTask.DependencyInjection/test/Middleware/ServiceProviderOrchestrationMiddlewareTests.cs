@@ -58,7 +58,7 @@ namespace DurableTask.DependencyInjection.Tests.Middleware
             // arrange
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(m => m.GetService(typeof(TestOrchestration))).Returns(new TestOrchestration());
-            var wrapper = new WrapperOrchestration(typeof(TestOrchestration));
+            var wrapper = new WrapperOrchestration(new TaskOrchestrationDescriptor(typeof(TestOrchestration)));
             DispatchMiddlewareContext context = CreateContext(wrapper);
             var middleware = new ServiceProviderOrchestrationMiddleware(serviceProvider.Object);
 

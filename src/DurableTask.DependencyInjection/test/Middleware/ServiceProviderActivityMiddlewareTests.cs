@@ -58,7 +58,7 @@ namespace DurableTask.DependencyInjection.Tests.Middleware
             // arrange
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(m => m.GetService(typeof(TestActivity))).Returns(new TestActivity());
-            var wrapper = new WrapperActivity(typeof(TestActivity));
+            var wrapper = new WrapperActivity(new TaskActivityDescriptor(typeof(TestActivity)));
             DispatchMiddlewareContext context = CreateContext(wrapper);
             var middleware = new ServiceProviderActivityMiddleware(serviceProvider.Object);
 

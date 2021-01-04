@@ -15,25 +15,24 @@ namespace DurableTask.DependencyInjection.Orchestrations
     /// </summary>
     internal class WrapperOrchestration : TaskOrchestration
     {
-        private static readonly ConcurrentDictionary<Type, ObjectFactory> s_factories
-            = new ConcurrentDictionary<Type, ObjectFactory>();
+        private static readonly ConcurrentDictionary<
+            TaskOrchestrationDescriptor, Func<IServiceProvider, TaskOrchestration>> s_factories
+            = new ConcurrentDictionary<
+                TaskOrchestrationDescriptor, Func<IServiceProvider, TaskOrchestration>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapperOrchestration"/> class.
         /// </summary>
-        /// <param name="innerOrchestrationType">The inner orchestration type to use.</param>
-        public WrapperOrchestration(Type innerOrchestrationType)
+        /// <param name="descriptor">The inner orchestration descriptor.</param>
+        public WrapperOrchestration(TaskOrchestrationDescriptor descriptor)
         {
-            Check.NotNull(innerOrchestrationType, nameof(innerOrchestrationType));
-            Check.ConcreteType<TaskOrchestration>(innerOrchestrationType, nameof(innerOrchestrationType));
-
-            InnerOrchestrationType = innerOrchestrationType;
+            Descriptor = Check.NotNull(descriptor, nameof(descriptor));
         }
 
         /// <summary>
-        /// Gets the inner orchestrations type.
+        /// Gets the orchestration descriptor.
         /// </summary>
-        public Type InnerOrchestrationType { get; }
+        public TaskOrchestrationDescriptor Descriptor { get; }
 
         /// <summary>
         /// Gets the inner orchestration.
@@ -44,19 +43,29 @@ namespace DurableTask.DependencyInjection.Orchestrations
         /// Creates the inner orchestration, setting <see cref="InnerOrchestration" />.
         /// </summary>
         /// <param name="serviceProvider">The service provider. Not null.</param>
-        public void CreateInnerOrchestration(IServiceProvider serviceProvider)
+        public void Initialize(IServiceProvider serviceProvider)
         {
             Check.NotNull(serviceProvider, nameof(serviceProvider));
 
-            if (serviceProvider.GetService(InnerOrchestrationType) is TaskOrchestration orchestration)
+            if (!s_factories.TryGetValue(Descriptor, out Func<IServiceProvider, TaskOrchestration> factory))
             {
-                InnerOrchestration = orchestration;
-                return;
+                if (serviceProvider.GetService(Descriptor.Type) is TaskOrchestration orchestration)
+                {
+                    InnerOrchestration = orchestration;
+                    s_factories[Descriptor] = sp => (TaskOrchestration)sp.GetRequiredService(Descriptor.Type);
+                    return; // already created it this time, so just return now.
+                }
+                else
+                {
+                    ObjectFactory objectFactory = ActivatorUtilities.CreateFactory(
+                        Descriptor.Type, Array.Empty<Type>());
+                    factory = s_factories.GetOrAdd(
+                        Descriptor, sp => (TaskOrchestration)objectFactory.Invoke(sp, Array.Empty<object>()));
+                }
             }
 
-            ObjectFactory factory = s_factories.GetOrAdd(
-                InnerOrchestrationType, t => ActivatorUtilities.CreateFactory(t, Array.Empty<Type>()));
-            InnerOrchestration = (TaskOrchestration)factory.Invoke(serviceProvider, Array.Empty<object>());
+            InnerOrchestration = factory.Invoke(serviceProvider);
+            return;
         }
 
         /// <inheritdoc />
@@ -88,7 +97,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
 
         private void CheckInnerOrchestration()
         {
-            if (InnerOrchestration == null)
+            if (InnerOrchestration is null)
             {
                 throw new InvalidOperationException(Strings.InnerOrchestrationNull);
             }

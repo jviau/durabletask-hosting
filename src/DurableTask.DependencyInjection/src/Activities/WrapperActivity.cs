@@ -11,29 +11,28 @@ using Microsoft.Extensions.DependencyInjection;
 namespace DurableTask.DependencyInjection.Activities
 {
     /// <summary>
-    /// An orchestration that wraps the real activity type.
+    /// An activity that wraps the real activity type.
     /// </summary>
     internal class WrapperActivity : TaskActivity
     {
-        private static readonly ConcurrentDictionary<Type, ObjectFactory> s_factories
-            = new ConcurrentDictionary<Type, ObjectFactory>();
+        private static readonly ConcurrentDictionary<
+            TaskActivityDescriptor, Func<IServiceProvider, TaskActivity>> s_factories
+            = new ConcurrentDictionary<
+                TaskActivityDescriptor, Func<IServiceProvider, TaskActivity>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapperActivity"/> class.
         /// </summary>
-        /// <param name="innerActivityType">The inner activity type to use.</param>
-        public WrapperActivity(Type innerActivityType)
+        /// <param name="descriptor">The inner orchestration descriptor.</param>
+        public WrapperActivity(TaskActivityDescriptor descriptor)
         {
-            Check.NotNull(innerActivityType, nameof(innerActivityType));
-            Check.ConcreteType<TaskActivity>(innerActivityType, nameof(innerActivityType));
-
-            InnerActivityType = innerActivityType;
+            Descriptor = Check.NotNull(descriptor, nameof(descriptor));
         }
 
         /// <summary>
-        /// Gets the inner activity type.
+        /// Gets the activity descriptor.
         /// </summary>
-        public Type InnerActivityType { get; }
+        public TaskActivityDescriptor Descriptor { get; }
 
         /// <summary>
         /// Gets the inner activity.
@@ -44,19 +43,29 @@ namespace DurableTask.DependencyInjection.Activities
         /// Creates the inner activity, setting <see cref="InnerActivity" />.
         /// </summary>
         /// <param name="serviceProvider">The service provider. Not null.</param>
-        public void CreateInnerActivity(IServiceProvider serviceProvider)
+        public void Initialize(IServiceProvider serviceProvider)
         {
             Check.NotNull(serviceProvider, nameof(serviceProvider));
 
-            if (serviceProvider.GetService(InnerActivityType) is TaskActivity activity)
+            if (!s_factories.TryGetValue(Descriptor, out Func<IServiceProvider, TaskActivity> factory))
             {
-                InnerActivity = activity;
-                return;
+                if (serviceProvider.GetService(Descriptor.Type) is TaskActivity activity)
+                {
+                    InnerActivity = activity;
+                    s_factories[Descriptor] = sp => (TaskActivity)sp.GetRequiredService(Descriptor.Type);
+                    return; // already created it this time, so return now.
+                }
+                else
+                {
+                    ObjectFactory objectFactory = ActivatorUtilities.CreateFactory(
+                        Descriptor.Type, Array.Empty<Type>());
+                    factory = s_factories.GetOrAdd(
+                        Descriptor, sp => (TaskActivity)objectFactory.Invoke(sp, Array.Empty<object>()));
+                }
             }
 
-            ObjectFactory factory = s_factories.GetOrAdd(
-                InnerActivityType, t => ActivatorUtilities.CreateFactory(t, Array.Empty<Type>()));
-            InnerActivity = (TaskActivity)factory.Invoke(serviceProvider, Array.Empty<object>());
+            InnerActivity = factory.Invoke(serviceProvider);
+            return;
         }
 
         /// <inheritdoc />
@@ -81,7 +90,7 @@ namespace DurableTask.DependencyInjection.Activities
 
         private void CheckInnerActivity()
         {
-            if (InnerActivity == null)
+            if (InnerActivity is null)
             {
                 throw new InvalidOperationException(Strings.InnerActivityNull);
             }
