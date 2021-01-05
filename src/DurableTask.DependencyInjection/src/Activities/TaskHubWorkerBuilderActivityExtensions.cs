@@ -3,7 +3,9 @@
 
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using DurableTask.Core;
+using DurableTask.Core.Middleware;
 using DurableTask.DependencyInjection.Extensions;
 
 namespace DurableTask.DependencyInjection
@@ -37,7 +39,7 @@ namespace DurableTask.DependencyInjection
         /// <param name="type">The activity type to add, not null.</param>
         /// <returns>The original builder with activity added.</returns>
         public static ITaskHubWorkerBuilder AddActivity(this ITaskHubWorkerBuilder builder, Type type)
-            => AddActivity(builder, type, includeAliases: true);
+            => builder.AddActivity(type, includeAliases: true);
 
         /// <summary>
         /// Adds the provided activity type to the builder.
@@ -91,7 +93,7 @@ namespace DurableTask.DependencyInjection
         /// <returns>The original builder with activity added.</returns>
         public static ITaskHubWorkerBuilder AddActivity<TActivity>(this ITaskHubWorkerBuilder builder)
             where TActivity : TaskActivity
-            => AddActivity(builder, typeof(TActivity));
+            => builder.AddActivity(typeof(TActivity));
 
         /// <summary>
         /// Adds the provided activity type to the builder.
@@ -103,7 +105,7 @@ namespace DurableTask.DependencyInjection
         public static ITaskHubWorkerBuilder AddActivity<TActivity>(
             this ITaskHubWorkerBuilder builder, bool includeAliases)
             where TActivity : TaskActivity
-            => AddActivity(builder, typeof(TActivity), includeAliases);
+            => builder.AddActivity(typeof(TActivity), includeAliases);
 
         /// <summary>
         /// Adds the provided activity type to the builder.
@@ -116,7 +118,7 @@ namespace DurableTask.DependencyInjection
         public static ITaskHubWorkerBuilder AddActivity<TActivity>(
             this ITaskHubWorkerBuilder builder, string name, string version)
             where TActivity : TaskActivity
-            => AddActivity(builder, typeof(TActivity), name, version);
+            => builder.AddActivity(typeof(TActivity), name, version);
 
         /// <summary>
         /// Adds all <see cref="TaskActivity"/> in the provided assembly.
@@ -134,7 +136,7 @@ namespace DurableTask.DependencyInjection
 
             foreach (Type type in assembly.GetConcreteTypes<TaskActivity>(includePrivate))
             {
-                AddActivity(builder, type);
+                builder.AddActivity(type);
             }
 
             return builder;
@@ -145,12 +147,43 @@ namespace DurableTask.DependencyInjection
         /// Includes <see cref="TaskAliasAttribute"/>.
         /// </summary>
         /// <param name="builder">The builder to add to, not null.</param>
-        /// <param name="includePrivate">True to also include private/protected/internal types, false for public only.</param>
+        /// <param name="includePrivate">
+        ///     True to also include private/protected/internal types, false for public only.
+        /// </param>
         /// <typeparam name="T">The type contained in the assembly to discover types from.</typeparam>
         /// <returns>The original builder with activity added.</returns>
         public static ITaskHubWorkerBuilder AddActivitiesFromAssembly<T>(
             this ITaskHubWorkerBuilder builder, bool includePrivate = false)
-            => AddActivitiesFromAssembly(builder, typeof(T).Assembly, includePrivate);
+            => builder.AddActivitiesFromAssembly(typeof(T).Assembly, includePrivate);
+
+        /// <summary>
+        /// Adds all methods from the supplied interface <paramref name="type"/> to the builder as activities.
+        /// </summary>
+        /// <param name="builder">The builder to add to.</param>
+        /// <param name="type">The interface methods to add.</param>
+        /// <returns>The original builder with activities added.</returns>
+        public static ITaskHubWorkerBuilder AddActivitiesFromInterface(this ITaskHubWorkerBuilder builder, Type type)
+        {
+            Check.NotNull(builder, nameof(builder));
+            Check.NotNull(type, nameof(type));
+            Check.IsInterface(type, nameof(type));
+
+            foreach (MethodInfo method in type.GetMethods())
+            {
+                builder.AddActivity(new TaskActivityDescriptor(method));
+            }
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds all methods from the supplied interface <typeparamref name="T"/> to the builder as activities.
+        /// </summary>
+        /// <param name="builder">The builder to add to.</param>
+        /// <typeparam name="T">The interface methods to add.</typeparam>
+        /// <returns>The original builder with activities added.</returns>
+        public static ITaskHubWorkerBuilder AddActivitiesFromInterface<T>(this ITaskHubWorkerBuilder builder)
+            => builder.AddActivitiesFromInterface(typeof(T));
 
         /// <summary>
         /// Adds the provided middleware for task activities.
@@ -190,6 +223,22 @@ namespace DurableTask.DependencyInjection
         /// <returns>The original builder with activity middleware added.</returns>
         public static ITaskHubWorkerBuilder UseActivityMiddleware<TMiddleware>(this ITaskHubWorkerBuilder builder)
             where TMiddleware : ITaskMiddleware
-            => UseActivityMiddleware(builder, typeof(TMiddleware));
+            => builder.UseActivityMiddleware(typeof(TMiddleware));
+
+        /// <summary>
+        /// Adds the provided activity middleware to the builder.
+        /// </summary>
+        /// <param name="builder">The builder to add to, not null.</param>
+        /// <param name="func">The activity middleware func to add, not null.</param>
+        /// <returns>The original builder with activity middleware added.</returns>
+        public static ITaskHubWorkerBuilder UseActivityMiddleware(
+            this ITaskHubWorkerBuilder builder, Func<DispatchMiddlewareContext, Func<Task>, Task> func)
+        {
+            Check.NotNull(builder, nameof(builder));
+            Check.NotNull(func, nameof(func));
+
+            builder.UseActivityMiddleware(new TaskMiddlewareDescriptor(func));
+            return builder;
+        }
     }
 }

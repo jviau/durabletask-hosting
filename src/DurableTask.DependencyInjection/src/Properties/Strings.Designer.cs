@@ -38,12 +38,21 @@ namespace DurableTask.DependencyInjection.Properties
             => GetString("InnerOrchestrationNull");
 
         /// <summary>
-        ///     Type parameter '{name}' ['{type}'] must inherit from '{baseType}', be a class, and not be abstract"
+        ///     Type ['{type}'] must inherit from '{baseType}', be a class, and not be abstract"
         /// </summary>
-        public static string InvalidType(object name, object type, object baseType)
+        public static string InvalidType(object type, object baseType)
             => string.Format(
-                GetString("InvalidType", nameof(name), nameof(type), nameof(baseType)),
-                name, type, baseType,
+                GetString("InvalidType", nameof(type), nameof(baseType)),
+                type, baseType,
+                CultureInfo.CurrentUICulture);
+
+        /// <summary>
+        ///     Type ['{type}'] must be an interface.
+        /// </summary>
+        public static string NotInterface(object type)
+            => string.Format(
+                GetString("NotInterface", nameof(type)),
+                type,
                 CultureInfo.CurrentUICulture);
 
         /// <summary>

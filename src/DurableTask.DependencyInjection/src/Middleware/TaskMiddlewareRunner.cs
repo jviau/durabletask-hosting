@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
@@ -40,6 +41,12 @@ namespace DurableTask.DependencyInjection.Middleware
             ITaskMiddleware middleware = null;
             if (!s_factories.TryGetValue(descriptor, out Func<IServiceProvider, ITaskMiddleware> factory))
             {
+                if (descriptor.Func is object)
+                {
+                    factory = s_factories.GetOrAdd(descriptor, _ => new FuncMiddleware(descriptor.Func));
+                    middleware = factory.Invoke(serviceProvider);
+                }
+
                 if (serviceProvider.GetService(descriptor.Type) is ITaskMiddleware fetchedMiddleware)
                 {
                     s_factories[descriptor] = sp => (ITaskMiddleware)sp.GetRequiredService(descriptor.Type);
@@ -56,6 +63,19 @@ namespace DurableTask.DependencyInjection.Middleware
             }
 
             return middleware.InvokeAsync(context, next);
+        }
+
+        private class FuncMiddleware : ITaskMiddleware
+        {
+            private readonly Func<DispatchMiddlewareContext, Func<Task>, Task> _func;
+
+            public FuncMiddleware(Func<DispatchMiddlewareContext, Func<Task>, Task> func)
+            {
+                _func = Check.NotNull(func, nameof(func));
+            }
+
+            public Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)
+                => _func.Invoke(context, next);
         }
     }
 }

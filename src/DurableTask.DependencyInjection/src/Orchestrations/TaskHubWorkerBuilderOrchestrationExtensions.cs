@@ -3,7 +3,9 @@
 
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using DurableTask.Core;
+using DurableTask.Core.Middleware;
 using DurableTask.DependencyInjection.Extensions;
 
 namespace DurableTask.DependencyInjection
@@ -37,7 +39,7 @@ namespace DurableTask.DependencyInjection
         /// <param name="type">The orchestration type to add, not null.</param>
         /// <returns>The original builder with orchestration added.</returns>
         public static ITaskHubWorkerBuilder AddOrchestration(this ITaskHubWorkerBuilder builder, Type type)
-            => AddOrchestration(builder, type, includeAliases: true);
+            => builder.AddOrchestration(type, includeAliases: true);
 
         /// <summary>
         /// Adds the provided orchestration type to the builder.
@@ -72,7 +74,7 @@ namespace DurableTask.DependencyInjection
         /// <returns>The original builder with orchestration added.</returns>
         public static ITaskHubWorkerBuilder AddOrchestration<TOrchestration>(this ITaskHubWorkerBuilder builder)
             where TOrchestration : TaskOrchestration
-            => AddOrchestration(builder, typeof(TOrchestration));
+            => builder.AddOrchestration(typeof(TOrchestration));
 
         /// <summary>
         /// Adds the provided orchestration type to the builder.
@@ -84,7 +86,7 @@ namespace DurableTask.DependencyInjection
         public static ITaskHubWorkerBuilder AddOrchestration<TOrchestration>(
             this ITaskHubWorkerBuilder builder, bool includeAliases)
             where TOrchestration : TaskOrchestration
-            => AddOrchestration(builder, typeof(TOrchestration), includeAliases);
+            => builder.AddOrchestration(typeof(TOrchestration), includeAliases);
 
         /// <summary>
         /// Adds the provided orchestration type to the builder.
@@ -116,7 +118,7 @@ namespace DurableTask.DependencyInjection
         public static ITaskHubWorkerBuilder AddOrchestration<TOrchestration>(
             this ITaskHubWorkerBuilder builder, string name, string version)
             where TOrchestration : TaskOrchestration
-            => AddOrchestration(builder, typeof(TOrchestration), name, version);
+            => builder.AddOrchestration(typeof(TOrchestration), name, version);
 
         /// <summary>
         /// Adds all <see cref="TaskOrchestration"/> in the provided assembly.
@@ -134,7 +136,7 @@ namespace DurableTask.DependencyInjection
 
             foreach (Type type in assembly.GetConcreteTypes<TaskOrchestration>(includePrivate))
             {
-                AddOrchestration(builder, type);
+                builder.AddOrchestration(type);
             }
 
             return builder;
@@ -150,7 +152,7 @@ namespace DurableTask.DependencyInjection
         /// <returns>The original builder with activity added.</returns>
         public static ITaskHubWorkerBuilder AddOrchestrationsFromAssembly<T>(
             this ITaskHubWorkerBuilder builder, bool includePrivate = false)
-            => AddOrchestrationsFromAssembly(builder, typeof(T).Assembly, includePrivate);
+            => builder.AddOrchestrationsFromAssembly(typeof(T).Assembly, includePrivate);
 
         /// <summary>
         /// Adds the provided middleware for task orchestrations.
@@ -189,6 +191,22 @@ namespace DurableTask.DependencyInjection
         /// <returns>The original builder with orchestration middleware added.</returns>
         public static ITaskHubWorkerBuilder UseOrchestrationMiddleware<TMiddleware>(this ITaskHubWorkerBuilder builder)
             where TMiddleware : ITaskMiddleware
-            => UseOrchestrationMiddleware(builder, typeof(TMiddleware));
+            => builder.UseOrchestrationMiddleware(typeof(TMiddleware));
+
+        /// <summary>
+        /// Adds the provided orchestration middleware to the builder.
+        /// </summary>
+        /// <param name="builder">The builder to add to, not null.</param>
+        /// <param name="func">The orchestration middleware func to add, not null.</param>
+        /// <returns>The original builder with orchestration middleware added.</returns>
+        public static ITaskHubWorkerBuilder UseOrchestrationMiddleware(
+            this ITaskHubWorkerBuilder builder, Func<DispatchMiddlewareContext, Func<Task>, Task> func)
+        {
+            Check.NotNull(builder, nameof(builder));
+            Check.NotNull(func, nameof(func));
+
+            builder.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(func));
+            return builder;
+        }
     }
 }

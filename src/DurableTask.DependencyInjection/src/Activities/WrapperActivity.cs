@@ -47,6 +47,17 @@ namespace DurableTask.DependencyInjection.Activities
         {
             Check.NotNull(serviceProvider, nameof(serviceProvider));
 
+            // Reflection activity
+            if (Descriptor.Method is object)
+            {
+                // The "DeclaringType" must be an interface so that DTFx can emit a dynamic wrapper in an orchestration.
+                // As such, we expect the implementation to be registered in the service provider.
+                object obj = serviceProvider.GetRequiredService(Descriptor.Method.DeclaringType);
+                InnerActivity = new ReflectionBasedTaskActivity(obj, Descriptor.Method);
+                return;
+            }
+
+            // Service activity
             if (!s_factories.TryGetValue(Descriptor, out Func<IServiceProvider, TaskActivity> factory))
             {
                 if (serviceProvider.GetService(Descriptor.Type) is TaskActivity activity)

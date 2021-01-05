@@ -28,11 +28,6 @@ namespace DurableTask.DependencyInjection
         }
 
         /// <summary>
-        /// Gets the type held by this descriptor.
-        /// </summary>
-        public Type Type { get; }
-
-        /// <summary>
         /// Gets the task name.
         /// </summary>
         public string Name { get; }
@@ -41,5 +36,10 @@ namespace DurableTask.DependencyInjection
         /// Gets the task version.
         /// </summary>
         public string Version { get; }
+
+        /// <summary>
+        /// Gets the type held by this descriptor.
+        /// </summary>
+        public Type Type { get; }
     }
 }
