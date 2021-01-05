@@ -47,6 +47,15 @@ namespace DurableTask.DependencyInjection.Properties
                 CultureInfo.CurrentUICulture);
 
         /// <summary>
+        ///     Failed to create middleware for descriptor: {descriptor}
+        /// </summary>
+        public static string MiddlewareCreationFailed(object descriptor)
+            => string.Format(
+                GetString("MiddlewareCreationFailed", nameof(descriptor)),
+                descriptor,
+                CultureInfo.CurrentUICulture);
+
+        /// <summary>
         ///     Type ['{type}'] must be an interface.
         /// </summary>
         public static string NotInterface(object type)

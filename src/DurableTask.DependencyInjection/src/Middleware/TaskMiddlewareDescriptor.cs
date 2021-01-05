@@ -42,5 +42,29 @@ namespace DurableTask.DependencyInjection
         /// Gets the func to invoke for this middleware.
         /// </summary>
         public Func<DispatchMiddlewareContext, Func<Task>, Task> Func { get; }
+
+        /// <summary>
+        /// Creates a new <see cref="TaskMiddlewareDescriptor"/> with the provided type.
+        /// </summary>
+        /// <typeparam name="T">The type of <see cref="ITaskMiddleware"/>.</typeparam>
+        /// <returns>A new ,iddleware descriptor.</returns>
+        public static TaskMiddlewareDescriptor Create<T>()
+            where T : ITaskMiddleware
+            => new TaskMiddlewareDescriptor(typeof(T));
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            if (Type is object)
+            {
+                return $"Type: {Type}";
+            }
+            else if (Func is object)
+            {
+                return $"Func: {Func}";
+            }
+
+            return base.ToString();
+        }
     }
 }
