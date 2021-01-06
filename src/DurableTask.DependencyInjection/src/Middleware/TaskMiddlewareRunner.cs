@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using DurableTask.DependencyInjection.Extensions;
 using DurableTask.DependencyInjection.Properties;

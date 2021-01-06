@@ -25,9 +25,10 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                     InstanceId = InstanceId,
                 });
 
-
         private OrchestrationContext InvokedContext { get; set; }
+
         private string InvokedInput { get; set; }
+
         private string EventRaised { get; set; }
 
         [Fact]

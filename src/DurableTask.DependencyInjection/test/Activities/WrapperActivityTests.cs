@@ -23,6 +23,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 });
 
         private TaskContext InvokedContext { get; set; }
+
         private string InvokedInput { get; set; }
 
         [Fact]
