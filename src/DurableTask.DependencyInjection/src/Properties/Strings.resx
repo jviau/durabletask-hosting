@@ -130,7 +130,13 @@
     <value>InnerOrchestration is null.</value>
   </data>
   <data name="InvalidType" xml:space="preserve">
-    <value>Type parameter '{name}' ['{type}'] must inherit from '{baseType}', be a class, and not be abstract"</value>
+    <value>Type ['{type}'] must inherit from '{baseType}', be a class, and not be abstract"</value>
+  </data>
+  <data name="MiddlewareCreationFailed" xml:space="preserve">
+    <value>Failed to create middleware for descriptor: {descriptor}</value>
+  </data>
+  <data name="NotInterface" xml:space="preserve">
+    <value>Type ['{type}'] must be an interface.</value>
   </data>
   <data name="NotOrchestrationServiceClient" xml:space="preserve">
     <value>Failed to add TaskHubClient. '{orchestrationType}' does not implement IOrchestrationServiceClient.</value>

@@ -64,8 +64,22 @@ namespace DurableTask
             NotNull(type, name);
             if (!typeof(TImplements).IsAssignableFrom(type) || !type.IsClass || type.IsAbstract)
             {
-                throw new ArgumentException(
-                    Strings.InvalidType(name, type, typeof(TImplements)), name);
+                throw new ArgumentException(Strings.InvalidType(type, typeof(TImplements)), name);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the supplied type is an interface.
+        /// Throws <see cref="ArgumentException" /> if the conditions are not met.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <param name="name">The name of the argument for the exception message.</param>
+        public static void IsInterface(Type type, string name)
+        {
+            NotNull(type, name);
+            if (!type.IsInterface)
+            {
+                throw new ArgumentException(Strings.NotInterface(type), name);
             }
         }
     }

@@ -3,6 +3,7 @@
 
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DurableTask.DependencyInjection.Extensions
 {
@@ -12,16 +13,29 @@ namespace DurableTask.DependencyInjection.Extensions
     internal static class ServiceProviderExtensions
     {
         /// <summary>
-        /// Gets the service from the provider, or activates a new one if it is not available.
+        /// Creates a logger for the provided type from the service provider.
         /// </summary>
+        /// <typeparam name="T">The type to derive the logger category from.</typeparam>
         /// <param name="serviceProvider">The service provider.</param>
-        /// <param name="serviceType">The service type.</param>
-        /// <returns>The fetched or activated service.</returns>
-        public static object GetServiceOrCreateInstance(this IServiceProvider serviceProvider, Type serviceType)
+        /// <returns>The created logger.</returns>
+        public static ILogger<T> CreateLogger<T>(this IServiceProvider serviceProvider)
         {
             Check.NotNull(serviceProvider, nameof(serviceProvider));
-            Check.NotNull(serviceType, nameof(serviceType));
-            return ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, serviceType);
+            ILoggerFactory factory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            return factory.CreateLogger<T>();
+        }
+
+        /// <summary>
+        /// Creates a logger for the provided type from the service provider.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        /// <param name="type">The type to derive the logger category from.</param>
+        /// <returns>The created logger.</returns>
+        public static ILogger CreateLogger(this IServiceProvider serviceProvider, Type type)
+        {
+            Check.NotNull(serviceProvider, nameof(serviceProvider));
+            ILoggerFactory factory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            return factory.CreateLogger(type);
         }
     }
 }

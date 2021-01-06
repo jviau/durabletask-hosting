@@ -117,6 +117,7 @@ namespace DurableTask.DependencyInjection
             {
                 IOrchestrationScope scope = OrchestrationScope.GetOrCreateScope(
                     context.GetProperty<OrchestrationInstance>().InstanceId, serviceProvider);
+                context.SetProperty(scope.ServiceProvider);
 
                 using (scope.Enter())
                 {

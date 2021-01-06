@@ -5,6 +5,8 @@ using DurableTask.DependencyInjection.Activities;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 using static DurableTask.TestHelpers;
 
@@ -23,6 +25,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 });
 
         private TaskContext InvokedContext { get; set; }
+
         private string InvokedInput { get; set; }
 
         [Fact]
@@ -48,7 +51,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 wrapper => wrapper.Run(s_taskContext, s_input));
 
         [Fact]
-        public void Run_InvokesInner()
+        public void Run_Type_InvokesInner()
             => RunTest(
                 typeof(TestActivity),
                 wrapper =>
@@ -63,6 +66,31 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                     InvokedContext.Should().Be(s_taskContext);
                     InvokedInput.Should().Be(s_input);
                 });
+
+        [Fact]
+        public async Task Run_Method_InvokesInner()
+        {
+            // arrange
+            var methodInfo = typeof(IMyService).GetMethod(nameof(IMyService.MyMethodAsync));
+            var descriptor = new TaskActivityDescriptor(methodInfo);
+            var wrapperActivity = new WrapperActivity(descriptor);
+            var services = new ServiceCollection();
+            services.AddSingleton<IMyService, MyService>();
+            var input = new JArray()
+            {
+                "some_string",
+                10
+            };
+
+            // act
+            CreateScope();
+            wrapperActivity.Initialize(services.BuildServiceProvider());
+            string result = await wrapperActivity.RunAsync(s_taskContext, input.ToString());
+
+            // assert
+            string parsed = JsonConvert.DeserializeObject<string>(result);
+            parsed.Should().Be("some_string|10");
+        }
 
         [Fact]
         public Task RunAsync_InvalidOperation()
@@ -153,7 +181,6 @@ namespace DurableTask.DependencyInjection.Tests.Activities
             return services.BuildServiceProvider();
         }
 
-
         private class TestActivity : TaskActivity
         {
             private readonly WrapperActivityTests _test;
@@ -202,6 +229,19 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 _test.InvokedContext = context;
                 _test.InvokedInput = input;
                 return Task.FromResult(input);
+            }
+        }
+
+        private interface IMyService
+        {
+            Task<string> MyMethodAsync(string input1, int input2);
+        }
+
+        private class MyService : IMyService
+        {
+            public Task<string> MyMethodAsync(string input1, int input2)
+            {
+                return Task.FromResult($"{input1}|{input2}");
             }
         }
     }

@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using DurableTask.Core;
 using DurableTask.Core.Middleware;
+using DurableTask.DependencyInjection.Extensions;
+using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DurableTask.DependencyInjection.Middleware
 {
@@ -34,16 +36,36 @@ namespace DurableTask.DependencyInjection.Middleware
             Check.NotNull(context, nameof(context));
             Check.NotNull(next, nameof(next));
 
-            IServiceScope scope = OrchestrationScope.GetScope(context.GetProperty<OrchestrationInstance>().InstanceId);
-            IServiceProvider serviceProvider = scope.ServiceProvider;
+            IServiceProvider serviceProvider = context.GetProperty<IServiceProvider>();
+            ITaskMiddleware middleware = GetMiddleware(descriptor, serviceProvider);
+            if (middleware is null)
+            {
+                // This _should not_ be possible, as TaskMiddlewareDescriptor is designed to only be constructable with
+                // valid values. But a good sanity check here.
+                ILogger logger = serviceProvider.CreateLogger(typeof(TaskMiddlewareRunner));
+                string message = Strings.MiddlewareCreationFailed(descriptor);
+                logger.LogError(message);
+                throw new InvalidOperationException(message); // TODO: maybe a better exception type.
+            }
 
-            ITaskMiddleware middleware = null;
+            return middleware.InvokeAsync(context, next);
+        }
+
+        private static ITaskMiddleware GetMiddleware(
+            TaskMiddlewareDescriptor descriptor, IServiceProvider serviceProvider)
+        {
             if (!s_factories.TryGetValue(descriptor, out Func<IServiceProvider, ITaskMiddleware> factory))
             {
-                if (serviceProvider.GetService(descriptor.Type) is ITaskMiddleware fetchedMiddleware)
+                if (descriptor.Func is object)
+                {
+                    var middleware = new FuncMiddleware(descriptor.Func);
+                    factory = s_factories.GetOrAdd(descriptor, _ => middleware);
+                    return middleware;
+                }
+                else if (serviceProvider.GetService(descriptor.Type) is ITaskMiddleware fetchedMiddleware)
                 {
                     s_factories[descriptor] = sp => (ITaskMiddleware)sp.GetRequiredService(descriptor.Type);
-                    middleware = fetchedMiddleware;
+                    return fetchedMiddleware;
                 }
                 else
                 {
@@ -51,11 +73,24 @@ namespace DurableTask.DependencyInjection.Middleware
                         descriptor.Type, Array.Empty<Type>());
                     factory = s_factories.GetOrAdd(
                         descriptor, sp => (ITaskMiddleware)objectFactory.Invoke(sp, Array.Empty<object>()));
-                    middleware = factory.Invoke(serviceProvider);
+                    return factory.Invoke(serviceProvider);
                 }
             }
 
-            return middleware.InvokeAsync(context, next);
+            return factory.Invoke(serviceProvider);
+        }
+
+        private class FuncMiddleware : ITaskMiddleware
+        {
+            private readonly Func<DispatchMiddlewareContext, Func<Task>, Task> _func;
+
+            public FuncMiddleware(Func<DispatchMiddlewareContext, Func<Task>, Task> func)
+            {
+                _func = Check.NotNull(func, nameof(func));
+            }
+
+            public Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)
+                => _func.Invoke(context, next);
         }
     }
 }
