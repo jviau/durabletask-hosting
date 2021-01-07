@@ -133,7 +133,7 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
                 (wrapper, _) =>
                 {
                     EventRaised.Should().Be(Event);
-                    InvokedContext.Should().Be(s_orchestrationContext);
+                    InvokedContext.Should().BeOfType<WrapperOrchestrationContext>();
                     InvokedInput.Should().BeOneOf(Input, $"\"{Input}\"");
                 });
 
