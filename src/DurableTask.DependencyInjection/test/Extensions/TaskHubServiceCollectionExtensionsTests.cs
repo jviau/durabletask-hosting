@@ -1,12 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿// Copyright (c) Jacob Viau. All rights reserved.
+// Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
+
+using System;
 using DurableTask.Core;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using static DurableTask.TestHelpers;
 
-namespace DurableTask.DependencyInjection.Tests.Extensions
+namespace DurableTask.DependencyInjection.Extensions.Tests
 {
     public class TaskHubServiceCollectionExtensionsTests
     {

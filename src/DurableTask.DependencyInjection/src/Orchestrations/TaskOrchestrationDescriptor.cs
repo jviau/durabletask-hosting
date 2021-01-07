@@ -23,7 +23,7 @@ namespace DurableTask.DependencyInjection
             Check.ConcreteType<TaskOrchestration>(type, nameof(type));
 
             Type = type;
-            Name = name ?? NameVersionHelper.GetDefaultName(type);
+            Name = name ?? GenericNameHelper.GetDefaultName(type);
             Version = version ?? NameVersionHelper.GetDefaultVersion(type);
         }
 

@@ -1,16 +1,18 @@
-﻿using System;
+﻿// Copyright (c) Jacob Viau. All rights reserved.
+// Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DurableTask.Core;
-using DurableTask.DependencyInjection.Orchestrations;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 using static DurableTask.TestHelpers;
 
-namespace DurableTask.DependencyInjection.Tests.Activities
+namespace DurableTask.DependencyInjection.Orchestrations.Tests
 {
     public class WrapperOrchestrationTests
     {
@@ -86,7 +88,7 @@ namespace DurableTask.DependencyInjection.Tests.Activities
                 (wrapper, result) =>
                 {
                     result.Should().BeOneOf(Input, $"\"{Input}\"");
-                    InvokedContext.Should().Be(s_orchestrationContext);
+                    InvokedContext.Should().BeOfType<WrapperOrchestrationContext>();
                     InvokedInput.Should().BeOneOf(Input, $"\"{Input}\"");
                 });
 

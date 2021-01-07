@@ -25,7 +25,7 @@ namespace DurableTask.DependencyInjection
             Check.ConcreteType<TaskActivity>(type, nameof(type));
 
             Type = type;
-            Name = name ?? NameVersionHelper.GetDefaultName(type);
+            Name = name ?? GenericNameHelper.GetDefaultName(type);
             Version = version ?? NameVersionHelper.GetDefaultVersion(type);
         }
 
@@ -40,6 +40,8 @@ namespace DurableTask.DependencyInjection
         public TaskActivityDescriptor(MethodInfo method, string name = null, string version = null)
         {
             Method = Check.NotNull(method, nameof(method));
+            Check.NotNull(method.DeclaringType, nameof(method) + nameof(method.DeclaringType));
+
             Name = name ?? NameVersionHelper.GetDefaultName(method);
             Version = version ?? NameVersionHelper.GetDefaultVersion(method);
         }

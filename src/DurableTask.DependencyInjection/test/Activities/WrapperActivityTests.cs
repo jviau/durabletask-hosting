@@ -1,7 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Jacob Viau. All rights reserved.
+// Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Threading.Tasks;
 using DurableTask.Core;
-using DurableTask.DependencyInjection.Activities;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -10,7 +12,7 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 using static DurableTask.TestHelpers;
 
-namespace DurableTask.DependencyInjection.Tests.Activities
+namespace DurableTask.DependencyInjection.Activities.Tests
 {
     public class WrapperActivityTests
     {
