@@ -44,7 +44,6 @@ namespace DurableTask.Samples
                 {
                     // IOrchestrationService orchestrationService = UseServiceBus(context.Configuration);
                     IOrchestrationService orchestrationService = UseLocalEmulator();
-
                     builder.WithOrchestrationService(orchestrationService);
 
                     builder.AddClient();
@@ -59,11 +58,13 @@ namespace DurableTask.Samples
                         .AddOrchestration<GreetingsOrchestration>()
                         .AddOrchestration<GenericOrchestrationRunner>();
 
-                    builder
-                        .AddActivity<PrintTask>()
-                        .AddActivity<GetUserTask>()
-                        .AddActivity<SendGreetingTask>()
-                        .AddActivity(typeof(GenericActivity<>));
+                    //builder
+                    //    .AddActivity<PrintTask>()
+                    //    .AddActivity<GetUserTask>()
+                    //    .AddActivity<SendGreetingTask>()
+                    //    .AddActivity(typeof(GenericActivity<>));
+
+                    builder.AddActivitiesFromAssembly<Program>();
                 })
                 .UseConsoleLifetime()
                 .Build();

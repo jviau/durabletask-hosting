@@ -19,6 +19,8 @@ namespace DurableTask.DependencyInjection
         /// <returns>True if name represented a generic, false otherwise.</returns>
         public static bool TryGetGenericName(string name, out string genericName)
         {
+            Check.NotNull(name, nameof(name));
+
             // For a name of "Namespace.MyType`N[SomeSubtype]" we want "Namespace.MyType`N"
             int genericSplitter = name.IndexOf('[');
             if (genericSplitter < 0)

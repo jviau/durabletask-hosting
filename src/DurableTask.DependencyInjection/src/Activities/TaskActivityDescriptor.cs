@@ -65,5 +65,16 @@ namespace DurableTask.DependencyInjection
         /// Gets the <see cref="MethodInfo"/> to fetch and execute.
         /// </summary>
         public MethodInfo Method { get; }
+
+        /// <summary>
+        /// Creates a new descriptor for <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The activity type to describe.</typeparam>
+        /// <param name="name">The name of the activity. Optional.</param>
+        /// <param name="version">The version of the activity. Optional.</param>
+        /// <returns>A new descriptor.</returns>
+        public static TaskActivityDescriptor Create<T>(string name = null, string version = null)
+            where T : TaskActivity
+            => new TaskActivityDescriptor(typeof(T), name, version);
     }
 }

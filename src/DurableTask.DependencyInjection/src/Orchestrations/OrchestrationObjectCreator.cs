@@ -27,7 +27,15 @@ namespace DurableTask.DependencyInjection.Orchestrations
         }
 
         /// <inheritdoc/>
-        public override TaskOrchestration Create() => new WrapperOrchestration(_descriptor);
+        public override TaskOrchestration Create()
+        {
+            if (_descriptor.Type?.IsGenericTypeDefinition == true)
+            {
+                throw new InvalidOperationException("Cannot create activity for generic definition");
+            }
+
+            return new WrapperOrchestration(_descriptor);
+        }
 
         /// <inheritdoc/>
         public override TaskOrchestration Create(string closedName)

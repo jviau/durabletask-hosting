@@ -27,7 +27,15 @@ namespace DurableTask.DependencyInjection.Activities
         }
 
         /// <inheritdoc/>
-        public override TaskActivity Create() => new WrapperActivity(_descriptor);
+        public override TaskActivity Create()
+        {
+            if (_descriptor.Type?.IsGenericTypeDefinition == true)
+            {
+                throw new InvalidOperationException("Cannot create activity for generic definition");
+            }
+
+            return new WrapperActivity(_descriptor);
+        }
 
         /// <inheritdoc/>
         public override TaskActivity Create(string closedName)
