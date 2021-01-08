@@ -9,7 +9,7 @@ using Moq;
 using Xunit;
 using static DurableTask.TestHelpers;
 
-namespace DurableTask.DependencyInjection.Tests.Extensions
+namespace DurableTask.DependencyInjection.Activities.Tests
 {
     public class TaskHubWorkerBuilderActivityExtensionsTests
     {

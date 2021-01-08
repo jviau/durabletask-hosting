@@ -63,7 +63,7 @@ namespace DurableTask.DependencyInjection.Activities
                 if (serviceProvider.GetService(Descriptor.Type) is TaskActivity activity)
                 {
                     InnerActivity = activity;
-                    s_factories[Descriptor] = sp => (TaskActivity)sp.GetRequiredService(Descriptor.Type);
+                    s_factories.TryAdd(Descriptor, sp => (TaskActivity)sp.GetRequiredService(Descriptor.Type));
                     return; // already created it this time, so return now.
                 }
                 else

@@ -25,7 +25,7 @@ namespace DurableTask.DependencyInjection
             Check.ConcreteType<TaskActivity>(type, nameof(type));
 
             Type = type;
-            Name = name ?? NameVersionHelper.GetDefaultName(type);
+            Name = name ?? GenericNameHelper.GetDefaultName(type);
             Version = version ?? NameVersionHelper.GetDefaultVersion(type);
         }
 
@@ -40,6 +40,8 @@ namespace DurableTask.DependencyInjection
         public TaskActivityDescriptor(MethodInfo method, string name = null, string version = null)
         {
             Method = Check.NotNull(method, nameof(method));
+            Check.NotNull(method.DeclaringType, nameof(method) + nameof(method.DeclaringType));
+
             Name = name ?? NameVersionHelper.GetDefaultName(method);
             Version = version ?? NameVersionHelper.GetDefaultVersion(method);
         }
@@ -63,5 +65,16 @@ namespace DurableTask.DependencyInjection
         /// Gets the <see cref="MethodInfo"/> to fetch and execute.
         /// </summary>
         public MethodInfo Method { get; }
+
+        /// <summary>
+        /// Creates a new descriptor for <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The activity type to describe.</typeparam>
+        /// <param name="name">The name of the activity. Optional.</param>
+        /// <param name="version">The version of the activity. Optional.</param>
+        /// <returns>A new descriptor.</returns>
+        public static TaskActivityDescriptor Create<T>(string name = null, string version = null)
+            where T : TaskActivity
+            => new TaskActivityDescriptor(typeof(T), name, version);
     }
 }

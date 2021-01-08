@@ -12,8 +12,8 @@ using DurableTask.Core;
 using DurableTask.DependencyInjection;
 using DurableTask.Emulator;
 using DurableTask.Hosting;
+using DurableTask.Samples.Generics;
 using DurableTask.Samples.Greetings;
-using Dynamitey.DynamicObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,7 +44,6 @@ namespace DurableTask.Samples
                 {
                     // IOrchestrationService orchestrationService = UseServiceBus(context.Configuration);
                     IOrchestrationService orchestrationService = UseLocalEmulator();
-
                     builder.WithOrchestrationService(orchestrationService);
 
                     builder.AddClient();
@@ -55,10 +54,17 @@ namespace DurableTask.Samples
                     builder.UseActivityMiddleware<ActivityInstanceExMiddleware>();
                     builder.UseActivityMiddleware<SampleMiddleware>();
 
-                    builder.AddOrchestration<GreetingsOrchestration>();
                     builder
-                        .AddActivity<GetUserTask>()
-                        .AddActivity<SendGreetingTask>();
+                        .AddOrchestration<GreetingsOrchestration>()
+                        .AddOrchestration<GenericOrchestrationRunner>();
+
+                    //builder
+                    //    .AddActivity<PrintTask>()
+                    //    .AddActivity<GetUserTask>()
+                    //    .AddActivity<SendGreetingTask>()
+                    //    .AddActivity(typeof(GenericActivity<>));
+
+                    builder.AddActivitiesFromAssembly<Program>();
                 })
                 .UseConsoleLifetime()
                 .Build();
@@ -178,14 +184,14 @@ namespace DurableTask.Samples
             protected override async Task ExecuteAsync(CancellationToken stoppingToken)
             {
                 OrchestrationInstance instance = await _client.CreateOrchestrationInstanceAsync(
-                        NameVersionHelper.GetDefaultName(typeof(GreetingsOrchestration)),
-                        NameVersionHelper.GetDefaultVersion(typeof(GreetingsOrchestration)),
-                        _instanceId,
-                        null,
-                        new Dictionary<string, string>()
-                        {
-                            ["CorrelationId"] = Guid.NewGuid().ToString(),
-                        });
+                    NameVersionHelper.GetDefaultName(typeof(GenericOrchestrationRunner)),
+                    NameVersionHelper.GetDefaultVersion(typeof(GenericOrchestrationRunner)),
+                    _instanceId,
+                    null,
+                    new Dictionary<string, string>()
+                    {
+                        ["CorrelationId"] = Guid.NewGuid().ToString(),
+                    });
 
                 OrchestrationState result = await _client.WaitForOrchestrationAsync(
                     instance, TimeSpan.FromSeconds(60));

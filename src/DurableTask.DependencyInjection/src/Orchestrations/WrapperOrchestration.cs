@@ -52,7 +52,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
                 if (serviceProvider.GetService(Descriptor.Type) is TaskOrchestration orchestration)
                 {
                     InnerOrchestration = orchestration;
-                    s_factories[Descriptor] = sp => (TaskOrchestration)sp.GetRequiredService(Descriptor.Type);
+                    s_factories.TryAdd(Descriptor, sp => (TaskOrchestration)sp.GetRequiredService(Descriptor.Type));
                     return; // already created it this time, so just return now.
                 }
                 else
@@ -77,6 +77,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
                 // While this looks wrong to not await this task before disposing the scope,
                 // DurableTask orchestrations are never resumed after yielding. They will only
                 // be replayed from scratch.
+                context = new WrapperOrchestrationContext(context);
                 return InnerOrchestration.Execute(context, input);
             }
         }
@@ -92,6 +93,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         public override void RaiseEvent(OrchestrationContext context, string name, string input)
         {
             CheckInnerOrchestration();
+            context = new WrapperOrchestrationContext(context);
             InnerOrchestration.RaiseEvent(context, name, input);
         }
 

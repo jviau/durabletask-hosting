@@ -2,6 +2,7 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Globalization;
 using DurableTask.DependencyInjection.Properties;
 
 namespace DurableTask
@@ -11,6 +12,22 @@ namespace DurableTask
     /// </summary>
     internal static class Check
     {
+        /// <summary>
+        /// Throws an <see cref="ArgumentException"/> in the condition is false.
+        /// </summary>
+        /// <param name="condition">The condition to evaluate.</param>
+        /// <param name="name">The parameter name.</param>
+        /// <param name="message">The error message.</param>
+        /// <param name="args">The message args for formatting.</param>
+        public static void Argument(bool condition, string name, string message, params object[] args)
+        {
+            args ??= Array.Empty<object>();
+            if (!condition)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, message, args), name);
+            }
+        }
+
         /// <summary>
         /// Checks in the provided element is null, throwing if it is.
         /// Throws <see cref="ArgumentException" /> if the conditions are not met.

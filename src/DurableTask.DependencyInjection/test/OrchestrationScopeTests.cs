@@ -1,7 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Jacob Viau. All rights reserved.
+// Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using DurableTask.Core;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;

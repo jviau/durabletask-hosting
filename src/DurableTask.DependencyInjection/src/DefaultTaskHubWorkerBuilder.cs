@@ -83,7 +83,12 @@ namespace DurableTask.DependencyInjection
             }
 
             ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            var worker = new TaskHubWorker(OrchestrationService, loggerFactory);
+            var worker = new TaskHubWorker(
+                OrchestrationService,
+                new GenericObjectManager<TaskOrchestration>(),
+                new GenericObjectManager<TaskActivity>(),
+                loggerFactory);
+
             worker.AddTaskOrchestrations(Orchestrations.Select(x => new OrchestrationObjectCreator(x)).ToArray());
             worker.AddTaskActivities(Activities.Select(x => new ActivityObjectCreator(x)).ToArray());
 

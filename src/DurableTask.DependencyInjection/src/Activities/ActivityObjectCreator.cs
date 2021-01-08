@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
+using System;
 using DurableTask.Core;
 
 namespace DurableTask.DependencyInjection.Activities
@@ -8,7 +9,7 @@ namespace DurableTask.DependencyInjection.Activities
     /// <summary>
     /// Object creator driven by the provided descriptor.
     /// </summary>
-    internal class ActivityObjectCreator : ObjectCreator<TaskActivity>
+    internal class ActivityObjectCreator : GenericObjectCreator<TaskActivity>
     {
         private readonly TaskActivityDescriptor _descriptor;
 
@@ -26,6 +27,29 @@ namespace DurableTask.DependencyInjection.Activities
         }
 
         /// <inheritdoc/>
-        public override TaskActivity Create() => new WrapperActivity(_descriptor);
+        public override TaskActivity Create()
+        {
+            if (_descriptor.Type?.IsGenericTypeDefinition == true)
+            {
+                throw new InvalidOperationException("Cannot create activity for generic definition");
+            }
+
+            return new WrapperActivity(_descriptor);
+        }
+
+        /// <inheritdoc/>
+        public override TaskActivity Create(string closedName)
+        {
+            Check.NotNullOrEmpty(closedName, nameof(closedName));
+            if (_descriptor.Type?.IsGenericTypeDefinition != true)
+            {
+                throw new InvalidOperationException("This is not a generic type definition descriptor.");
+            }
+
+            Type closedType = _descriptor.Type.Assembly.GetType(closedName, throwOnError: true);
+            Check.Argument(closedType.IsConstructedGenericType, nameof(closedType), "Type must be closed");
+
+            return new WrapperActivity(new TaskActivityDescriptor(closedType));
+        }
     }
 }
