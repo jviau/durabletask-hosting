@@ -56,7 +56,7 @@ namespace DurableTask.DependencyInjection.Tests
         {
             var manager = new GenericObjectManager<TaskActivity>();
             manager.Add(new ActivityObjectCreator(new TaskActivityDescriptor(typeof(TestActivity<>))));
-            TaskActivity activity = manager.GetObject(type.FullName, string.Empty);
+            TaskActivity activity = manager.GetObject(TypeShortName.ToString(type, false), string.Empty);
             activity.Should().NotBeNull();
             activity.As<WrapperActivity>().Descriptor.Type.Should().Be(type);
         }

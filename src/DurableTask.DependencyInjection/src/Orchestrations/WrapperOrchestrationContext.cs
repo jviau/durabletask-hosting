@@ -103,7 +103,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         {
             UpdateInnerProperties();
             return ScheduleTask<TResult>(
-                GenericNameHelper.GetDefaultName(activityType),
+                TypeShortName.ToString(activityType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(activityType),
                 parameters);
         }
@@ -114,7 +114,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         {
             UpdateInnerProperties();
             return ScheduleWithRetry<T>(
-                GenericNameHelper.GetDefaultName(taskActivityType),
+                TypeShortName.ToString(taskActivityType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(taskActivityType),
                 retryOptions,
                 parameters);
@@ -125,7 +125,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         {
             UpdateInnerProperties();
             return CreateSubOrchestrationInstance<T>(
-                GenericNameHelper.GetDefaultName(orchestrationType),
+                TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 input);
         }
@@ -136,7 +136,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         {
             UpdateInnerProperties();
             return CreateSubOrchestrationInstance<T>(
-                GenericNameHelper.GetDefaultName(orchestrationType),
+                TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 instanceId,
                 input);
@@ -148,7 +148,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         {
             UpdateInnerProperties();
             return CreateSubOrchestrationInstanceWithRetry<T>(
-                GenericNameHelper.GetDefaultName(orchestrationType),
+                TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 retryOptions,
                 input);
@@ -160,7 +160,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         {
             UpdateInnerProperties();
             return CreateSubOrchestrationInstanceWithRetry<T>(
-                GenericNameHelper.GetDefaultName(orchestrationType),
+                TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 instanceId,
                 retryOptions,

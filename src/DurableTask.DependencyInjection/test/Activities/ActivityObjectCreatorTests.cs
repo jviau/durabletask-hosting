@@ -42,7 +42,7 @@ namespace DurableTask.DependencyInjection.Activities.Tests
         {
             var descriptor = TaskActivityDescriptor.Create<TestActivity>();
             var creator = new ActivityObjectCreator(descriptor);
-            Action act = () => creator.Create("Some name");
+            Action act = () => creator.Create(new TypeShortName(typeof(string)));
             act.Should().ThrowExactly<InvalidOperationException>();
         }
 
@@ -51,7 +51,7 @@ namespace DurableTask.DependencyInjection.Activities.Tests
         {
             var descriptor = new TaskActivityDescriptor(typeof(TestActivity<>));
             var creator = new ActivityObjectCreator(descriptor);
-            Action act = () => creator.Create(null);
+            Action act = () => creator.Create(default);
             act.Should().ThrowExactly<ArgumentNullException>();
         }
 
@@ -60,7 +60,7 @@ namespace DurableTask.DependencyInjection.Activities.Tests
         {
             var descriptor = new TaskActivityDescriptor(typeof(TestActivity<>));
             var creator = new ActivityObjectCreator(descriptor);
-            Action act = () => creator.Create("Invalid name");
+            Action act = () => creator.Create(new TypeShortName("Namespace.Dne"));
             act.Should().ThrowExactly<TypeLoadException>();
         }
 
@@ -70,7 +70,7 @@ namespace DurableTask.DependencyInjection.Activities.Tests
             var descriptor = new TaskActivityDescriptor(typeof(TestActivity<>));
             var type = typeof(TestActivity<object>);
             var creator = new ActivityObjectCreator(descriptor);
-            TaskActivity activity = creator.Create(type.FullName);
+            TaskActivity activity = creator.Create(new TypeShortName(type));
             activity.Should().NotBeNull();
             activity.Should().BeOfType<WrapperActivity>()
                 .Which.Descriptor.Type.Should().Be(type);

@@ -29,16 +29,16 @@ namespace DurableTask.DependencyInjection
         /// <inheritdoc/>
         public T GetObject(string name, string version)
         {
-            (ObjectCreator<T> creator, bool isGenericType) = GetCreator(name, version);
+            (ObjectCreator<T> creator, TypeShortName typeName) = GetCreator(name, version);
 
             if (creator is null)
             {
                 return default;
             }
 
-            if (isGenericType && creator is GenericObjectCreator<T> genericCreator)
+            if (typeName.Name is object && creator is GenericObjectCreator<T> genericCreator)
             {
-                return genericCreator.Create(name);
+                return genericCreator.Create(typeName);
             }
 
             return creator.Create();
@@ -46,22 +46,25 @@ namespace DurableTask.DependencyInjection
 
         private static string GetKey(string name, string version) => $"{name}|{version}";
 
-        private (ObjectCreator<T> Creator, bool IsGenericType) GetCreator(string name, string version)
+        private (ObjectCreator<T> Creator, TypeShortName TypeName) GetCreator(string name, string version)
         {
             // First check if the name is registered directly.
             if (_creators.TryGetValue(GetKey(name, version), out ObjectCreator<T> creator))
             {
-                return (creator, false);
+                return (creator, default);
             }
 
             // Then check if this represents a generic type, and find the generic definition name.
-            if (GenericNameHelper.TryGetGenericName(name, out string genericName) &&
-                _creators.TryGetValue(GetKey(genericName, version), out creator))
+            if (name.IndexOf('[') > 0)
             {
-                return (creator, true);
+                var typeName = new TypeShortName(name);
+                if (_creators.TryGetValue(GetKey(typeName.Name, version), out creator))
+                {
+                    return (creator, typeName);
+                }
             }
 
-            return (default, false);
+            return (default, default);
         }
     }
 }

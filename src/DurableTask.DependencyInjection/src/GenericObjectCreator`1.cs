@@ -14,12 +14,12 @@ namespace DurableTask.DependencyInjection
         /// <summary>
         /// Creates an instance of <typeparamref name="T"/>, given the closed type name for T.
         /// </summary>
-        /// <param name="closedName">The closed type name of T.</param>
+        /// <param name="typeName">The closed short name of T.</param>
         /// <returns>An instance of T.</returns>
         /// <remarks>
         /// This is called when this creator represents an open-generic version of T, with the provided type
-        /// <paramref name="closedName"/> being the closed form to create.
+        /// <paramref name="typeName"/> being the closed form to create.
         /// </remarks>
-        public abstract T Create(string closedName);
+        public abstract T Create(TypeShortName typeName);
     }
 }

@@ -45,7 +45,7 @@ namespace DurableTask.DependencyInjection.Activitys.Tests
             descriptor.Should().NotBeNull();
             descriptor.Method.Should().BeNull();
             descriptor.Type.Should().Be(type);
-            descriptor.Name.Should().Be(type.FullName);
+            descriptor.Name.Should().Be(TypeShortName.ToString(type, false));
             descriptor.Version.Should().BeEmpty();
         }
 

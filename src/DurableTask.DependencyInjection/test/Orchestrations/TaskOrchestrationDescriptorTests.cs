@@ -36,7 +36,7 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
             var descriptor = new TaskOrchestrationDescriptor(type);
             descriptor.Should().NotBeNull();
             descriptor.Type.Should().Be(type);
-            descriptor.Name.Should().Be(type.FullName);
+            descriptor.Name.Should().Be(TypeShortName.ToString(type, false));
             descriptor.Version.Should().BeEmpty();
         }
 

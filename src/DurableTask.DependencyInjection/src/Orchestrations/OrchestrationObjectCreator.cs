@@ -38,15 +38,14 @@ namespace DurableTask.DependencyInjection.Orchestrations
         }
 
         /// <inheritdoc/>
-        public override TaskOrchestration Create(string closedName)
+        public override TaskOrchestration Create(TypeShortName typeName)
         {
-            Check.NotNull(closedName, nameof(closedName));
             if (_descriptor.Type?.IsGenericTypeDefinition != true)
             {
                 throw new InvalidOperationException("This is not a generic type definition creator.");
             }
 
-            Type closedType = _descriptor.Type.Assembly.GetType(closedName, throwOnError: true);
+            Type closedType = typeName.Load(_descriptor.Type.Assembly);
             Check.Argument(closedType.IsConstructedGenericType, nameof(closedType), "Type must be closed");
 
             return new WrapperOrchestration(new TaskOrchestrationDescriptor(closedType));

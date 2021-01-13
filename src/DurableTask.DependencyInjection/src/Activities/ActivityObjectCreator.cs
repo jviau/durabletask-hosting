@@ -38,15 +38,15 @@ namespace DurableTask.DependencyInjection.Activities
         }
 
         /// <inheritdoc/>
-        public override TaskActivity Create(string closedName)
+        public override TaskActivity Create(TypeShortName typeName)
         {
-            Check.NotNullOrEmpty(closedName, nameof(closedName));
+            Check.NotNull(typeName.Name, nameof(typeName) + nameof(typeName.Name));
             if (_descriptor.Type?.IsGenericTypeDefinition != true)
             {
                 throw new InvalidOperationException("This is not a generic type definition descriptor.");
             }
 
-            Type closedType = _descriptor.Type.Assembly.GetType(closedName, throwOnError: true);
+            Type closedType = typeName.Load(_descriptor.Type.Assembly);
             Check.Argument(closedType.IsConstructedGenericType, nameof(closedType), "Type must be closed");
 
             return new WrapperActivity(new TaskActivityDescriptor(closedType));

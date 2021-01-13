@@ -25,7 +25,7 @@ namespace DurableTask.DependencyInjection
             Check.ConcreteType<TaskActivity>(type, nameof(type));
 
             Type = type;
-            Name = name ?? GenericNameHelper.GetDefaultName(type);
+            Name = name ?? TypeShortName.ToString(type, false);
             Version = version ?? NameVersionHelper.GetDefaultVersion(type);
         }
 
