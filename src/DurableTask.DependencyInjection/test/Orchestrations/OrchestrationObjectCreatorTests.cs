@@ -43,7 +43,7 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
         {
             var descriptor = TaskOrchestrationDescriptor.Create<TestOrchestration>();
             var creator = new OrchestrationObjectCreator(descriptor);
-            Action act = () => creator.Create("Some name");
+            Action act = () => creator.Create(new TypeShortName(typeof(string)));
             act.Should().ThrowExactly<InvalidOperationException>();
         }
 
@@ -52,7 +52,7 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
         {
             var descriptor = new TaskOrchestrationDescriptor(typeof(TestOrchestration<>));
             var creator = new OrchestrationObjectCreator(descriptor);
-            Action act = () => creator.Create(null);
+            Action act = () => creator.Create(default);
             act.Should().ThrowExactly<ArgumentNullException>();
         }
 
@@ -61,7 +61,7 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
         {
             var descriptor = new TaskOrchestrationDescriptor(typeof(TestOrchestration<>));
             var creator = new OrchestrationObjectCreator(descriptor);
-            Action act = () => creator.Create("Invalid name");
+            Action act = () => creator.Create(new TypeShortName("Namespace.Dne"));
             act.Should().ThrowExactly<TypeLoadException>();
         }
 
@@ -71,7 +71,7 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
             var descriptor = new TaskOrchestrationDescriptor(typeof(TestOrchestration<>));
             var type = typeof(TestOrchestration<object>);
             var creator = new OrchestrationObjectCreator(descriptor);
-            TaskOrchestration Orchestration = creator.Create(type.FullName);
+            TaskOrchestration Orchestration = creator.Create(new TypeShortName(type));
             Orchestration.Should().NotBeNull();
             Orchestration.Should().BeOfType<WrapperOrchestration>()
                 .Which.Descriptor.Type.Should().Be(type);
