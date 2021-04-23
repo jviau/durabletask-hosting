@@ -1,4 +1,6 @@
-# Release 2.0.9-preview
+# Release 2.1.0-preview
 
-- Use a short(er) type name, keeping only assembly short name (for generic params) and type name w/ namespace.
-   - This means assembly version and public key are dropped.
+- Consume `IOrchestrationService` via dependency injection.
+  - `WithOrchestrationService` now adds to `IServiceCollection` as singleton.
+  - `AddClient` now first looks for `IOrchestrationServiceClient`, then falls back to casting `IOrchestrationService`.
+  - `ITaskHubWorkerBuilder.OrchestrationService` marked as obsolete.
