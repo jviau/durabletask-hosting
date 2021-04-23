@@ -63,9 +63,9 @@ namespace DurableTask.DependencyInjection
         {
             Check.NotNull(serviceProvider, nameof(serviceProvider));
 
-            if (OrchestrationService == null)
+            if (OrchestrationService is null)
             {
-                throw new InvalidOperationException(Strings.OrchestrationInstanceNull);
+                OrchestrationService = serviceProvider.GetRequiredService<IOrchestrationService>();
             }
 
             // Verify we still have our ServiceProvider middleware

@@ -65,19 +65,13 @@ namespace DurableTask.DependencyInjection.Properties
                 CultureInfo.CurrentUICulture);
 
         /// <summary>
-        ///     Failed to add TaskHubClient. '{orchestrationType}' does not implement IOrchestrationServiceClient.
+        ///     Failed to add TaskHubClient. No IOrchestrationServiceClient was found in the service container and '{orchestrationType}' does not implement IOrchestrationServiceClient.
         /// </summary>
         public static string NotOrchestrationServiceClient(object orchestrationType)
             => string.Format(
                 GetString("NotOrchestrationServiceClient", nameof(orchestrationType)),
                 orchestrationType,
                 CultureInfo.CurrentUICulture);
-
-        /// <summary>
-        ///     The builder is not fully configured yet. OrchestrationService is null.
-        /// </summary>
-        public static string OrchestrationInstanceNull
-            => GetString("OrchestrationInstanceNull");
 
         /// <summary>
         ///     Scope already exists for orchestration '{orchestrationId}'.

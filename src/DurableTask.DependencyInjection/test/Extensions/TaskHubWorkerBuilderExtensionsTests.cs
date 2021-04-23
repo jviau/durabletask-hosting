@@ -35,7 +35,7 @@ namespace DurableTask.DependencyInjection.Extensions.Tests
                 },
                 (mock, service) =>
                 {
-                    mock.VerifySet(m => m.OrchestrationService = service, Times.Once);
+                    mock.Object.Services.Should().Contain(x => x.ServiceType == typeof(IOrchestrationService));
                 });
 
         [Fact]
@@ -67,24 +67,59 @@ namespace DurableTask.DependencyInjection.Extensions.Tests
                 builder =>
                 {
                     var mockOrchestrationService = new Mock<IOrchestrationService>();
-                    Mock.Get(builder)
-                        .Setup(m => m.OrchestrationService)
-                        .Returns(mockOrchestrationService.Object);
+                    builder.WithOrchestrationService(mockOrchestrationService.Object);
                     builder.AddClient();
                     IServiceProvider provider = builder.Services.BuildServiceProvider();
                     provider.GetService<TaskHubClient>();
                 });
 
         [Fact]
-        public void ClientFactory_ClientReturned()
+        public void ClientFactory_ClientReturned_Casted()
             => RunTest(
                 builder =>
                 {
                     var mockOrchestrationService = new Mock<IOrchestrationService>();
                     mockOrchestrationService.As<IOrchestrationServiceClient>();
+                    builder.WithOrchestrationService(mockOrchestrationService.Object);
+                    builder.AddClient();
+                    IServiceProvider provider = builder.Services.BuildServiceProvider();
+                    return provider.GetService<TaskHubClient>();
+                },
+                (mock, client) =>
+                {
+                    client.Should().NotBeNull();
+                });
+
+        [Fact]
+        public void ClientFactory_ClientReturned_Casted2()
+            => RunTest(
+                builder =>
+                {
+                    var mockOrchestrationService = new Mock<IOrchestrationService>();
+                    mockOrchestrationService.As<IOrchestrationServiceClient>();
+
+#pragma warning disable CS0618 // Type or member is obsolete
                     Mock.Get(builder)
                         .Setup(m => m.OrchestrationService)
                         .Returns(mockOrchestrationService.Object);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+                    builder.AddClient();
+                    IServiceProvider provider = builder.Services.BuildServiceProvider();
+                    return provider.GetService<TaskHubClient>();
+                },
+                (mock, client) =>
+                {
+                    client.Should().NotBeNull();
+                });
+
+        [Fact]
+        public void ClientFactory_ClientReturned_Direct()
+            => RunTest(
+                builder =>
+                {
+                    var mockClient = Mock.Of<IOrchestrationServiceClient>();
+                    builder.Services.AddSingleton(mockClient);
                     builder.AddClient();
                     IServiceProvider provider = builder.Services.BuildServiceProvider();
                     return provider.GetService<TaskHubClient>();

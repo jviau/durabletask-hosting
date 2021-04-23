@@ -25,7 +25,7 @@ namespace DurableTask.DependencyInjection
             this ITaskHubWorkerBuilder builder, IOrchestrationService orchestrationService)
         {
             Check.NotNull(builder, nameof(builder));
-            builder.OrchestrationService = orchestrationService;
+            builder.Services.TryAddSingleton(orchestrationService);
             return builder;
         }
 
@@ -43,19 +43,25 @@ namespace DurableTask.DependencyInjection
 
         private static TaskHubClient ClientFactory(ITaskHubWorkerBuilder builder, IServiceProvider serviceProvider)
         {
-            if (builder.OrchestrationService == null)
+            IOrchestrationServiceClient client = serviceProvider.GetService<IOrchestrationServiceClient>();
+
+            if (client is null)
             {
-                throw new InvalidOperationException(Strings.OrchestrationInstanceNull);
+#pragma warning disable CS0618 // Type or member is obsolete
+                IOrchestrationService service = builder.OrchestrationService
+                    ?? serviceProvider.GetRequiredService<IOrchestrationService>();
+#pragma warning restore CS0618 // Type or member is obsolete
+
+                client = service as IOrchestrationServiceClient;
+                if (client is null)
+                {
+                    throw new InvalidOperationException(
+                        Strings.NotOrchestrationServiceClient(service.GetType()));
+                }
             }
 
-            if (builder.OrchestrationService is IOrchestrationServiceClient client)
-            {
-                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                return new TaskHubClient(client, loggerFactory: loggerFactory);
-            }
-
-            throw new InvalidOperationException(
-                Strings.NotOrchestrationServiceClient(builder.OrchestrationService.GetType()));
+            ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            return new TaskHubClient(client, loggerFactory: loggerFactory);
         }
     }
 }
