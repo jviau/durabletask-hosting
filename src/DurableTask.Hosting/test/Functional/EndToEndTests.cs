@@ -36,6 +36,38 @@ namespace DurableTask.Hosting.Functional.Tests
             hostedServices.Single().Should().BeOfType(typeof(TaskHubBackgroundService));
         }
 
+        [Fact]
+        public void ConfigureTaskHubWorker_ServicesAdded2()
+        {
+            IHost host = CreateHost(
+                s => s.AddSingleton<IOrchestrationService>(new LocalOrchestrationService()),
+                _ => { });
+
+            TaskHubWorker worker = host.Services.GetService<TaskHubWorker>();
+            IEnumerable<IHostedService> hostedServices = host.Services.GetServices<IHostedService>();
+
+            worker.Should().NotBeNull();
+            hostedServices.Should().HaveCount(1);
+            hostedServices.Single().Should().BeOfType(typeof(TaskHubBackgroundService));
+        }
+
+        [Fact]
+        public void ConfigureTaskHubWorker_ServicesAdded3()
+        {
+            IHost host = CreateHost(
+                _ => { },
+#pragma warning disable CS0618 // Type or member is obsolete
+                b => b.OrchestrationService = new LocalOrchestrationService());
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            TaskHubWorker worker = host.Services.GetService<TaskHubWorker>();
+            IEnumerable<IHostedService> hostedServices = host.Services.GetServices<IHostedService>();
+
+            worker.Should().NotBeNull();
+            hostedServices.Should().HaveCount(1);
+            hostedServices.Single().Should().BeOfType(typeof(TaskHubBackgroundService));
+        }
+
         [Theory]
         [InlineData((ServiceLifetime)(-1))]
         [InlineData(ServiceLifetime.Singleton)]
@@ -46,6 +78,7 @@ namespace DurableTask.Hosting.Functional.Tests
             IHost host = CreateHost(
                 s =>
                 {
+                    s.AddSingleton<IOrchestrationService>(new LocalOrchestrationService());
                     s.AddSingleton<ExecutionTracker>();
 
                     if ((int)serviceLifetime != -1)
@@ -56,7 +89,6 @@ namespace DurableTask.Hosting.Functional.Tests
                 },
                 b =>
                 {
-                    b.WithOrchestrationService(new LocalOrchestrationService());
                     b.AddOrchestration<TestOrchestration>();
                     b.AddClient();
                 });

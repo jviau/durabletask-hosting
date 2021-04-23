@@ -19,8 +19,10 @@ namespace DurableTask.DependencyInjection
         IServiceCollection Services { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="IOrchestrationService"/> to use.
+        /// Gets or sets the <see cref="IOrchestrationService"/> to use. If this is null, it will be fetched from the
+        /// service provider.
         /// </summary>
+        [Obsolete("Add IOrchestrationService to the IServiceCollection as a singleton instead.")]
         IOrchestrationService OrchestrationService { get; set; }
 
         /// <summary>

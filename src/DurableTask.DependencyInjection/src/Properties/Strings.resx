@@ -139,10 +139,7 @@
     <value>Type ['{type}'] must be an interface.</value>
   </data>
   <data name="NotOrchestrationServiceClient" xml:space="preserve">
-    <value>Failed to add TaskHubClient. '{orchestrationType}' does not implement IOrchestrationServiceClient.</value>
-  </data>
-  <data name="OrchestrationInstanceNull" xml:space="preserve">
-    <value>The builder is not fully configured yet. OrchestrationService is null.</value>
+    <value>Failed to add TaskHubClient. No IOrchestrationServiceClient was found in the service container and '{orchestrationType}' does not implement IOrchestrationServiceClient.</value>
   </data>
   <data name="ScopeAlreadyExists" xml:space="preserve">
     <value>Scope already exists for orchestration '{orchestrationId}'.</value>

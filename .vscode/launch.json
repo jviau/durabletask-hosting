@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/samples/DurableTask.Samples/bin/Debug/netcoreapp3.1/Vio.DurableTask.Samples.dll",
+            "program": "${workspaceFolder}/out/bin/Debug/DurableTask.Samples/netcoreapp2.2/Vio.DurableTask.Samples.dll",
             "args": [],
             "cwd": "${workspaceFolder}/samples/DurableTask.Samples",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

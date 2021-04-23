@@ -17,7 +17,7 @@ namespace DurableTask.DependencyInjection.Tests
         public void GetScope_ArgumentNull()
         {
             // arrange, act
-            var ex = Capture<ArgumentNullException>(
+            ArgumentNullException ex = Capture<ArgumentNullException>(
                 () => OrchestrationScope.GetScope(null));
 
             // assert
@@ -28,7 +28,7 @@ namespace DurableTask.DependencyInjection.Tests
         public void GetScope_KeyNotFound()
         {
             // arrange, act
-            var ex = Capture<KeyNotFoundException>(
+            KeyNotFoundException ex = Capture<KeyNotFoundException>(
                 () => OrchestrationScope.GetScope(Guid.NewGuid().ToString()));
 
             // assert
