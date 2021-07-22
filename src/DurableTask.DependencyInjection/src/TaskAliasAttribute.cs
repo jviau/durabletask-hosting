@@ -51,22 +51,5 @@ namespace DurableTask.DependencyInjection
         /// Gets or sets the version of the task hub entity.
         /// </summary>
         public string Version { get; set; }
-
-        /// <summary>
-        /// Initialize these values with the provided type.
-        /// </summary>
-        /// <param name="type">The type this attribute was applied to.</param>
-        internal void InitializeIfNecessary(Type type)
-        {
-            if (string.IsNullOrEmpty(Name))
-            {
-                Name = NameVersionHelper.GetDefaultName(type);
-            }
-
-            if (string.IsNullOrEmpty(Version))
-            {
-                Version = NameVersionHelper.GetDefaultVersion(type);
-            }
-        }
     }
 }
