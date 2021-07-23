@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
@@ -144,6 +145,17 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
                     result.Should().BeSameAs(original);
                     original.Orchestrations.Should().HaveCount(count);
                     original.Orchestrations.Should().OnlyContain(x => x.Type == typeof(TestOrchestration));
+                    if (includeAliases)
+                    {
+                        TaskOrchestrationDescriptor descriptor = original.Orchestrations.First();
+                        Type t = descriptor.Type;
+                        foreach (TaskAliasAttribute alias in t.GetCustomAttributes<TaskAliasAttribute>())
+                        {
+                            string expectedName = alias.Name ?? descriptor.Name;
+                            string expectedVersion = alias.Version ?? descriptor.Version;
+                            original.Orchestrations.Should().Contain(x => x.Type == t && x.Name == expectedName && x.Version == expectedVersion);
+                        }
+                    }
                     original.Activities.Should().BeEmpty();
                     original.ActivityMiddleware.Should().HaveCount(1);
                     original.OrchestrationMiddleware.Should().HaveCount(1);
