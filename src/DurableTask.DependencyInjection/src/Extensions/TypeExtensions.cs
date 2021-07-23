@@ -22,7 +22,6 @@ namespace DurableTask.DependencyInjection.Extensions
             Check.NotNull(type, nameof(type));
             foreach (TaskAliasAttribute alias in type.GetCustomAttributes<TaskAliasAttribute>())
             {
-                alias.InitializeIfNecessary(type);
                 yield return (alias.Name, alias.Version);
             }
         }
