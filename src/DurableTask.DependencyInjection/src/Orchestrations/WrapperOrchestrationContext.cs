@@ -31,194 +31,225 @@ namespace DurableTask.DependencyInjection.Orchestrations
         }
 
         /// <inheritdoc/>
-        public override DateTime CurrentUtcDateTime => _innerContext.CurrentUtcDateTime;
+        public override DateTime CurrentUtcDateTime
+        {
+            get
+            {
+                PreUpdateProperties();
+                return Wrap(_innerContext.CurrentUtcDateTime);
+            }
+        }
 
         /// <inheritdoc/>
         public override void ContinueAsNew(object input)
         {
-            UpdateInnerProperties();
+            PreUpdateProperties();
             _innerContext.ContinueAsNew(input);
+            PostUpdateProperties();
         }
 
         /// <inheritdoc/>
         public override void ContinueAsNew(string newVersion, object input)
         {
-            UpdateInnerProperties();
+            PreUpdateProperties();
             _innerContext.ContinueAsNew(newVersion, input);
+            PostUpdateProperties();
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstance<T>(string name, string version, object input)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateSubOrchestrationInstance<T>(name, version, input);
+            PreUpdateProperties();
+            return WrapAsync(_innerContext.CreateSubOrchestrationInstance<T>(name, version, input));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstance<T>(
             string name, string version, string instanceId, object input)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateSubOrchestrationInstance<T>(name, version, instanceId, input);
+            PreUpdateProperties();
+            return WrapAsync(_innerContext.CreateSubOrchestrationInstance<T>(
+                name, version, instanceId, input));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstance<T>(
             string name, string version, string instanceId, object input, IDictionary<string, string> tags)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateSubOrchestrationInstance<T>(name, version, instanceId, input, tags);
+            PreUpdateProperties();
+            return WrapAsync(_innerContext.CreateSubOrchestrationInstance<T>(
+                name, version, instanceId, input, tags));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateTimer<T>(DateTime fireAt, T state)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateTimer(fireAt, state);
+            PreUpdateProperties();
+            return WrapAsync(_innerContext.CreateTimer(fireAt, state));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateTimer<T>(DateTime fireAt, T state, CancellationToken cancelToken)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateTimer(fireAt, state, cancelToken);
+            PreUpdateProperties();
+            return WrapAsync(_innerContext.CreateTimer(fireAt, state, cancelToken));
         }
 
         /// <inheritdoc/>
         public override Task<TResult> ScheduleTask<TResult>(string name, string version, params object[] parameters)
         {
-            UpdateInnerProperties();
-            return _innerContext.ScheduleTask<TResult>(name, version, parameters);
+            PreUpdateProperties();
+            return Wrap(_innerContext.ScheduleTask<TResult>(name, version, parameters));
         }
 
         /// <inheritdoc/>
         public override void SendEvent(OrchestrationInstance orchestrationInstance, string eventName, object eventData)
         {
-            UpdateInnerProperties();
+            PreUpdateProperties();
             _innerContext.SendEvent(orchestrationInstance, eventName, eventData);
+            PostUpdateProperties();
         }
 
         /// <inheritdoc/>
         public override Task<TResult> ScheduleTask<TResult>(Type activityType, params object[] parameters)
         {
-            UpdateInnerProperties();
-            return ScheduleTask<TResult>(
+            PreUpdateProperties();
+            return WrapAsync(ScheduleTask<TResult>(
                 TypeShortName.ToString(activityType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(activityType),
-                parameters);
+                parameters));
         }
 
         /// <inheritdoc/>
         public override Task<T> ScheduleWithRetry<T>(
             Type taskActivityType, RetryOptions retryOptions, params object[] parameters)
         {
-            UpdateInnerProperties();
-            return ScheduleWithRetry<T>(
+            PreUpdateProperties();
+            return WrapAsync(ScheduleWithRetry<T>(
                 TypeShortName.ToString(taskActivityType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(taskActivityType),
                 retryOptions,
-                parameters);
+                parameters));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstance<T>(Type orchestrationType, object input)
         {
-            UpdateInnerProperties();
-            return CreateSubOrchestrationInstance<T>(
+            PreUpdateProperties();
+            return WrapAsync(CreateSubOrchestrationInstance<T>(
                 TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
-                input);
+                input));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstance<T>(
             Type orchestrationType, string instanceId, object input)
         {
-            UpdateInnerProperties();
-            return CreateSubOrchestrationInstance<T>(
+            PreUpdateProperties();
+            return WrapAsync(CreateSubOrchestrationInstance<T>(
                 TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 instanceId,
-                input);
+                input));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstanceWithRetry<T>(
             Type orchestrationType, RetryOptions retryOptions, object input)
         {
-            UpdateInnerProperties();
-            return CreateSubOrchestrationInstanceWithRetry<T>(
+            PreUpdateProperties();
+            return WrapAsync(CreateSubOrchestrationInstanceWithRetry<T>(
                 TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 retryOptions,
-                input);
+                input));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstanceWithRetry<T>(
             Type orchestrationType, string instanceId, RetryOptions retryOptions, object input)
         {
-            UpdateInnerProperties();
-            return CreateSubOrchestrationInstanceWithRetry<T>(
+            PreUpdateProperties();
+            return WrapAsync(CreateSubOrchestrationInstanceWithRetry<T>(
                 TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 instanceId,
                 retryOptions,
-                input);
+                input));
         }
 
         /// <inheritdoc/>
         public override T CreateClient<T>()
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateClient<T>();
+            PreUpdateProperties();
+            return Wrap(_innerContext.CreateClient<T>());
         }
 
         /// <inheritdoc/>
         public override T CreateClient<T>(bool useFullyQualifiedMethodNames)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateClient<T>(useFullyQualifiedMethodNames);
+            PreUpdateProperties();
+            return Wrap(_innerContext.CreateClient<T>(useFullyQualifiedMethodNames));
         }
 
         /// <inheritdoc/>
         public override T CreateRetryableClient<T>(RetryOptions retryOptions)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateRetryableClient<T>(retryOptions);
+            PreUpdateProperties();
+            return Wrap(_innerContext.CreateRetryableClient<T>(retryOptions));
         }
 
         /// <inheritdoc/>
         public override T CreateRetryableClient<T>(RetryOptions retryOptions, bool useFullyQualifiedMethodNames)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateRetryableClient<T>(retryOptions, useFullyQualifiedMethodNames);
+            PreUpdateProperties();
+            return Wrap(_innerContext.CreateRetryableClient<T>(retryOptions, useFullyQualifiedMethodNames));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstanceWithRetry<T>(
             string name, string version, RetryOptions retryOptions, object input)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateSubOrchestrationInstanceWithRetry<T>(name, version, retryOptions, input);
+            PreUpdateProperties();
+            return WrapAsync(_innerContext.CreateSubOrchestrationInstanceWithRetry<T>(
+                name, version, retryOptions, input));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstanceWithRetry<T>(
             string name, string version, string instanceId, RetryOptions retryOptions, object input)
         {
-            UpdateInnerProperties();
-            return _innerContext.CreateSubOrchestrationInstanceWithRetry<T>(
-                name, version, instanceId, retryOptions, input);
+            PreUpdateProperties();
+            return WrapAsync(_innerContext.CreateSubOrchestrationInstanceWithRetry<T>(
+                name, version, instanceId, retryOptions, input));
         }
 
-        private void UpdateInnerProperties()
+        private async Task<T> WrapAsync<T>(Task<T> task)
+        {
+            T result = await task;
+            PostUpdateProperties();
+            return result;
+        }
+
+        private T Wrap<T>(T result)
+        {
+            PostUpdateProperties();
+            return result;
+        }
+
+        private void PreUpdateProperties()
         {
             // We have no way to hook in to the public setter of these properties to also set it on the wrapped context.
             // Instead, we will have to update these properties on *every* call to the wrapped context, to ensure it is
             // up to date.
             _innerContext.ErrorDataConverter = ErrorDataConverter;
             _innerContext.MessageDataConverter = MessageDataConverter;
+        }
+
+        private void PostUpdateProperties()
+        {
+            IsReplaying = _innerContext.IsReplaying;
         }
     }
 }
