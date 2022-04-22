@@ -120,14 +120,9 @@ namespace DurableTask.DependencyInjection
         {
             return async (context, next) =>
             {
-                IOrchestrationScope scope = OrchestrationScope.GetOrCreateScope(
-                    context.GetProperty<OrchestrationInstance>().InstanceId, serviceProvider);
+                using IServiceScope scope = serviceProvider.CreateScope();
                 context.SetProperty(scope.ServiceProvider);
-
-                using (scope.Enter())
-                {
-                    await next().ConfigureAwait(false);
-                }
+                await next().ConfigureAwait(false);
             };
         }
     }

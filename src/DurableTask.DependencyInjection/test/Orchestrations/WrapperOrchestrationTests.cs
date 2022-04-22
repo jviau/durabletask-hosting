@@ -55,24 +55,6 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
             => RunTestExceptionAsync<InvalidOperationException>(
                 wrapper => wrapper.Execute(s_orchestrationContext, Input));
 
-        [Fact]
-        public Task Execute_DisposesScope()
-            => RunTestAsync(
-                typeof(TestOrchestration),
-                async wrapper =>
-                {
-                    CreateScope();
-                    wrapper.Initialize(CreateServiceProvider());
-                    await wrapper.Execute(s_orchestrationContext, Input);
-
-                    return Capture<KeyNotFoundException>(
-                        () => OrchestrationScope.GetScope(InstanceId));
-                },
-                (wrapper, ex) =>
-                {
-                    ex.Should().NotBeNull();
-                });
-
         [Theory]
         [InlineData(typeof(TestOrchestration))]
         [InlineData(typeof(TestOrchestrationOfT))]
@@ -81,7 +63,6 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
                 type,
                 wrapper =>
                 {
-                    CreateScope();
                     wrapper.Initialize(CreateServiceProvider());
                     return wrapper.Execute(s_orchestrationContext, $"\"{Input}\"");
                 },
@@ -136,16 +117,6 @@ namespace DurableTask.DependencyInjection.Orchestrations.Tests
                     InvokedContext.Should().BeOfType<WrapperOrchestrationContext>();
                     InvokedInput.Should().BeOneOf(Input, $"\"{Input}\"");
                 });
-
-        private static IOrchestrationScope CreateScope()
-        {
-            IServiceScopeFactory factory = Mock.Of<IServiceScopeFactory>(
-                m => m.CreateScope() == Mock.Of<IServiceScope>());
-            IServiceProvider serviceProvider = Mock.Of<IServiceProvider>(
-                m => m.GetService(typeof(IServiceScopeFactory)) == factory);
-
-            return OrchestrationScope.CreateScope(InstanceId, serviceProvider);
-        }
 
         private static void RunTestException<TException>(Action<WrapperOrchestration> act)
             where TException : Exception

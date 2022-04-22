@@ -235,7 +235,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
 
         private async Task<T> Wrap<T>(Task<T> task)
         {
-            T result = await task;
+            T result = await task.ConfigureAwait(true); // we need to return to the DTFx context.
             PostUpdateProperties();
             return result;
         }
