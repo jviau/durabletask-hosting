@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="$(SrcRoot)**/*.csproj" />
+    <ProjectReference Include="samples/**/*.csproj" />
   </ItemGroup>
 
 </Project>

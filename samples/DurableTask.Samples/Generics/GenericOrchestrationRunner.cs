@@ -26,7 +26,7 @@ namespace DurableTask.Samples.Generics
             return null;
         }
 
-        private Task<string> PrintAsync(OrchestrationContext context, string input)
+        private static Task<string> PrintAsync(OrchestrationContext context, string input)
         {
             return context.ScheduleTask<string>(typeof(PrintTask), input);
         }

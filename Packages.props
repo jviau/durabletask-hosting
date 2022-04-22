@@ -9,21 +9,21 @@
 
   <!-- Microsoft Extensions -->
   <ItemGroup>
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.EventLog" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Options" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.0" />
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.EventLog" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsPackageVersion)" />
   </ItemGroup>
 
   <!-- Nuget -->
@@ -49,7 +49,6 @@
     <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.3.37" Condition="'$(EnableGitVersioning)' != 'false'" />
     <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.1.118" Condition="'$(EnableStyleCop)' != 'false'" />
     <GlobalPackageReference Include="StyleCop.CSharp.Async.Rules" Version="6.1.41" Condition="'$(EnableStyleCop)' != 'false'" />
-    <GlobalPackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" Condition="'$(EnableStyleCop)' != 'false'" />
   </ItemGroup>
 
 </Project>

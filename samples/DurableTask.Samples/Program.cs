@@ -3,9 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using DurableTask.Core;
@@ -14,11 +11,8 @@ using DurableTask.Emulator;
 using DurableTask.Hosting;
 using DurableTask.Samples.Generics;
 using DurableTask.Samples.Greetings;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.EventLog;
 
 namespace DurableTask.Samples
 {
@@ -34,7 +28,7 @@ namespace DurableTask.Samples
         /// <returns>A task that completes when this program is finished running.</returns>
         public static Task Main(string[] args)
         {
-            IHost host = CreateDefaultBuilder(args)
+            IHost host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton<IConsole, ConsoleWrapper>();
@@ -70,77 +64,6 @@ namespace DurableTask.Samples
                 .Build();
 
             return host.RunAsync();
-        }
-
-        private static HostBuilder CreateDefaultBuilder(string[] args)
-        {
-            // Host.CreateDefaultBuilder() is not available before Microsoft.Extensions.Hosting 3.0.
-            // So this is a copied from https://github.com/dotnet/extensions
-            var builder = new HostBuilder();
-
-            builder.UseContentRoot(Directory.GetCurrentDirectory());
-            builder.ConfigureHostConfiguration(config =>
-            {
-                config.AddEnvironmentVariables(prefix: "DOTNET_");
-                if (args != null)
-                {
-                    config.AddCommandLine(args);
-                }
-            });
-
-            builder.ConfigureAppConfiguration((hostingContext, config) =>
-            {
-                IHostingEnvironment env = hostingContext.HostingEnvironment;
-                env.ApplicationName = Assembly.GetEntryAssembly()?.GetName().Name;
-
-                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                      .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
-                if (env.IsDevelopment() && !string.IsNullOrEmpty(env.ApplicationName))
-                {
-                    var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
-                    if (appAssembly != null)
-                    {
-                        config.AddUserSecrets(appAssembly, optional: true);
-                    }
-                }
-
-                config.AddEnvironmentVariables();
-
-                if (args != null)
-                {
-                    config.AddCommandLine(args);
-                }
-            });
-
-            builder.ConfigureLogging((hostingContext, logging) =>
-            {
-                bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
-                // IMPORTANT: This needs to be added *before* configuration is loaded, this lets
-                // the defaults be overridden by the configuration.
-                if (isWindows)
-                {
-                    // Default the EventLogLoggerProvider to warning or above
-                    logging.AddFilter<EventLogLoggerProvider>(level => level >= LogLevel.Warning);
-                }
-
-                logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                logging.AddConsole();
-                logging.AddDebug();
-                logging.AddEventSourceLogger();
-
-                if (isWindows)
-                {
-                    // Add the EventLogLoggerProvider on windows machines
-                    logging.AddEventLog();
-                }
-            });
-
-            var options = new ServiceProviderOptions();
-            builder.UseServiceProviderFactory(new DefaultServiceProviderFactory(options));
-
-            return builder;
         }
 
         //private static IOrchestrationService UseServiceBus(IConfiguration config)
@@ -194,7 +117,7 @@ namespace DurableTask.Samples
                     });
 
                 OrchestrationState result = await _client.WaitForOrchestrationAsync(
-                    instance, TimeSpan.FromSeconds(60));
+                    instance, TimeSpan.FromSeconds(60), stoppingToken);
 
                 _console.WriteLine();
                 _console.WriteLine($"Orchestration finished.");
