@@ -28,7 +28,9 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-json-file: global.json
-        dotnet-version: '3.1.x'
+        dotnet-version: |
+          3.1.x
+          5.0.x
 
     - name: Restore
       run: dotnet restore $solution
@@ -62,7 +64,9 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-json-file: global.json
+        dotnet-version: |
+          3.1.x
+          5.0.x
 
     - name: Push Nuget
       env:
