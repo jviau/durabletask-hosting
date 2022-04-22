@@ -6,6 +6,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnableStyleCop>true</EnableStyleCop>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <ExtensionsPackageVersion Condition="'$(ExtensionsPackageVersion)' == ''">2.1.0</ExtensionsPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup>
