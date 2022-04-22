@@ -42,49 +42,48 @@ guidelines = 120 # https://marketplace.visualstudio.com/items?itemName=PaulHarri
 
 # Sort using and Import directives with System.* appearing first
 dotnet_sort_system_directives_first = true
-dotnet_style_require_accessibility_modifiers = always:warning
+dotnet_style_require_accessibility_modifiers = always:error
 
 # Put a blank line between System.* and Microsoft.*
 dotnet_separate_import_directive_groups = false
 
 # Avoid "this." and "Me." if not necessary
-dotnet_style_qualification_for_field = false:warning
-dotnet_style_qualification_for_property = false:warning
-dotnet_style_qualification_for_method = false:warning
-dotnet_style_qualification_for_event = false:warning
+dotnet_style_qualification_for_field = false:error
+dotnet_style_qualification_for_property = false:error
+dotnet_style_qualification_for_method = false:error
+dotnet_style_qualification_for_event = false:error
 
 # Use language keywords instead of framework type names for type references
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 dotnet_style_predefined_type_for_member_access = true:suggestion
 
 # Prefer read-only on fields
-dotnet_style_readonly_field = true:warning
-
+dotnet_style_readonly_field = true:error
 
 # Naming Rules
 dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.symbols                        = interface_symbols
 dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.style                          = pascal_case_and_prefix_with_I_style
-dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.severity                       = warning
+dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.severity                       = error
 
 dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.symbols                            = externally_visible_symbols
 dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.style                              = pascal_case_style
-dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.severity                           = warning
+dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.severity                           = error
 
 dotnet_naming_rule.parameters_must_be_camel_cased.symbols                                             = parameter_symbols
 dotnet_naming_rule.parameters_must_be_camel_cased.style                                               = camel_case_style
-dotnet_naming_rule.parameters_must_be_camel_cased.severity                                            = warning
+dotnet_naming_rule.parameters_must_be_camel_cased.severity                                            = error
 
 dotnet_naming_rule.constants_must_be_pascal_cased.symbols                                             = constant_symbols
 dotnet_naming_rule.constants_must_be_pascal_cased.style                                               = pascal_case_style
-dotnet_naming_rule.constants_must_be_pascal_cased.severity                                            = warning
+dotnet_naming_rule.constants_must_be_pascal_cased.severity                                            = error
 
 dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.symbols   = private_static_field_symbols
 dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.style     = camel_case_and_prefix_with_s_underscore_style
-dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.severity  = warning
+dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.severity  = error
 
 dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.symbols   = private_field_symbols
 dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.style     = camel_case_and_prefix_with_underscore_style
-dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.severity  = warning
+dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.severity  = error
 
 # Symbols
 dotnet_naming_symbols.externally_visible_symbols.applicable_kinds                                     = class,struct,interface,enum,property,method,field,event,delegate
@@ -123,6 +122,7 @@ dotnet_naming_style.pascal_case_and_prefix_with_I_style.capitalization          
 
 # CSharp code style settings:
 [*.cs]
+
 # Prefer "var" only when the type is apparent
 csharp_style_var_for_built_in_types = false:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
@@ -168,7 +168,7 @@ csharp_new_line_between_query_expression_clauses = true
 
 # Identation options
 csharp_indent_case_contents = true
-csharp_indent_case_contents_when_block = true
+csharp_indent_case_contents_when_block = false
 csharp_indent_switch_labels = true
 csharp_indent_labels = no_change
 csharp_indent_block_contents = true
@@ -207,20 +207,59 @@ csharp_preserve_single_line_blocks = true
 # Code block
 csharp_prefer_braces = false:none
 
-# StyleCop.Analyzers - currently does not work from .editorconfig
-dotnet_diagnostic.SA1101.severity = none
-dotnet_diagnostic.SA1308.severity = none
-dotnet_diagnostic.SA1309.severity = none
-dotnet_diagnostic.SA1309S.severity = none
-dotnet_diagnostic.SA1311.severity = none
-dotnet_diagnostic.SX1101.severity = warning
-dotnet_diagnostic.SX1309.severity = warning
-dotnet_diagnostic.SX1309S.severity = none
+# Analyzers
 
-# FxCop.Analyzers
-dotnet_diagnostic.CA1716.severity = none # Do not use reserved keyworks from other languages.
+# FxCop
+
+# Design rules
+dotnet_diagnostic.CA1002.severity = none  # Do not expose generic lists
+dotnet_diagnostic.CA1014.severity = none  # Mark assemblies with CLSCompliantAttribute
+dotnet_diagnostic.CA1030.severity = none  # Use events where appropriate
+dotnet_diagnostic.CA1034.severity = none  # Nested types should not be visible
+dotnet_diagnostic.CA1054.severity = none  # URI parameters should not be strings
+dotnet_diagnostic.CA1056.severity = none  # URI properties should not be strings
+
+# Globalization rules
+dotnet_diagnostic.CA1303.severity = none # Do not pass literals as localized parameters
+
+# Maintainability rules
+dotnet_diagnostic.CA1508.severity = none # Avoid dead conditional code
+
+# Naming rules
+dotnet_diagnostic.CA1707.severity = none # Identifiers should not contain underscores
+dotnet_diagnostic.CA1716.severity = none # Identifiers should not match keywords
+
+# Performance rules
+dotnet_diagnostic.CA1802.severity = none # Use Literals Where Appropriate
+dotnet_diagnostic.CA1810.severity = none # Initialize reference type static fields inline
+dotnet_diagnostic.CA1812.severity = none # Avoid uninstantiated internal classes
+dotnet_diagnostic.CA1820.severity = none # Test for empty strings using string length
+
+# Reliability rules
+dotnet_diagnostic.CA2007.severity = none # Consider calling ConfigureAwait on the awaited task
+
+# Security rules
+dotnet_diagnostic.CA2326.severity = none # Do not use TypeNameHandling values other than None
+dotnet_diagnostic.CA2327.severity = none # Do not use insecure JsonSerializerSettings
+
+# StyleCop rules
+dotnet_diagnostic.SA1101.severity = none  # Prefix local calls with this
+dotnet_diagnostic.SA1308.severity = none  # Variable names should not be prefixed
+dotnet_diagnostic.SA1309.severity = none  # Field names should not begin with underscore
+dotnet_diagnostic.SA1311.severity = none  # Static readonly fields should begin with upper-case letter
+dotnet_diagnostic.SX1101.severity = error # Do not prefix local calls with 'this.'
+dotnet_diagnostic.SX1309.severity = error # Field names should begin with underscore
+dotnet_diagnostic.SX1309S.severity = none # Static field names should begin with underscore
+
+[**/*Tests/**/*.cs]
+# We allow usage of "var" inside tests as it reduces churn as we remove/rename types
+csharp_style_var_for_built_in_types = true:none
+csharp_style_var_elsewhere = true:none
 
 [**/test/**/*.cs]
 # We allow usage of "var" inside tests as it reduces churn as we remove/rename types
 csharp_style_var_for_built_in_types = true:none
 csharp_style_var_elsewhere = true:none
+
+[**/generated/**/*.cs]
+dotnet_analyzer_diagnostic.severity = none

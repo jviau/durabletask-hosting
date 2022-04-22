@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Microsoft.Build.CentralPackageVersions" Version="2.0.52" />
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
