@@ -58,7 +58,6 @@ namespace DurableTask.DependencyInjection.Activities.Tests
                 typeof(TestActivity),
                 wrapper =>
                 {
-                    CreateScope();
                     wrapper.Initialize(CreateServiceProvider());
                     return wrapper.Run(s_taskContext, s_input);
                 },
@@ -85,7 +84,6 @@ namespace DurableTask.DependencyInjection.Activities.Tests
             };
 
             // act
-            CreateScope();
             wrapperActivity.Initialize(services.BuildServiceProvider());
             string result = await wrapperActivity.RunAsync(s_taskContext, input.ToString());
 
@@ -107,7 +105,6 @@ namespace DurableTask.DependencyInjection.Activities.Tests
                 type,
                 wrapper =>
                 {
-                    CreateScope();
                     wrapper.Initialize(CreateServiceProvider());
                     return wrapper.RunAsync(s_taskContext, $"[ \"{s_input}\" ]");
                 },
@@ -117,16 +114,6 @@ namespace DurableTask.DependencyInjection.Activities.Tests
                     InvokedContext.Should().Be(s_taskContext);
                     InvokedInput.Should().Be(s_input);
                 });
-
-        private static IOrchestrationScope CreateScope()
-        {
-            IServiceScopeFactory factory = Mock.Of<IServiceScopeFactory>(
-                m => m.CreateScope() == Mock.Of<IServiceScope>());
-            IServiceProvider serviceProvider = Mock.Of<IServiceProvider>(
-                m => m.GetService(typeof(IServiceScopeFactory)) == factory);
-
-            return OrchestrationScope.CreateScope(InstanceId, serviceProvider);
-        }
 
         private static void RunTestException<TException>(Action<WrapperActivity> act)
             where TException : Exception
