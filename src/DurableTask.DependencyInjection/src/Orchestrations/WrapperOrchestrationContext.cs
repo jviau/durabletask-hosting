@@ -60,7 +60,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         public override Task<T> CreateSubOrchestrationInstance<T>(string name, string version, object input)
         {
             PreUpdateProperties();
-            return WrapAsync(_innerContext.CreateSubOrchestrationInstance<T>(name, version, input));
+            return Wrap(_innerContext.CreateSubOrchestrationInstance<T>(name, version, input));
         }
 
         /// <inheritdoc/>
@@ -68,7 +68,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
             string name, string version, string instanceId, object input)
         {
             PreUpdateProperties();
-            return WrapAsync(_innerContext.CreateSubOrchestrationInstance<T>(
+            return Wrap(_innerContext.CreateSubOrchestrationInstance<T>(
                 name, version, instanceId, input));
         }
 
@@ -77,7 +77,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
             string name, string version, string instanceId, object input, IDictionary<string, string> tags)
         {
             PreUpdateProperties();
-            return WrapAsync(_innerContext.CreateSubOrchestrationInstance<T>(
+            return Wrap(_innerContext.CreateSubOrchestrationInstance<T>(
                 name, version, instanceId, input, tags));
         }
 
@@ -85,14 +85,14 @@ namespace DurableTask.DependencyInjection.Orchestrations
         public override Task<T> CreateTimer<T>(DateTime fireAt, T state)
         {
             PreUpdateProperties();
-            return WrapAsync(_innerContext.CreateTimer(fireAt, state));
+            return Wrap(_innerContext.CreateTimer(fireAt, state));
         }
 
         /// <inheritdoc/>
         public override Task<T> CreateTimer<T>(DateTime fireAt, T state, CancellationToken cancelToken)
         {
             PreUpdateProperties();
-            return WrapAsync(_innerContext.CreateTimer(fireAt, state, cancelToken));
+            return Wrap(_innerContext.CreateTimer(fireAt, state, cancelToken));
         }
 
         /// <inheritdoc/>
@@ -114,7 +114,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
         public override Task<TResult> ScheduleTask<TResult>(Type activityType, params object[] parameters)
         {
             PreUpdateProperties();
-            return WrapAsync(ScheduleTask<TResult>(
+            return Wrap(ScheduleTask<TResult>(
                 TypeShortName.ToString(activityType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(activityType),
                 parameters));
@@ -125,7 +125,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
             Type taskActivityType, RetryOptions retryOptions, params object[] parameters)
         {
             PreUpdateProperties();
-            return WrapAsync(ScheduleWithRetry<T>(
+            return Wrap(ScheduleWithRetry<T>(
                 TypeShortName.ToString(taskActivityType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(taskActivityType),
                 retryOptions,
@@ -133,10 +133,18 @@ namespace DurableTask.DependencyInjection.Orchestrations
         }
 
         /// <inheritdoc/>
+        public override Task<T> ScheduleWithRetry<T>(
+            string name, string version, RetryOptions retryOptions, params object[] parameters)
+        {
+            PreUpdateProperties();
+            return Wrap(_innerContext.ScheduleWithRetry<T>(name, version, retryOptions, parameters));
+        }
+
+        /// <inheritdoc/>
         public override Task<T> CreateSubOrchestrationInstance<T>(Type orchestrationType, object input)
         {
             PreUpdateProperties();
-            return WrapAsync(CreateSubOrchestrationInstance<T>(
+            return Wrap(CreateSubOrchestrationInstance<T>(
                 TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 input));
@@ -147,7 +155,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
             Type orchestrationType, string instanceId, object input)
         {
             PreUpdateProperties();
-            return WrapAsync(CreateSubOrchestrationInstance<T>(
+            return Wrap(CreateSubOrchestrationInstance<T>(
                 TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 instanceId,
@@ -159,7 +167,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
             Type orchestrationType, RetryOptions retryOptions, object input)
         {
             PreUpdateProperties();
-            return WrapAsync(CreateSubOrchestrationInstanceWithRetry<T>(
+            return Wrap(CreateSubOrchestrationInstanceWithRetry<T>(
                 TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 retryOptions,
@@ -171,7 +179,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
             Type orchestrationType, string instanceId, RetryOptions retryOptions, object input)
         {
             PreUpdateProperties();
-            return WrapAsync(CreateSubOrchestrationInstanceWithRetry<T>(
+            return Wrap(CreateSubOrchestrationInstanceWithRetry<T>(
                 TypeShortName.ToString(orchestrationType, includeTopAssembly: false),
                 NameVersionHelper.GetDefaultVersion(orchestrationType),
                 instanceId,
@@ -212,7 +220,7 @@ namespace DurableTask.DependencyInjection.Orchestrations
             string name, string version, RetryOptions retryOptions, object input)
         {
             PreUpdateProperties();
-            return WrapAsync(_innerContext.CreateSubOrchestrationInstanceWithRetry<T>(
+            return Wrap(_innerContext.CreateSubOrchestrationInstanceWithRetry<T>(
                 name, version, retryOptions, input));
         }
 
@@ -221,11 +229,11 @@ namespace DurableTask.DependencyInjection.Orchestrations
             string name, string version, string instanceId, RetryOptions retryOptions, object input)
         {
             PreUpdateProperties();
-            return WrapAsync(_innerContext.CreateSubOrchestrationInstanceWithRetry<T>(
+            return Wrap(_innerContext.CreateSubOrchestrationInstanceWithRetry<T>(
                 name, version, instanceId, retryOptions, input));
         }
 
-        private async Task<T> WrapAsync<T>(Task<T> task)
+        private async Task<T> Wrap<T>(Task<T> task)
         {
             T result = await task;
             PostUpdateProperties();
