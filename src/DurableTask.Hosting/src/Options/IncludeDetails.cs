@@ -13,7 +13,7 @@ namespace DurableTask.Hosting.Options
     public enum IncludeDetails
     {
         /// <summary>
-        /// Do not include error details
+        /// Do not include error details.
         /// </summary>
         None = 0,
 
