@@ -39,6 +39,7 @@ namespace DurableTask.DependencyInjection.Tests
         [InlineData(typeof(KeyValuePair<string, TaskActivity>), "System.Collections.Generic.KeyValuePair`2[[System.String, System.Private.CoreLib]|[DurableTask.Core.TaskActivity, DurableTask.Core]], System.Private.CoreLib")]
         [InlineData(typeof(TestNestedGeneric<string>), "DurableTask.DependencyInjection.Tests.TypeShortNameTests+TestNestedGeneric`1[[System.String, System.Private.CoreLib]], Vio.DurableTask.DependencyInjection.Tests")]
         [InlineData(typeof(ObjectCreator<TestNestedSimple>), "DurableTask.Core.ObjectCreator`1[[DurableTask.DependencyInjection.Tests.TypeShortNameTests+TestNestedSimple, Vio.DurableTask.DependencyInjection.Tests]], DurableTask.Core")]
+        [InlineData(typeof(ObjectCreator<Dictionary<string, object>>), "DurableTask.Core.ObjectCreator`1[[System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib]|[System.Object, System.Private.CoreLib]], System.Private.CoreLib]], DurableTask.Core")]
         public void Ctor_ClosedGenericType(Type type, string typeNameString)
         {
             var typeName = new TypeShortName(type);
@@ -85,6 +86,7 @@ namespace DurableTask.DependencyInjection.Tests
         [InlineData("System.Collections.Generic.List`1[[System.Object, System.Private.CoreLib]], System.Private.CoreLib", typeof(List<object>))]
         [InlineData("DurableTask.Core.ObjectCreator`1[[DurableTask.Core.TaskActivity, DurableTask.Core]], DurableTask.Core", typeof(ObjectCreator<TaskActivity>))]
         [InlineData("System.Collections.Generic.KeyValuePair`2[[System.String, System.Private.CoreLib]|[DurableTask.Core.TaskActivity, DurableTask.Core]], System.Private.CoreLib", typeof(KeyValuePair<string, TaskActivity>))]
+        [InlineData("DurableTask.Core.ObjectCreator`1[[System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib]|[System.Object, System.Private.CoreLib]], System.Private.CoreLib]], DurableTask.Core", typeof(ObjectCreator<Dictionary<string, object>>))]
         public void Ctor_ClosedGenericString(string typeNameString, Type type)
         {
             var typeName = new TypeShortName(typeNameString);
@@ -156,7 +158,7 @@ namespace DurableTask.DependencyInjection.Tests
             string name = expectedType.FullName;
             if (expectedType.IsConstructedGenericType)
             {
-                name = name.Substring(0, name.IndexOf('['));
+                name = name[..name.IndexOf('[')];
             }
 
             string assemblyName = expectedType.Assembly.GetName().Name;
@@ -174,7 +176,7 @@ namespace DurableTask.DependencyInjection.Tests
             }
 
             typeName.ToString().Should().Be(expectedTypeString);
-            typeName.ToString(false).Should().Be(expectedTypeString.Substring(0, expectedTypeString.LastIndexOf(',')));
+            typeName.ToString(false).Should().Be(expectedTypeString[..expectedTypeString.LastIndexOf(',')]);
         }
 
         private static void VerifyTypeNameWithoutAssembly(
@@ -183,7 +185,7 @@ namespace DurableTask.DependencyInjection.Tests
             string name = expectedType.FullName;
             if (expectedType.IsConstructedGenericType)
             {
-                name = name.Substring(0, name.IndexOf('['));
+                name = name[..name.IndexOf('[')];
             }
 
             expectedTypeString ??= name;
