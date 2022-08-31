@@ -53,6 +53,7 @@ namespace DurableTask.Hosting
             _worker.TaskActivityDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(IncludeDetails.Activities);
             _worker.TaskOrchestrationDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(
                 IncludeDetails.Orchestrations);
+            _worker.ErrorPropagationMode = Options.ErrorPropagationMode;
         }
 
         /// <inheritdoc />
