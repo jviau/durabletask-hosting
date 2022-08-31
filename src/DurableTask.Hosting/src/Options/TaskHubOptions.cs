@@ -33,7 +33,7 @@ namespace DurableTask.Hosting.Options
         /// could fail unexpectedly if there is any logic that depends on a particular behavior of exception propagation.
         /// For example, setting <see cref="ErrorPropagationMode.UseFailureDetails"/> causes
         /// <see cref="OrchestrationException.FailureDetails"/> to be populated in <see cref="TaskFailedException"/> and
-        /// <see cref="SubOrchestrationFailedException"/> but also causes the <see cref="Exception.InnerException"/> 
+        /// <see cref="SubOrchestrationFailedException"/> but also causes the <see cref="Exception.InnerException"/>
         /// property to be <c>null</c> for these exception types.
         /// </para><para>
         /// This property must be set before the worker is started. Otherwise it will have no effect.
