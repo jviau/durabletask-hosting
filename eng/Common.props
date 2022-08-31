@@ -5,7 +5,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnableStyleCop>true</EnableStyleCop>
-    <CodeAnalysisRuleSet>$(RepoRoot)Analyzers.ruleset</CodeAnalysisRuleSet>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <ExtensionsPackageVersion Condition="'$(ExtensionsPackageVersion)' == ''">2.1.0</ExtensionsPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup>

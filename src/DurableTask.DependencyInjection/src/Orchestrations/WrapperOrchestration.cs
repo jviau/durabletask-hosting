@@ -72,14 +72,8 @@ namespace DurableTask.DependencyInjection.Orchestrations
         public override Task<string> Execute(OrchestrationContext context, string input)
         {
             CheckInnerOrchestration();
-            using (OrchestrationScope.EnterScope(context.OrchestrationInstance.InstanceId))
-            {
-                // While this looks wrong to not await this task before disposing the scope,
-                // DurableTask orchestrations are never resumed after yielding. They will only
-                // be replayed from scratch.
-                context = new WrapperOrchestrationContext(context);
-                return InnerOrchestration.Execute(context, input);
-            }
+            context = new WrapperOrchestrationContext(context);
+            return InnerOrchestration.Execute(context, input);
         }
 
         /// <inheritdoc />

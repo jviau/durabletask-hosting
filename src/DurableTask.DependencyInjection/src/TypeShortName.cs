@@ -12,7 +12,7 @@ namespace DurableTask.DependencyInjection
     /// <summary>
     /// A struct for representing a type short name. "{Namespace}.{Name}, {AssemblyShortName}".
     /// </summary>
-    internal struct TypeShortName
+    internal readonly struct TypeShortName
     {
         private const char NameSeparator = ',';
         private const char GenericSeparator = '|';
@@ -81,8 +81,9 @@ namespace DurableTask.DependencyInjection
 
             // Generic parameter(s) found. Pull them out.
             Name = name.Substring(0, genericStart);
-            string[] generics = name.Substring(genericStart).Trim('[', ']').Split(GenericSeparator);
-            GenericParams = generics.Select(s => new TypeShortName(s.Trim('[', ']'), true));
+
+            IEnumerable<string> generics = SplitGenerics(name.Substring(genericStart));
+            GenericParams = generics.Select(s => new TypeShortName(s, true)).ToList();
         }
 
         /// <summary>
@@ -197,6 +198,36 @@ namespace DurableTask.DependencyInjection
             }
 
             return type;
+        }
+
+        private static IEnumerable<string> SplitGenerics(string typeString)
+        {
+            static IEnumerable<string> InnerEnum(string typeString)
+            {
+                int bracketCount = 0;
+                int start = 0;
+                for (int i = 1; i < typeString.Length - 1; i++)
+                {
+                    char c = typeString[i];
+                    if (c == '[')
+                    {
+                        bracketCount++;
+                    }
+                    else if (c == ']')
+                    {
+                        bracketCount--;
+                    }
+                    else if (bracketCount == 0 && c == GenericSeparator)
+                    {
+                        yield return typeString.Substring(start, i - start);
+                        start = i + 1;
+                    }
+                }
+
+                yield return start == 0 ? typeString : typeString.Substring(start);
+            }
+
+            return InnerEnum(typeString).Select(s => s.Trim('[', ']'));
         }
 
         private void AppendTo(StringBuilder builder, bool includeAssembly, bool wrapBrackets)

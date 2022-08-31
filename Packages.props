@@ -9,21 +9,21 @@
 
   <!-- Microsoft Extensions -->
   <ItemGroup>
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.EventLog" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Options" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.0" />
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.EventLog" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsPackageVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsPackageVersion)" />
   </ItemGroup>
 
   <!-- Nuget -->
@@ -34,22 +34,22 @@
    <!-- Test projects -->
   <ItemGroup>
     <PackageReference Update="Bogus" Version="27.0.1" />
-    <PackageReference Update="coverlet.collector" Version="1.2.0" />
-    <PackageReference Update="coverlet.msbuild" Version="2.8.1" />
-    <PackageReference Update="FluentAssertions" Version="5.6.0" />
-    <PackageReference Update="Moq" Version="4.13.1" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Update="coverlet.collector" Version="3.1.2" />
+    <PackageReference Update="coverlet.msbuild" Version="3.1.2" />
+    <PackageReference Update="FluentAssertions" Version="6.6.0" />
+    <PackageReference Update="Moq" Version="4.17.2" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Update="System.Configuration.ConfigurationManager" Version="4.7.0" />
-    <PackageReference Update="xunit" Version="2.4.0" />
-    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Update="xunit" Version="2.4.1" />
+    <PackageReference Update="xunit.analyzers" Version="0.10.0" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3" />
   </ItemGroup>
 
   <!-- Global -->
   <ItemGroup>
-    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.3.37" Condition="'$(EnableGitVersioning)' != 'false'" />
-    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.1.118" Condition="'$(EnableStyleCop)' != 'false'" />
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.4.255" Condition="'$(EnableGitVersioning)' != 'false'" />
+    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406" Condition="'$(EnableStyleCop)' != 'false'" />
     <GlobalPackageReference Include="StyleCop.CSharp.Async.Rules" Version="6.1.41" Condition="'$(EnableStyleCop)' != 'false'" />
-    <GlobalPackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" Condition="'$(EnableStyleCop)' != 'false'" />
   </ItemGroup>
 
 </Project>
