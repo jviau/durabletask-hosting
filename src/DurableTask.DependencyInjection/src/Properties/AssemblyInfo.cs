@@ -3,6 +3,6 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Vio.DurableTask.Hosting")]
+//[assembly: InternalsVisibleTo("Vio.DurableTask.Hosting")]
 [assembly: InternalsVisibleTo("Vio.DurableTask.DependencyInjection.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

@@ -29,8 +29,8 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
-  <ItemGroup>
-     <Compile Include="$(SrcRoot)Shared/src/**.*" LinkBase="Shared" Visible="false" />
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared' AND '$(IsTestProject)' != 'true'">
+     <Compile Include="$(SrcRoot)Shared/src/**/*.cs" LinkBase="Shared" Visible="false" />
   </ItemGroup>
 
 </Project>

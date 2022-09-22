@@ -1,93 +1,91 @@
 ﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
-using System;
 using DurableTask.DependencyInjection;
 using FluentAssertions;
 using Microsoft.Extensions.Hosting;
 using Xunit;
 using static DurableTask.TestHelpers;
 
-namespace DurableTask.Hosting.Extensions.Tests
+namespace DurableTask.Hosting.Extensions.Tests;
+
+public class TaskHubHostBuilderExtensionsTests
 {
-    public class TaskHubHostBuilderExtensionsTests
+    [Fact]
+    public void ConfigureTaskHubWorker_ArgumentNullBuilder()
+        => RunTestException<ArgumentNullException>(
+            builder => TaskHubHostBuilderExtensions
+                .ConfigureTaskHubWorker(null, b => { }));
+    [Fact]
+    public void ConfigureTaskHubWorker_ArgumentNullConfigure()
+        => RunTestException<ArgumentNullException>(
+            builder => TaskHubHostBuilderExtensions
+                .ConfigureTaskHubWorker(builder, (Action<ITaskHubWorkerBuilder>)null));
+
+    [Fact]
+    public void ConfigureTaskHubWorker_ArgumentNullBuilder2()
+        => RunTestException<ArgumentNullException>(
+            builder => TaskHubHostBuilderExtensions
+                .ConfigureTaskHubWorker(null, (c, b)  => { }));
+    [Fact]
+    public void ConfigureTaskHubWorker_ArgumentNullConfigure2()
+        => RunTestException<ArgumentNullException>(
+            builder => TaskHubHostBuilderExtensions
+                .ConfigureTaskHubWorker(builder, (Action<HostBuilderContext, ITaskHubWorkerBuilder>)null));
+
+    [Fact]
+    public void ConfigureTaskHubWorker_Callback()
     {
-        [Fact]
-        public void ConfigureTaskHubWorker_ArgumentNullBuilder()
-            => RunTestException<ArgumentNullException>(
-                builder => TaskHubHostBuilderExtensions
-                    .ConfigureTaskHubWorker(null, b => { }));
-        [Fact]
-        public void ConfigureTaskHubWorker_ArgumentNullConfigure()
-            => RunTestException<ArgumentNullException>(
-                builder => TaskHubHostBuilderExtensions
-                    .ConfigureTaskHubWorker(builder, (Action<ITaskHubWorkerBuilder>)null));
-
-        [Fact]
-        public void ConfigureTaskHubWorker_ArgumentNullBuilder2()
-            => RunTestException<ArgumentNullException>(
-                builder => TaskHubHostBuilderExtensions
-                    .ConfigureTaskHubWorker(null, (c, b)  => { }));
-        [Fact]
-        public void ConfigureTaskHubWorker_ArgumentNullConfigure2()
-            => RunTestException<ArgumentNullException>(
-                builder => TaskHubHostBuilderExtensions
-                    .ConfigureTaskHubWorker(builder, (Action<HostBuilderContext, ITaskHubWorkerBuilder>)null));
-
-        [Fact]
-        public void ConfigureTaskHubWorker_Callback()
-        {
-            ITaskHubWorkerBuilder capturedBuilder = null;
-            RunTest(
-                builder => builder.ConfigureTaskHubWorker(b => capturedBuilder = b),
-                (builder, returned) =>
-                {
-                    returned.Should().BeSameAs(builder);
-                    capturedBuilder.Should().NotBeNull();
-                });
-        }
-
-        [Fact]
-        public void ConfigureTaskHubWorker_Callback2()
-        {
-            HostBuilderContext capturedContext = null;
-            ITaskHubWorkerBuilder capturedBuilder = null;
-            RunTest(
-                builder => builder.ConfigureTaskHubWorker((c, b) =>
-                {
-                    capturedContext = c;
-                    capturedBuilder = b;
-                }),
-                (builder, returned) =>
-                {
-                    returned.Should().BeSameAs(builder);
-                    capturedContext.Should().NotBeNull();
-                    capturedBuilder.Should().NotBeNull();
-                });
-        }
-
-        private static void RunTestException<TException>(Action<IHostBuilder> act)
-            where TException : Exception
-        {
-            bool Act(IHostBuilder builder)
+        ITaskHubWorkerBuilder capturedBuilder = null;
+        RunTest(
+            builder => builder.ConfigureTaskHubWorker(b => capturedBuilder = b),
+            (builder, returned) =>
             {
-                act(builder);
-                return true;
-            }
+                returned.Should().BeSameAs(builder);
+                capturedBuilder.Should().NotBeNull();
+            });
+    }
 
-            TException exception = Capture<TException>(() => RunTest(Act, null));
-            exception.Should().NotBeNull();
-        }
+    [Fact]
+    public void ConfigureTaskHubWorker_Callback2()
+    {
+        HostBuilderContext capturedContext = null;
+        ITaskHubWorkerBuilder capturedBuilder = null;
+        RunTest(
+            builder => builder.ConfigureTaskHubWorker((c, b) =>
+            {
+                capturedContext = c;
+                capturedBuilder = b;
+            }),
+            (builder, returned) =>
+            {
+                returned.Should().BeSameAs(builder);
+                capturedContext.Should().NotBeNull();
+                capturedBuilder.Should().NotBeNull();
+            });
+    }
 
-        private static void RunTest<TResult>(
-            Func<IHostBuilder, TResult> act,
-            Action<IHostBuilder, TResult> verify)
+    private static void RunTestException<TException>(Action<IHostBuilder> act)
+        where TException : Exception
+    {
+        bool Act(IHostBuilder builder)
         {
-            var builder = new HostBuilder();
-
-            TResult result = act(builder);
-            builder.Build();
-            verify?.Invoke(builder, result);
+            act(builder);
+            return true;
         }
+
+        TException exception = Capture<TException>(() => RunTest(Act, null));
+        exception.Should().NotBeNull();
+    }
+
+    private static void RunTest<TResult>(
+        Func<IHostBuilder, TResult> act,
+        Action<IHostBuilder, TResult> verify)
+    {
+        var builder = new HostBuilder();
+
+        TResult result = act(builder);
+        builder.Build();
+        verify?.Invoke(builder, result);
     }
 }

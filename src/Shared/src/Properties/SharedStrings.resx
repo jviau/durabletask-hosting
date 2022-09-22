@@ -117,26 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddToObjectManagerNotSupported" xml:space="preserve">
-    <value>Add is not supported. Use the &lt;c&gt;ITaskHubWorkerBuilder&lt;/c&gt; instead.</value>
+  <data name="InvalidType" xml:space="preserve">
+    <value>Type ['{type}'] must inherit from '{baseType}', be a class, and not be abstract"</value>
   </data>
-  <data name="ExpectedMiddlewareMissing" xml:space="preserve">
-    <value>Expected middleware of type '{type}' to be present in '{list}'.</value>
-  </data>
-  <data name="InnerActivityNull" xml:space="preserve">
-    <value>InnerActivity is null.</value>
-  </data>
-  <data name="InnerOrchestrationNull" xml:space="preserve">
-    <value>InnerOrchestration is null.</value>
-  </data>
-  <data name="MiddlewareCreationFailed" xml:space="preserve">
-    <value>Failed to create middleware for descriptor: {descriptor}</value>
-  </data>
-  <data name="NotOrchestrationServiceClient" xml:space="preserve">
-    <value>Failed to add TaskHubClient. No IOrchestrationServiceClient was found in the service container and '{orchestrationType}' does not implement IOrchestrationServiceClient.</value>
-  </data>
-  <data name="ScopeAlreadyExists" xml:space="preserve">
-    <value>Scope already exists for orchestration '{orchestrationId}'.</value>
+  <data name="NotInterface" xml:space="preserve">
+    <value>Type ['{type}'] must be an interface.</value>
   </data>
   <data name="StringEmpty" xml:space="preserve">
     <value>'{name}' cannot be an empty string or start with the null character.</value>

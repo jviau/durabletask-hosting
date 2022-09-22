@@ -1,6 +1,5 @@
-#if NETSTANDARD2_0
+﻿#if NETSTANDARD2_0
 #nullable enable
-#pragma warning disable CS0436
 
 // This file defines several classes and methods that exist in .NET Core but not in .NET Standard 2.0.
 // They are defined here to enable certain C# features that otherwise require higher framework versions.
@@ -307,5 +306,4 @@ namespace System.Runtime.CompilerServices
     static class IsExternalInit { }
 }
 
-#pragma warning restore CS0436
 #endif

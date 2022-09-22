@@ -1,98 +1,96 @@
 ﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
-using System;
 using DurableTask.DependencyInjection;
 using DurableTask.Hosting.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DurableTask.Hosting
+namespace DurableTask.Hosting;
+
+/// <summary>
+/// Extensions for configuring a task hub worker service on <see cref="IHostBuilder"/>.
+/// </summary>
+public static class TaskHubHostBuilderExtensions
 {
     /// <summary>
-    /// Extensions for configuring a task hub worker service on <see cref="IHostBuilder"/>.
+    /// Configures the task hub worker background service.
     /// </summary>
-    public static class TaskHubHostBuilderExtensions
+    /// <param name="builder">The host builder, not null.</param>
+    /// <param name="configure">The action to configure the worker, not null.</param>
+    /// <returns>The original host builder with task hub worker configured.</returns>
+    public static IHostBuilder ConfigureTaskHubWorker(
+        this IHostBuilder builder, Action<ITaskHubWorkerBuilder> configure)
     {
-        /// <summary>
-        /// Configures the task hub worker background service.
-        /// </summary>
-        /// <param name="builder">The host builder, not null.</param>
-        /// <param name="configure">The action to configure the worker, not null.</param>
-        /// <returns>The original host builder with task hub worker configured.</returns>
-        public static IHostBuilder ConfigureTaskHubWorker(
-            this IHostBuilder builder, Action<ITaskHubWorkerBuilder> configure)
+        Check.NotNull(builder, nameof(builder));
+        Check.NotNull(configure, nameof(configure));
+
+        return builder.ConfigureTaskHubWorker(configure, _ => { });
+    }
+
+    /// <summary>
+    /// Configures the task hub worker background service.
+    /// </summary>
+    /// <param name="builder">The host builder, not null.</param>
+    /// <param name="configure">The action to configure the worker, not null.</param>
+    /// <param name="configureOptions">The action to configure the task hub host options.</param>
+    /// <returns>The original host builder with task hub worker configured.</returns>
+    public static IHostBuilder ConfigureTaskHubWorker(
+        this IHostBuilder builder,
+        Action<ITaskHubWorkerBuilder> configure,
+        Action<TaskHubOptions> configureOptions)
+    {
+        Check.NotNull(builder, nameof(builder));
+        Check.NotNull(configure, nameof(configure));
+        Check.NotNull(configureOptions, nameof(configureOptions));
+
+        return builder.ConfigureTaskHubWorker((_, b) => configure(b), configureOptions);
+    }
+
+    /// <summary>
+    /// Configures the task hub worker background service.
+    /// </summary>
+    /// <param name="builder">The host builder, not null.</param>
+    /// <param name="configure">The action to configure the worker, not null.</param>
+    /// <returns>The original host builder with task hub worker configured.</returns>
+    public static IHostBuilder ConfigureTaskHubWorker(
+        this IHostBuilder builder, Action<HostBuilderContext, ITaskHubWorkerBuilder> configure)
+    {
+        Check.NotNull(builder, nameof(builder));
+        Check.NotNull(configure, nameof(configure));
+        return builder.ConfigureTaskHubWorker(configure, _ => { });
+    }
+
+    /// <summary>
+    /// Configures the task hub worker background service.
+    /// </summary>
+    /// <param name="builder">The host builder, not null.</param>
+    /// <param name="configure">The action to configure the worker, not null.</param>
+    /// <param name="configureOptions">The action to configure the task hub host options.</param>
+    /// <returns>The original host builder with task hub worker configured.</returns>
+    public static IHostBuilder ConfigureTaskHubWorker(
+        this IHostBuilder builder,
+        Action<HostBuilderContext, ITaskHubWorkerBuilder> configure,
+        Action<TaskHubOptions> configureOptions)
+    {
+        Check.NotNull(builder, nameof(builder));
+        Check.NotNull(configure, nameof(configure));
+        Check.NotNull(configureOptions, nameof(configureOptions));
+
+        builder.ConfigureServices((context, services) =>
         {
-            Check.NotNull(builder, nameof(builder));
-            Check.NotNull(configure, nameof(configure));
+            services.AddOptions();
+            services.AddLogging();
 
-            return builder.ConfigureTaskHubWorker(configure, _ => { });
-        }
+            services
+                .AddOptions<TaskHubOptions>()
+                .Bind(context.Configuration.GetSection("TaskHub"))
+                .Configure(configureOptions);
 
-        /// <summary>
-        /// Configures the task hub worker background service.
-        /// </summary>
-        /// <param name="builder">The host builder, not null.</param>
-        /// <param name="configure">The action to configure the worker, not null.</param>
-        /// <param name="configureOptions">The action to configure the task hub host options.</param>
-        /// <returns>The original host builder with task hub worker configured.</returns>
-        public static IHostBuilder ConfigureTaskHubWorker(
-            this IHostBuilder builder,
-            Action<ITaskHubWorkerBuilder> configure,
-            Action<TaskHubOptions> configureOptions)
-        {
-            Check.NotNull(builder, nameof(builder));
-            Check.NotNull(configure, nameof(configure));
-            Check.NotNull(configureOptions, nameof(configureOptions));
+            services.AddTaskHubWorker(taskHubBuilder => configure(context, taskHubBuilder));
+            services.AddHostedService<TaskHubBackgroundService>();
+        });
 
-            return builder.ConfigureTaskHubWorker((_, b) => configure(b), configureOptions);
-        }
-
-        /// <summary>
-        /// Configures the task hub worker background service.
-        /// </summary>
-        /// <param name="builder">The host builder, not null.</param>
-        /// <param name="configure">The action to configure the worker, not null.</param>
-        /// <returns>The original host builder with task hub worker configured.</returns>
-        public static IHostBuilder ConfigureTaskHubWorker(
-            this IHostBuilder builder, Action<HostBuilderContext, ITaskHubWorkerBuilder> configure)
-        {
-            Check.NotNull(builder, nameof(builder));
-            Check.NotNull(configure, nameof(configure));
-            return builder.ConfigureTaskHubWorker(configure, _ => { });
-        }
-
-        /// <summary>
-        /// Configures the task hub worker background service.
-        /// </summary>
-        /// <param name="builder">The host builder, not null.</param>
-        /// <param name="configure">The action to configure the worker, not null.</param>
-        /// <param name="configureOptions">The action to configure the task hub host options.</param>
-        /// <returns>The original host builder with task hub worker configured.</returns>
-        public static IHostBuilder ConfigureTaskHubWorker(
-            this IHostBuilder builder,
-            Action<HostBuilderContext, ITaskHubWorkerBuilder> configure,
-            Action<TaskHubOptions> configureOptions)
-        {
-            Check.NotNull(builder, nameof(builder));
-            Check.NotNull(configure, nameof(configure));
-            Check.NotNull(configureOptions, nameof(configureOptions));
-
-            builder.ConfigureServices((context, services) =>
-            {
-                services.AddOptions();
-                services.AddLogging();
-
-                services
-                    .AddOptions<TaskHubOptions>()
-                    .Bind(context.Configuration.GetSection("TaskHub"))
-                    .Configure(configureOptions);
-
-                services.AddTaskHubWorker(taskHubBuilder => configure(context, taskHubBuilder));
-                services.AddHostedService<TaskHubBackgroundService>();
-            });
-
-            return builder;
-        }
+        return builder;
     }
 }

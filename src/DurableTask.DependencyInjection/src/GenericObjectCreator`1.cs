@@ -3,23 +3,22 @@
 
 using DurableTask.Core;
 
-namespace DurableTask.DependencyInjection
+namespace DurableTask.DependencyInjection;
+
+/// <summary>
+/// A descriptor object creator.
+/// </summary>
+/// <typeparam name="T">The type of object to create.</typeparam>
+internal abstract class GenericObjectCreator<T> : ObjectCreator<T>
 {
     /// <summary>
-    /// A descriptor object creator.
+    /// Creates an instance of <typeparamref name="T"/>, given the closed type name for T.
     /// </summary>
-    /// <typeparam name="T">The type of object to create.</typeparam>
-    internal abstract class GenericObjectCreator<T> : ObjectCreator<T>
-    {
-        /// <summary>
-        /// Creates an instance of <typeparamref name="T"/>, given the closed type name for T.
-        /// </summary>
-        /// <param name="typeName">The closed short name of T.</param>
-        /// <returns>An instance of T.</returns>
-        /// <remarks>
-        /// This is called when this creator represents an open-generic version of T, with the provided type
-        /// <paramref name="typeName"/> being the closed form to create.
-        /// </remarks>
-        public abstract T Create(TypeShortName typeName);
-    }
+    /// <param name="typeName">The closed short name of T.</param>
+    /// <returns>An instance of T.</returns>
+    /// <remarks>
+    /// This is called when this creator represents an open-generic version of T, with the provided type
+    /// <paramref name="typeName"/> being the closed form to create.
+    /// </remarks>
+    public abstract T Create(TypeShortName typeName);
 }
