@@ -19,6 +19,12 @@ namespace DurableTask.Extensions.Properties
                 expected, actual,
                 CultureInfo.CurrentUICulture);
 
+        /// <summary>
+        ///     Expected a non-null descriptor from the provided request.
+        /// </summary>
+        public static string NullDescriptor
+            => GetString("NullDescriptor");
+
         private static string GetString(string name, params string[] formatterNames)
         {
             var value = _resourceManager.GetString(name);

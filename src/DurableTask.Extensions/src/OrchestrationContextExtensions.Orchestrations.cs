@@ -4,6 +4,7 @@
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
 using DurableTask.Extensions.Abstractions;
+using DurableTask.Extensions.Properties;
 
 namespace DurableTask.Extensions;
 
@@ -193,6 +194,7 @@ public static partial class OrchestrationContextExtensions
         IDictionary<string, string>? orchestrationTags)
     {
         TaskOrchestrationDescriptor descriptor = request.GetDescriptor();
+        Verify.NotNull(descriptor, Strings.NullDescriptor);
         return context.CreateSubOrchestrationInstance<TResult>(
                 descriptor.Name,
                 descriptor.Version,
@@ -208,6 +210,7 @@ public static partial class OrchestrationContextExtensions
         RetryOptions? retryOptions)
     {
         TaskOrchestrationDescriptor descriptor = request.GetDescriptor();
+        Verify.NotNull(descriptor, Strings.NullDescriptor);
         if (retryOptions is not null)
         {
             return context.CreateSubOrchestrationInstanceWithRetry<TResult>(

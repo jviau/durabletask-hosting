@@ -120,4 +120,7 @@
     <data name="InvalidDataConverterType" xml:space="preserve">
         <value>Expected DataConverter to be of or derived from type '{expected}', but instead found type '{actual}'.</value>
     </data>
+    <data name="NullDescriptor" xml:space="preserve">
+        <value>Expected a non-null descriptor from the provided request.</value>
+    </data>
 </root>

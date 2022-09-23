@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
-#nullable enable
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using DurableTask.Shared;
 
+#nullable enable
 namespace DurableTask;
 
 /// <summary>

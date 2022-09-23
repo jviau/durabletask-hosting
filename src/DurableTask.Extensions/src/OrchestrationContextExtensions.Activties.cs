@@ -4,6 +4,7 @@
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
 using DurableTask.Extensions.Abstractions;
+using DurableTask.Extensions.Properties;
 
 namespace DurableTask.Extensions;
 
@@ -47,6 +48,7 @@ public static partial class OrchestrationContextExtensions
         this OrchestrationContext context, IActivityRequest<TResult> request, RetryOptions? retryOptions)
     {
         TaskActivityDescriptor descriptor = request.GetDescriptor();
+        Verify.NotNull(descriptor, Strings.NullDescriptor);
         if (retryOptions is null)
         {
             return context.ScheduleTask<TResult>(descriptor.Name, descriptor.Version, request);

@@ -17,6 +17,7 @@ public interface IOrchestrationRequestBase
     /// <remarks>
     /// This should point to the current name and version of the
     /// <see cref="TaskOrchestration"/> we want to schedule for this request.
+    /// This must not return <c>null</c>.
     /// </remarks>
     TaskOrchestrationDescriptor GetDescriptor();
 }
