@@ -24,19 +24,19 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
 
     /// <inheritdoc />
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
-    public string? Version { get; set; } = string.Empty;
+    public string? Version { get; private set; }
 
     /// <inheritdoc />
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
-    public ILogger Logger { get; set; } = NullLogger.Instance;
+    public ILogger Logger { get; private set; } = NullLogger.Instance;
 
     /// <summary>
     /// Gets the orchestration context.
