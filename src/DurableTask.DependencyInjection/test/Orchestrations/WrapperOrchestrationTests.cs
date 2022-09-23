@@ -146,7 +146,7 @@ public class WrapperOrchestrationTests
         Func<WrapperOrchestration, TResult> act,
         Action<WrapperOrchestration, TResult> verify)
     {
-        var services = new WrapperOrchestration(new TaskOrchestrationDescriptor(innerType));
+        WrapperOrchestration services = new(new TaskOrchestrationDescriptor(innerType));
         TResult result = act(services);
         verify?.Invoke(services, result);
     }
@@ -156,7 +156,7 @@ public class WrapperOrchestrationTests
         Func<WrapperOrchestration, Task<TResult>> act,
         Action<WrapperOrchestration, TResult> verify)
     {
-        var services = new WrapperOrchestration(new TaskOrchestrationDescriptor(innerType));
+        WrapperOrchestration services = new(new TaskOrchestrationDescriptor(innerType));
         TResult result = await act(services);
         verify?.Invoke(services, result);
     }

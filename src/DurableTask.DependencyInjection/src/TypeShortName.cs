@@ -77,7 +77,7 @@ internal readonly struct TypeShortName
         }
 
         // Generic parameter(s) found. Pull them out.
-        Name = name.Substring(0, genericStart);
+        Name = name[..genericStart];
 
         IEnumerable<string> generics = SplitGenerics(name.Substring(genericStart));
         GenericParams = generics.Select(s => new TypeShortName(s, true)).ToList();
@@ -169,7 +169,7 @@ internal readonly struct TypeShortName
             return includeTopAssembly ? $"{Name}, {AssemblyName}" : Name;
         }
 
-        var builder = new StringBuilder();
+        StringBuilder builder = new();
         AppendTo(builder, includeTopAssembly, false);
         return builder.ToString();
     }

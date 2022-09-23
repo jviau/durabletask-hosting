@@ -20,7 +20,7 @@ public class OrchestrationObjectCreatorTests
     public void Create_WrapperCreated()
     {
         var descriptor = TaskOrchestrationDescriptor.Create<TestOrchestration>();
-        var creator = new OrchestrationObjectCreator(descriptor);
+        OrchestrationObjectCreator creator = new(descriptor);
         TaskOrchestration Orchestration = creator.Create();
         Orchestration.Should().NotBeNull();
         Orchestration.Should().BeOfType<WrapperOrchestration>()
@@ -30,8 +30,8 @@ public class OrchestrationObjectCreatorTests
     [Fact]
     public void Create_GenericDef_Throws()
     {
-        var descriptor = new TaskOrchestrationDescriptor(typeof(TestOrchestration<>));
-        var creator = new OrchestrationObjectCreator(descriptor);
+        TaskOrchestrationDescriptor descriptor = new(typeof(TestOrchestration<>));
+        OrchestrationObjectCreator creator = new(descriptor);
         Action act = () => creator.Create();
         act.Should().ThrowExactly<InvalidOperationException>();
     }
@@ -40,7 +40,7 @@ public class OrchestrationObjectCreatorTests
     public void CreateWithName_NotGeneric_Throws()
     {
         var descriptor = TaskOrchestrationDescriptor.Create<TestOrchestration>();
-        var creator = new OrchestrationObjectCreator(descriptor);
+        OrchestrationObjectCreator creator = new(descriptor);
         Action act = () => creator.Create(new TypeShortName(typeof(string)));
         act.Should().ThrowExactly<InvalidOperationException>();
     }
@@ -48,8 +48,8 @@ public class OrchestrationObjectCreatorTests
     [Fact]
     public void CreateWithName_GenericDef_ArgNull_Throws()
     {
-        var descriptor = new TaskOrchestrationDescriptor(typeof(TestOrchestration<>));
-        var creator = new OrchestrationObjectCreator(descriptor);
+        TaskOrchestrationDescriptor descriptor = new(typeof(TestOrchestration<>));
+        OrchestrationObjectCreator creator = new(descriptor);
         Action act = () => creator.Create(default);
         act.Should().ThrowExactly<ArgumentNullException>();
     }
@@ -57,8 +57,8 @@ public class OrchestrationObjectCreatorTests
     [Fact]
     public void CreateWithName_GenericDef_TypeIssue_Throws()
     {
-        var descriptor = new TaskOrchestrationDescriptor(typeof(TestOrchestration<>));
-        var creator = new OrchestrationObjectCreator(descriptor);
+        TaskOrchestrationDescriptor descriptor = new(typeof(TestOrchestration<>));
+        OrchestrationObjectCreator creator = new(descriptor);
         Action act = () => creator.Create(new TypeShortName("Namespace.Dne"));
         act.Should().ThrowExactly<TypeLoadException>();
     }
@@ -66,9 +66,9 @@ public class OrchestrationObjectCreatorTests
     [Fact]
     public void CreateWithName_GenericDef_WrapperCreated()
     {
-        var descriptor = new TaskOrchestrationDescriptor(typeof(TestOrchestration<>));
+        TaskOrchestrationDescriptor descriptor = new(typeof(TestOrchestration<>));
         var type = typeof(TestOrchestration<object>);
-        var creator = new OrchestrationObjectCreator(descriptor);
+        OrchestrationObjectCreator creator = new(descriptor);
         TaskOrchestration Orchestration = creator.Create(new TypeShortName(type));
         Orchestration.Should().NotBeNull();
         Orchestration.Should().BeOfType<WrapperOrchestration>()

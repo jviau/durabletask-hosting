@@ -79,7 +79,7 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
         }
 
         ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-        var worker = new TaskHubWorker(
+        TaskHubWorker worker = new(
             OrchestrationService,
             new GenericObjectManager<TaskOrchestration>(),
             new GenericObjectManager<TaskActivity>(),

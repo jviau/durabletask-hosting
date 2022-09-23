@@ -122,9 +122,9 @@ public class DefaultTaskHubWorkerBuilderTests
         Action<DefaultTaskHubWorkerBuilder> act,
         Action<DefaultTaskHubWorkerBuilder, IServiceCollection> verify)
     {
-        var services = new ServiceCollection();
+        ServiceCollection services = new();
         arrange?.Invoke(services);
-        var builder = new DefaultTaskHubWorkerBuilder(services);
+        DefaultTaskHubWorkerBuilder builder = new(services);
 
         act(builder);
 
@@ -133,7 +133,7 @@ public class DefaultTaskHubWorkerBuilderTests
 
     private static IServiceProvider CreateServiceProvider()
     {
-        var services = new ServiceCollection();
+        ServiceCollection services = new();
         services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance);
         return services.BuildServiceProvider();
     }

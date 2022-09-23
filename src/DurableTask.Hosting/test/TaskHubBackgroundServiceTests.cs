@@ -37,8 +37,8 @@ public class TaskHubBackgroundServiceTests
     {
         // arrange
         Mock<IOrchestrationService> orchestrationMock = GetOrchestrationService();
-        var taskHubWorker = new TaskHubWorker(orchestrationMock.Object);
-        var service = new TaskHubBackgroundService(taskHubWorker, s_logger, s_options);
+        TaskHubWorker taskHubWorker = new(orchestrationMock.Object);
+        TaskHubBackgroundService service = new(taskHubWorker, s_logger, s_options);
 
         // act
         await service.StartAsync(CancellationToken.None);
@@ -52,8 +52,8 @@ public class TaskHubBackgroundServiceTests
     {
         // arrange
         Mock<IOrchestrationService> orchestrationMock = GetOrchestrationService();
-        var taskHubWorker = new TaskHubWorker(orchestrationMock.Object);
-        var service = new TaskHubBackgroundService(taskHubWorker, s_logger, s_options);
+        TaskHubWorker taskHubWorker = new(orchestrationMock.Object);
+        TaskHubBackgroundService service = new(taskHubWorker, s_logger, s_options);
 
         // act
         await service.StartAsync(CancellationToken.None);
@@ -73,8 +73,8 @@ public class TaskHubBackgroundServiceTests
             .Callback(() => cancellation.Cancel())
             .Returns(Task.Delay(Timeout.Infinite));
 
-        var taskHubWorker = new TaskHubWorker(orchestrationMock.Object);
-        var service = new TaskHubBackgroundService(taskHubWorker, s_logger, s_options);
+        TaskHubWorker taskHubWorker = new(orchestrationMock.Object);
+        TaskHubBackgroundService service = new(taskHubWorker, s_logger, s_options);
 
         // act
         await service.StartAsync(CancellationToken.None);

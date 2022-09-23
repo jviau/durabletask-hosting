@@ -21,10 +21,10 @@ namespace DurableTask.Samples;
 public class OrchestrationInstanceEx : OrchestrationInstance
 {
     private static readonly DataContractSerializer s_customSerializer =
-           new DataContractSerializer(typeof(OrchestrationInstanceEx));
+           new(typeof(OrchestrationInstanceEx));
 
     private static readonly DataContractSerializer s_defaultSerializer =
-        new DataContractSerializer(typeof(OrchestrationInstance));
+        new(typeof(OrchestrationInstance));
 
     /// <summary>
     /// Gets or sets the correlation id.
@@ -97,11 +97,9 @@ public class OrchestrationInstanceEx : OrchestrationInstance
         }
 
         // We need to first get custom extension data by serializing & deserializing.
-        using (var stream = new MemoryStream())
-        {
-            s_defaultSerializer.WriteObject(stream, instance);
-            stream.Position = 0;
-            return (OrchestrationInstanceEx)s_customSerializer.ReadObject(stream);
-        }
+        using MemoryStream stream = new();
+        s_defaultSerializer.WriteObject(stream, instance);
+        stream.Position = 0;
+        return (OrchestrationInstanceEx)s_customSerializer.ReadObject(stream);
     }
 }

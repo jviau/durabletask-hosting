@@ -21,7 +21,7 @@ public class TaskMiddlewareRunnerTests
     [Fact]
     public async Task Run_NullContext_Throws()
     {
-        var descriptor = new TaskMiddlewareDescriptor((c, n) => Task.CompletedTask);
+        TaskMiddlewareDescriptor descriptor = new((c, n) => Task.CompletedTask);
         Func<Task> act = () => TaskMiddlewareRunner.RunAsync(descriptor, null, () => Task.CompletedTask);
         await act.Should().ThrowExactlyAsync<ArgumentNullException>();
     }
@@ -29,7 +29,7 @@ public class TaskMiddlewareRunnerTests
     [Fact]
     public async Task Run_NullNext_Throws()
     {
-        var descriptor = new TaskMiddlewareDescriptor((c, n) => Task.CompletedTask);
+        TaskMiddlewareDescriptor descriptor = new((c, n) => Task.CompletedTask);
         Func<Task> act = () => TaskMiddlewareRunner.RunAsync(descriptor, CreateContext(), null);
         await act.Should().ThrowExactlyAsync<ArgumentNullException>();
     }
@@ -40,7 +40,7 @@ public class TaskMiddlewareRunnerTests
     public async Task Run_Type_Executes(bool addMiddleware)
     {
         // arrange
-        var next = new NextFunc();
+        NextFunc next = new();
         var descriptor = TaskMiddlewareDescriptor.Create<TestMiddleware>();
 
         IServiceProvider serviceProvider = CreateServiceProvider(addMiddleware);
@@ -61,8 +61,8 @@ public class TaskMiddlewareRunnerTests
     public async Task Run_Type_ExecutesTwice(bool addMiddleware)
     {
         // arrange
-        var next1 = new NextFunc();
-        var next2 = new NextFunc();
+        NextFunc next1 = new();
+        NextFunc next2 = new();
         var descriptor = TaskMiddlewareDescriptor.Create<TestMiddleware>();
 
         IServiceProvider serviceProvider = CreateServiceProvider(addMiddleware);
@@ -83,7 +83,7 @@ public class TaskMiddlewareRunnerTests
     public async Task Run_Func_Executes()
     {
         // arrange
-        var next = new NextFunc();
+        NextFunc next = new();
         int executed = 0;
         Task Middleware(DispatchMiddlewareContext context, Func<Task> next)
         {
@@ -91,7 +91,7 @@ public class TaskMiddlewareRunnerTests
             return next();
         }
 
-        var descriptor = new TaskMiddlewareDescriptor(Middleware);
+        TaskMiddlewareDescriptor descriptor = new(Middleware);
         var context = CreateContext();
 
         // act
@@ -106,8 +106,8 @@ public class TaskMiddlewareRunnerTests
     public async Task Run_Func_ExecutesTwice()
     {
         // arrange
-        var next1 = new NextFunc();
-        var next2 = new NextFunc();
+        NextFunc next1 = new();
+        NextFunc next2 = new();
         int executed = 0;
         Task Middleware(DispatchMiddlewareContext context, Func<Task> next)
         {
@@ -115,7 +115,7 @@ public class TaskMiddlewareRunnerTests
             return next();
         }
 
-        var descriptor = new TaskMiddlewareDescriptor(Middleware);
+        TaskMiddlewareDescriptor descriptor = new(Middleware);
         var context = CreateContext();
 
         // act
@@ -139,7 +139,7 @@ public class TaskMiddlewareRunnerTests
 
     private static IServiceProvider CreateServiceProvider(bool addMiddleware = false)
     {
-        var services = new ServiceCollection();
+        ServiceCollection services = new();
         services.AddSingleton<ExecutionTracker>();
         if (addMiddleware)
         {

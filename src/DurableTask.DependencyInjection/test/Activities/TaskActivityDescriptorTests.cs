@@ -39,7 +39,7 @@ public class TaskActivityDescriptorTests
     [InlineData(typeof(TestActivity<object>))]
     public void Ctor_Type_DefaultNameVersion(Type type)
     {
-        var descriptor = new TaskActivityDescriptor(type);
+        TaskActivityDescriptor descriptor = new(type);
         descriptor.Should().NotBeNull();
         descriptor.Method.Should().BeNull();
         descriptor.Type.Should().Be(type);
@@ -55,7 +55,7 @@ public class TaskActivityDescriptorTests
     {
         const string name = "CustomName";
         const string version = "CustomVersion";
-        var descriptor = new TaskActivityDescriptor(type, name, version);
+        TaskActivityDescriptor descriptor = new(type, name, version);
         descriptor.Should().NotBeNull();
         descriptor.Method.Should().BeNull();
         descriptor.Type.Should().Be(type);
@@ -66,8 +66,8 @@ public class TaskActivityDescriptorTests
     [Fact]
     public void Ctor_MethodInfo_DefaultNameVersion()
     {
-        var methodInfo = typeof(IMyServce).GetMethod(nameof(IMyServce.SomethingAsync));
-        var descriptor = new TaskActivityDescriptor(methodInfo);
+        var methodInfo = typeof(IMyService).GetMethod(nameof(IMyService.SomethingAsync));
+        TaskActivityDescriptor descriptor = new(methodInfo);
         descriptor.Type.Should().BeNull();
         descriptor.Method.Should().BeSameAs(methodInfo);
         descriptor.Name.Should().Be(NameVersionHelper.GetDefaultName(methodInfo));
@@ -79,8 +79,8 @@ public class TaskActivityDescriptorTests
     {
         const string name = "CustomName";
         const string version = "CustomVersion";
-        var methodInfo = typeof(IMyServce).GetMethod(nameof(IMyServce.SomethingAsync));
-        var descriptor = new TaskActivityDescriptor(methodInfo, name, version);
+        var methodInfo = typeof(IMyService).GetMethod(nameof(IMyService.SomethingAsync));
+        TaskActivityDescriptor descriptor = new(methodInfo, name, version);
         descriptor.Type.Should().BeNull();
         descriptor.Method.Should().BeSameAs(methodInfo);
         descriptor.Name.Should().Be(name);
@@ -130,7 +130,7 @@ public class TaskActivityDescriptorTests
     {
     }
 
-    private interface IMyServce
+    private interface IMyService
     {
         Task<string> SomethingAsync();
     }

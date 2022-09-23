@@ -31,7 +31,7 @@ public class TaskOrchestrationDescriptorTests
     [InlineData(typeof(TestOrchestration<object>))]
     public void Ctor_DefaultNameVersion(Type type)
     {
-        var descriptor = new TaskOrchestrationDescriptor(type);
+        TaskOrchestrationDescriptor descriptor = new(type);
         descriptor.Should().NotBeNull();
         descriptor.Type.Should().Be(type);
         descriptor.Name.Should().Be(TypeShortName.ToString(type, false));
@@ -46,7 +46,7 @@ public class TaskOrchestrationDescriptorTests
     {
         const string name = "CustomName";
         const string version = "CustomVersion";
-        var descriptor = new TaskOrchestrationDescriptor(type, name, version);
+        TaskOrchestrationDescriptor descriptor = new(type, name, version);
         descriptor.Should().NotBeNull();
         descriptor.Type.Should().Be(type);
         descriptor.Name.Should().Be(name);

@@ -70,11 +70,11 @@ public class WrapperActivityTests
     {
         // arrange
         var methodInfo = typeof(IMyService).GetMethod(nameof(IMyService.MyMethodAsync));
-        var descriptor = new TaskActivityDescriptor(methodInfo);
-        var wrapperActivity = new WrapperActivity(descriptor);
-        var services = new ServiceCollection();
+        TaskActivityDescriptor descriptor = new(methodInfo);
+        WrapperActivity wrapperActivity = new(descriptor);
+        ServiceCollection services = new();
         services.AddSingleton<IMyService, MyService>();
-        var input = new JArray()
+        JArray input = new()
         {
             "some_string",
             10
@@ -145,7 +145,7 @@ public class WrapperActivityTests
         Func<WrapperActivity, TResult> act,
         Action<WrapperActivity, TResult> verify)
     {
-        var services = new WrapperActivity(new TaskActivityDescriptor(innerType));
+        WrapperActivity services = new(new TaskActivityDescriptor(innerType));
         TResult result = act(services);
         verify?.Invoke(services, result);
     }
@@ -155,14 +155,14 @@ public class WrapperActivityTests
         Func<WrapperActivity, Task<TResult>> act,
         Action<WrapperActivity, TResult> verify)
     {
-        var services = new WrapperActivity(new TaskActivityDescriptor(innerType));
+        WrapperActivity services = new(new TaskActivityDescriptor(innerType));
         TResult result = await act(services);
         verify?.Invoke(services, result);
     }
 
     private IServiceProvider CreateServiceProvider()
     {
-        var services = new ServiceCollection();
+        ServiceCollection services = new();
         services.AddSingleton(this);
         return services.BuildServiceProvider();
     }

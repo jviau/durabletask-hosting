@@ -28,7 +28,7 @@ public class ServiceProviderOrchestrationMiddlewareTests
     public async Task InvokeAsync_ArgumentNullContext()
     {
         // arrange
-        var middleware = new ServiceProviderOrchestrationMiddleware(Mock.Of<IServiceProvider>());
+        ServiceProviderOrchestrationMiddleware middleware = new(Mock.Of<IServiceProvider>());
 
         // act
         ArgumentNullException ex = await Capture<ArgumentNullException>(
@@ -42,7 +42,7 @@ public class ServiceProviderOrchestrationMiddlewareTests
     public async Task InvokeAsync_ArgumentNullNext()
     {
         // arrange
-        var middleware = new ServiceProviderOrchestrationMiddleware(Mock.Of<IServiceProvider>());
+        ServiceProviderOrchestrationMiddleware middleware = new(Mock.Of<IServiceProvider>());
 
         // act
         ArgumentNullException ex = await Capture<ArgumentNullException>(
@@ -56,11 +56,11 @@ public class ServiceProviderOrchestrationMiddlewareTests
     public async Task InvokeAsync_Wrapped_SetsOrchestration()
     {
         // arrange
-        var serviceProvider = new Mock<IServiceProvider>();
+        Mock<IServiceProvider> serviceProvider = new();
         serviceProvider.Setup(m => m.GetService(typeof(TestOrchestration))).Returns(new TestOrchestration());
-        var wrapper = new WrapperOrchestration(new TaskOrchestrationDescriptor(typeof(TestOrchestration)));
+        WrapperOrchestration wrapper = new(new TaskOrchestrationDescriptor(typeof(TestOrchestration)));
         DispatchMiddlewareContext context = CreateContext(wrapper);
-        var middleware = new ServiceProviderOrchestrationMiddleware(serviceProvider.Object);
+        ServiceProviderOrchestrationMiddleware middleware = new(serviceProvider.Object);
 
         // act
         await middleware.InvokeAsync(context, () => Task.CompletedTask);
@@ -76,10 +76,10 @@ public class ServiceProviderOrchestrationMiddlewareTests
     public async Task InvokeAsync_NotWrapped_Continues()
     {
         // arrange
-        var activity = new TestOrchestration();
-        var serviceProvider = new Mock<IServiceProvider>();
+        TestOrchestration activity = new();
+        Mock<IServiceProvider> serviceProvider = new();
         DispatchMiddlewareContext context = CreateContext(activity);
-        var middleware = new ServiceProviderOrchestrationMiddleware(serviceProvider.Object);
+        ServiceProviderOrchestrationMiddleware middleware = new(serviceProvider.Object);
 
         // act
         await middleware.InvokeAsync(context, () => Task.CompletedTask);

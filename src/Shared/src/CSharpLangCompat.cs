@@ -60,7 +60,7 @@ namespace System
     /// </remarks>
     internal readonly struct Index : IEquatable<Index>
     {
-        readonly int value;
+        readonly int _value;
 
         /// <summary>Construct an Index using a value and indicating if the index is from the start or from the end.</summary>
         /// <param name="value">The index value. it has to be zero or positive number.</param>
@@ -76,13 +76,13 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(value), "value must be non-negative");
             }
 
-            this.value = fromEnd ? ~value : value;
+            _value = fromEnd ? ~value : value;
         }
 
         // The following private constructors mainly created for perf reason to avoid the checks
         Index(int value)
         {
-            this.value = value;
+            _value = value;
         }
 
         /// <summary>Create an Index pointing at first element.</summary>
@@ -122,19 +122,19 @@ namespace System
         {
             get
             {
-                if (this.value < 0)
+                if (_value < 0)
                 {
-                    return ~this.value;
+                    return ~_value;
                 }
                 else
                 {
-                    return this.value;
+                    return _value;
                 }
             }
         }
 
         /// <summary>Indicates whether the index is from the start or the end.</summary>
-        public bool IsFromEnd => this.value < 0;
+        public bool IsFromEnd => _value < 0;
 
         /// <summary>Calculate the offset from the start using the giving collection length.</summary>
         /// <param name="length">The length of the collection that the Index will be used with. length has to be a positive value.</param>
@@ -147,8 +147,8 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetOffset(int length)
         {
-            int offset = this.value;
-            if (this.IsFromEnd)
+            int offset = _value;
+            if (IsFromEnd)
             {
                 // offset = length - (~value)
                 // offset = length + (~(~value) + 1)
@@ -162,14 +162,14 @@ namespace System
 
         /// <summary>Indicates whether the current Index object is equal to another object of the same type.</summary>
         /// <param name="value">An object to compare with this object.</param>
-        public override bool Equals(object? value) => value is Index && this.value == ((Index)value).value;
+        public override bool Equals(object? value) => value is Index && _value == ((Index)value)._value;
 
         /// <summary>Indicates whether the current Index object is equal to another Index object.</summary>
         /// <param name="other">An object to compare with this object.</param>
-        public bool Equals(Index other) => this.value == other.value;
+        public bool Equals(Index other) => _value == other._value;
 
         /// <summary>Returns the hash code for this instance.</summary>
-        public override int GetHashCode() => this.value;
+        public override int GetHashCode() => _value;
 
         /// <summary>Converts integer number to an Index.</summary>
         public static implicit operator Index(int value) => FromStart(value);
@@ -177,7 +177,7 @@ namespace System
         /// <summary>Converts the value of the current Index object to its equivalent string representation.</summary>
         public override string ToString()
         {
-            return this.IsFromEnd ? "^" + ((uint)this.Value).ToString() : ((uint)this.Value).ToString();
+            return IsFromEnd ? "^" + ((uint)Value).ToString() : ((uint)Value).ToString();
         }
     }
 
@@ -203,31 +203,31 @@ namespace System
         /// <param name="end">Represent the exclusive end index of the range.</param>
         public Range(Index start, Index end)
         {
-            this.Start = start;
-            this.End = end;
+            Start = start;
+            End = end;
         }
 
         /// <summary>Indicates whether the current Range object is equal to another object of the same type.</summary>
         /// <param name="value">An object to compare with this object.</param>
         public override bool Equals(object? value) =>
             value is Range r &&
-            r.Start.Equals(this.Start) &&
-            r.End.Equals(this.End);
+            r.Start.Equals(Start) &&
+            r.End.Equals(End);
 
         /// <summary>Indicates whether the current Range object is equal to another Range object.</summary>
         /// <param name="other">An object to compare with this object.</param>
-        public bool Equals(Range other) => other.Start.Equals(this.Start) && other.End.Equals(this.End);
+        public bool Equals(Range other) => other.Start.Equals(Start) && other.End.Equals(End);
 
         /// <summary>Returns the hash code for this instance.</summary>
         public override int GetHashCode()
         {
-            return (this.Start.GetHashCode() * 31) + this.End.GetHashCode();
+            return (Start.GetHashCode() * 31) + End.GetHashCode();
         }
 
         /// <summary>Converts the value of the current Range object to its equivalent string representation.</summary>
         public override string ToString()
         {
-            return this.Start + ".." + this.End;
+            return Start + ".." + End;
         }
 
         /// <summary>Create a Range object starting from start index to the end of the collection.</summary>
@@ -250,11 +250,11 @@ namespace System
         public (int Offset, int Length) GetOffsetAndLength(int length)
         {
             int start;
-            var startIndex = this.Start;
+            Index startIndex = Start;
             start = startIndex.IsFromEnd ? length - startIndex.Value : startIndex.Value;
 
             int end;
-            Index endIndex = this.End;
+            Index endIndex = End;
             end = endIndex.IsFromEnd ? length - endIndex.Value : endIndex.Value;
 
             if ((uint)end > (uint)length || (uint)start > (uint)end)
@@ -276,7 +276,7 @@ namespace System.Diagnostics.CodeAnalysis
         /// <param name="returnValue">
         /// The return value condition. If the method returns this value, the associated parameter will not be null.
         /// </param>
-        public NotNullWhenAttribute(bool returnValue) => this.ReturnValue = returnValue;
+        public NotNullWhenAttribute(bool returnValue) => ReturnValue = returnValue;
 
         /// <summary>Gets the return value condition.</summary>
         public bool ReturnValue { get; }
@@ -288,7 +288,7 @@ namespace System.Diagnostics.CodeAnalysis
         /// <param name="parameterName">
         /// The associated parameter name.  The output will be non-null if the argument to the parameter specified is non-null.
         /// </param>
-        public NotNullIfNotNullAttribute(string parameterName) => this.ParameterName = parameterName;
+        public NotNullIfNotNullAttribute(string parameterName) => ParameterName = parameterName;
 
         /// <summary>Gets the associated parameter name.</summary>
         public string ParameterName { get; }
@@ -303,7 +303,7 @@ namespace System.Runtime.CompilerServices
     /// This dummy class is required to compile records when targeting .NET Standard
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    static class IsExternalInit { }
+    internal static class IsExternalInit { }
 }
 
 #endif

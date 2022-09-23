@@ -15,7 +15,7 @@ public class TypeShortNameTests
     [InlineData(typeof(TestNestedSimple))]
     public void Ctor_SimpleType(Type type)
     {
-        var typeName = new TypeShortName(type);
+        TypeShortName typeName = new(type);
         VerifyTypeNameWithAssembly(typeName, type);
     }
 
@@ -26,7 +26,7 @@ public class TypeShortNameTests
     [InlineData(typeof(TestNestedGeneric<>))]
     public void Ctor_OpenGenericType(Type type)
     {
-        var typeName = new TypeShortName(type);
+        TypeShortName typeName = new(type);
         VerifyTypeNameWithAssembly(typeName, type);
     }
 
@@ -39,7 +39,7 @@ public class TypeShortNameTests
     [InlineData(typeof(ObjectCreator<Dictionary<string, object>>), "DurableTask.Core.ObjectCreator`1[[System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib]|[System.Object, System.Private.CoreLib]], System.Private.CoreLib]], DurableTask.Core")]
     public void Ctor_ClosedGenericType(Type type, string typeNameString)
     {
-        var typeName = new TypeShortName(type);
+        TypeShortName typeName = new(type);
         VerifyTypeNameWithAssembly(typeName, type, typeNameString);
     }
 
@@ -48,7 +48,7 @@ public class TypeShortNameTests
     [InlineData("DurableTask.Core.TaskActivity, DurableTask.Core", typeof(TaskActivity))]
     public void Ctor_SimpleString(string typeNameString, Type type)
     {
-        var typeName = new TypeShortName(typeNameString);
+        TypeShortName typeName = new(typeNameString);
         VerifyTypeNameWithAssembly(typeName, type);
     }
 
@@ -57,7 +57,7 @@ public class TypeShortNameTests
     [InlineData("DurableTask.Core.TaskActivity", typeof(TaskActivity))]
     public void Ctor_SimpleString_NoAssembly(string typeNameString, Type type)
     {
-        var typeName = new TypeShortName(typeNameString);
+        TypeShortName typeName = new(typeNameString);
         VerifyTypeNameWithoutAssembly(typeName, type);
     }
 
@@ -66,7 +66,7 @@ public class TypeShortNameTests
     [InlineData("DurableTask.Core.ObjectCreator`1, DurableTask.Core", typeof(ObjectCreator<>))]
     public void Ctor_OpenGenericString(string typeNameString, Type type)
     {
-        var typeName = new TypeShortName(typeNameString);
+        TypeShortName typeName = new(typeNameString);
         VerifyTypeNameWithAssembly(typeName, type);
     }
 
@@ -75,7 +75,7 @@ public class TypeShortNameTests
     [InlineData("DurableTask.Core.ObjectCreator`1", typeof(ObjectCreator<>))]
     public void Ctor_OpenGenericString_NoAssembly(string typeNameString, Type type)
     {
-        var typeName = new TypeShortName(typeNameString);
+        TypeShortName typeName = new(typeNameString);
         VerifyTypeNameWithoutAssembly(typeName, type);
     }
 
@@ -86,7 +86,7 @@ public class TypeShortNameTests
     [InlineData("DurableTask.Core.ObjectCreator`1[[System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib]|[System.Object, System.Private.CoreLib]], System.Private.CoreLib]], DurableTask.Core", typeof(ObjectCreator<Dictionary<string, object>>))]
     public void Ctor_ClosedGenericString(string typeNameString, Type type)
     {
-        var typeName = new TypeShortName(typeNameString);
+        TypeShortName typeName = new(typeNameString);
         VerifyTypeNameWithAssembly(typeName, type, typeNameString);
     }
 
@@ -96,7 +96,7 @@ public class TypeShortNameTests
     [InlineData("System.Collections.Generic.KeyValuePair`2[[System.String, System.Private.CoreLib]|[DurableTask.Core.TaskActivity, DurableTask.Core]]", typeof(KeyValuePair<string, TaskActivity>))]
     public void Ctor_ClosedGenericString_NoAssembly(string typeNameString, Type type)
     {
-        var typeName = new TypeShortName(typeNameString);
+        TypeShortName typeName = new(typeNameString);
         VerifyTypeNameWithoutAssembly(typeName, type, typeNameString);
     }
 
@@ -109,7 +109,7 @@ public class TypeShortNameTests
             "Activity, DurableTask.Core]], DurableTask.Core";
         Type type = typeof(List<ObjectCreator<TaskActivity>>);
         Type genericType = typeof(ObjectCreator<TaskActivity>);
-        var typeName = new TypeShortName(typeNameString);
+        TypeShortName typeName = new(typeNameString);
 
         VerifyTypeNameWithAssembly(typeName, type, typeNameString);
         VerifyTypeNameWithAssembly(typeName.GenericParams.First(), genericType, genericTypeNameString);
@@ -123,11 +123,11 @@ public class TypeShortNameTests
     [InlineData(typeof(TestNestedGeneric<string>))]
     public void Load_AssemblyNameSet(Type type)
     {
-        var typeName1 = new TypeShortName(type);
+        TypeShortName typeName1 = new(type);
         Type actual = typeName1.Load();
         actual.Should().Be(type);
 
-        var typeName2 = new TypeShortName(typeName1.ToString());
+        TypeShortName typeName2 = new(typeName1.ToString());
         actual = typeName2.Load();
         actual.Should().Be(type);
     }
@@ -140,11 +140,11 @@ public class TypeShortNameTests
     [InlineData(typeof(TestNestedGeneric<string>))]
     public void Load_AssemblyNameProvided(Type type)
     {
-        var typeName1 = new TypeShortName(type);
+        TypeShortName typeName1 = new(type);
         Type actual = typeName1.Load(type.Assembly);
         actual.Should().Be(type);
 
-        var typeName2 = new TypeShortName(typeName1.ToString(false));
+        TypeShortName typeName2 = new(typeName1.ToString(false));
         actual = typeName2.Load(type.Assembly);
         actual.Should().Be(type);
     }

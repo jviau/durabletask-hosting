@@ -54,7 +54,7 @@ internal static class TaskMiddlewareRunner
         {
             if (descriptor.Func is not null)
             {
-                var middleware = new FuncMiddleware(descriptor.Func);
+                FuncMiddleware middleware = new(descriptor.Func);
                 factory = s_factories.GetOrAdd(descriptor, _ => middleware);
                 return middleware;
             }

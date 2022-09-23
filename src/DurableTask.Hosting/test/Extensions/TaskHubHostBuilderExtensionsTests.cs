@@ -82,7 +82,7 @@ public class TaskHubHostBuilderExtensionsTests
         Func<IHostBuilder, TResult> act,
         Action<IHostBuilder, TResult> verify)
     {
-        var builder = new HostBuilder();
+        HostBuilder builder = new();
 
         TResult result = act(builder);
         builder.Build();

@@ -64,7 +64,7 @@ public class TaskHubWorkerBuilderExtensionsTests
         => RunTestException<InvalidOperationException>(
             builder =>
             {
-                var mockOrchestrationService = new Mock<IOrchestrationService>();
+                Mock<IOrchestrationService> mockOrchestrationService = new();
                 builder.WithOrchestrationService(mockOrchestrationService.Object);
                 builder.AddClient();
                 IServiceProvider provider = builder.Services.BuildServiceProvider();
@@ -76,7 +76,7 @@ public class TaskHubWorkerBuilderExtensionsTests
         => RunTest(
             builder =>
             {
-                var mockOrchestrationService = new Mock<IOrchestrationService>();
+                Mock<IOrchestrationService> mockOrchestrationService = new();
                 mockOrchestrationService.As<IOrchestrationServiceClient>();
                 builder.WithOrchestrationService(mockOrchestrationService.Object);
                 builder.AddClient();
@@ -93,7 +93,7 @@ public class TaskHubWorkerBuilderExtensionsTests
         => RunTest(
             builder =>
             {
-                var mockOrchestrationService = new Mock<IOrchestrationService>();
+                Mock<IOrchestrationService> mockOrchestrationService = new();
                 mockOrchestrationService.As<IOrchestrationServiceClient>();
 
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -144,9 +144,9 @@ public class TaskHubWorkerBuilderExtensionsTests
         Func<ITaskHubWorkerBuilder, TResult> act,
         Action<Mock<ITaskHubWorkerBuilder>, TResult> verify)
     {
-        var mock = new Mock<ITaskHubWorkerBuilder>();
+        Mock<ITaskHubWorkerBuilder> mock = new();
 
-        var services = new ServiceCollection();
+        ServiceCollection services = new();
         services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance);
         mock.Setup(x => x.Services).Returns(services);
 

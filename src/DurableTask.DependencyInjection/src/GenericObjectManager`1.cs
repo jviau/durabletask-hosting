@@ -35,7 +35,7 @@ internal sealed class GenericObjectManager<T> : INameVersionObjectManager<T>
             return default;
         }
 
-        if (typeName.Name is object && creator is GenericObjectCreator<T> genericCreator)
+        if (typeName.Name is not null && creator is GenericObjectCreator<T> genericCreator)
         {
             return genericCreator.Create(typeName);
         }
@@ -56,7 +56,7 @@ internal sealed class GenericObjectManager<T> : INameVersionObjectManager<T>
         // Then check if this represents a generic type, and find the generic definition name.
         if (name.IndexOf('[') > 0)
         {
-            var typeName = new TypeShortName(name);
+            TypeShortName typeName = new(name);
             if (_creators.TryGetValue(GetKey(typeName.Name, version), out creator))
             {
                 return (creator, typeName);

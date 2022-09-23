@@ -20,7 +20,7 @@ public class ActivityObjectCreatorTests
     public void Create_WrapperCreated()
     {
         var descriptor = TaskActivityDescriptor.Create<TestActivity>();
-        var creator = new ActivityObjectCreator(descriptor);
+        ActivityObjectCreator creator = new(descriptor);
         TaskActivity activity = creator.Create();
         activity.Should().NotBeNull();
         activity.Should().BeOfType<WrapperActivity>()
@@ -30,8 +30,8 @@ public class ActivityObjectCreatorTests
     [Fact]
     public void Create_GenericDef_Throws()
     {
-        var descriptor = new TaskActivityDescriptor(typeof(TestActivity<>));
-        var creator = new ActivityObjectCreator(descriptor);
+        TaskActivityDescriptor descriptor = new(typeof(TestActivity<>));
+        ActivityObjectCreator creator = new(descriptor);
         Action act = () => creator.Create();
         act.Should().ThrowExactly<InvalidOperationException>();
     }
@@ -40,7 +40,7 @@ public class ActivityObjectCreatorTests
     public void CreateWithName_NotGeneric_Throws()
     {
         var descriptor = TaskActivityDescriptor.Create<TestActivity>();
-        var creator = new ActivityObjectCreator(descriptor);
+        ActivityObjectCreator creator = new(descriptor);
         Action act = () => creator.Create(new TypeShortName(typeof(string)));
         act.Should().ThrowExactly<InvalidOperationException>();
     }
@@ -48,8 +48,8 @@ public class ActivityObjectCreatorTests
     [Fact]
     public void CreateWithName_GenericDef_ArgNull_Throws()
     {
-        var descriptor = new TaskActivityDescriptor(typeof(TestActivity<>));
-        var creator = new ActivityObjectCreator(descriptor);
+        TaskActivityDescriptor descriptor = new(typeof(TestActivity<>));
+        ActivityObjectCreator creator = new(descriptor);
         Action act = () => creator.Create(default);
         act.Should().ThrowExactly<ArgumentNullException>();
     }
@@ -57,8 +57,8 @@ public class ActivityObjectCreatorTests
     [Fact]
     public void CreateWithName_GenericDef_TypeIssue_Throws()
     {
-        var descriptor = new TaskActivityDescriptor(typeof(TestActivity<>));
-        var creator = new ActivityObjectCreator(descriptor);
+        TaskActivityDescriptor descriptor = new(typeof(TestActivity<>));
+        ActivityObjectCreator creator = new(descriptor);
         Action act = () => creator.Create(new TypeShortName("Namespace.Dne"));
         act.Should().ThrowExactly<TypeLoadException>();
     }
@@ -66,9 +66,9 @@ public class ActivityObjectCreatorTests
     [Fact]
     public void CreateWithName_GenericDef_WrapperCreated()
     {
-        var descriptor = new TaskActivityDescriptor(typeof(TestActivity<>));
+        TaskActivityDescriptor descriptor = new(typeof(TestActivity<>));
         var type = typeof(TestActivity<object>);
-        var creator = new ActivityObjectCreator(descriptor);
+        ActivityObjectCreator creator = new(descriptor);
         TaskActivity activity = creator.Create(new TypeShortName(type));
         activity.Should().NotBeNull();
         activity.Should().BeOfType<WrapperActivity>()

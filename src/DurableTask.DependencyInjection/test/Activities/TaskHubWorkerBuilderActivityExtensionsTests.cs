@@ -309,7 +309,7 @@ public class TaskHubWorkerBuilderActivityExtensionsTests
         Func<ITaskHubWorkerBuilder, TResult> act,
         Action<ITaskHubWorkerBuilder, TResult> verify)
     {
-        var builder = new DefaultTaskHubWorkerBuilder(new ServiceCollection());
+        DefaultTaskHubWorkerBuilder builder = new(new ServiceCollection());
         TResult result = act(builder);
         verify?.Invoke(builder, result);
     }

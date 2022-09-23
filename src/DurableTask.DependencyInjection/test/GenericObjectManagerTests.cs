@@ -15,14 +15,14 @@ public class GenericObjectManagerTests
     [Fact]
     public void Add_NotExists_Succeeds()
     {
-        var manager = new GenericObjectManager<TaskActivity>();
+        GenericObjectManager<TaskActivity> manager = new();
         manager.Add(new ActivityObjectCreator(s_descriptor));
     }
 
     [Fact]
     public void Add_Exists_Throws()
     {
-        var manager = new GenericObjectManager<TaskActivity>();
+        GenericObjectManager<TaskActivity> manager = new();
         manager.Add(new ActivityObjectCreator(s_descriptor));
 
         Action act = () => manager.Add(new ActivityObjectCreator(s_descriptor));
@@ -32,7 +32,7 @@ public class GenericObjectManagerTests
     [Fact]
     public void Create_NotExists_Null()
     {
-        var manager = new GenericObjectManager<TaskActivity>();
+        GenericObjectManager<TaskActivity> manager = new();
         TaskActivity activity = manager.GetObject("DNE", "");
         activity.Should().BeNull();
     }
@@ -40,7 +40,7 @@ public class GenericObjectManagerTests
     [Fact]
     public void Create_Exists_NotNull()
     {
-        var manager = new GenericObjectManager<TaskActivity>();
+        GenericObjectManager<TaskActivity> manager = new();
         manager.Add(new ActivityObjectCreator(s_descriptor));
         TaskActivity activity = manager.GetObject(s_descriptor.Name, s_descriptor.Version);
         activity.Should().NotBeNull();
@@ -53,7 +53,7 @@ public class GenericObjectManagerTests
     [InlineData(typeof(TestActivity<SomeClass>))]
     public void Create_OpenGeneric_NotNull(Type type)
     {
-        var manager = new GenericObjectManager<TaskActivity>();
+        GenericObjectManager<TaskActivity> manager = new();
         manager.Add(new ActivityObjectCreator(new TaskActivityDescriptor(typeof(TestActivity<>))));
         TaskActivity activity = manager.GetObject(TypeShortName.ToString(type, false), string.Empty);
         activity.Should().NotBeNull();
@@ -64,7 +64,7 @@ public class GenericObjectManagerTests
     public void Create_ClosedGeneric_NotNull()
     {
         var descriptor = TaskActivityDescriptor.Create<TestActivity<object>>();
-        var manager = new GenericObjectManager<TaskActivity>();
+        GenericObjectManager<TaskActivity> manager = new();
         manager.Add(new ActivityObjectCreator(descriptor));
         TaskActivity activity = manager.GetObject(descriptor.Name, descriptor.Version);
         activity.Should().NotBeNull();

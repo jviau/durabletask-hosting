@@ -36,7 +36,7 @@ public static class TaskHubServiceCollectionExtensions
 
         // This is added as a singleton implementation instance as we will fetch this out of the service collection
         // during subsequent calls to AddTaskHubWorker.
-        var builder = new DefaultTaskHubWorkerBuilder(services);
+        DefaultTaskHubWorkerBuilder builder = new(services);
         services.TryAddSingleton<ITaskHubWorkerBuilder>(builder);
         services.TryAddSingleton(sp => builder.Build(sp));
 

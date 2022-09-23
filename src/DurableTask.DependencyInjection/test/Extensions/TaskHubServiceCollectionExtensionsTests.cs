@@ -60,7 +60,7 @@ public class TaskHubServiceCollectionExtensionsTests
         Func<IServiceCollection, TResult> act,
         Action<IServiceCollection, TResult> verify)
     {
-        var services = new ServiceCollection();
+        ServiceCollection services = new();
         arrange?.Invoke(services);
         TResult result = act(services);
         verify?.Invoke(services, result);

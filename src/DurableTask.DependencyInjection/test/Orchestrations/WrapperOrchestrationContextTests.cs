@@ -36,11 +36,11 @@ public class WrapperOrchestrationContextTests
                 continue;
             }
 
-            var inner = new Mock<OrchestrationContext>();
+            Mock<OrchestrationContext> inner = new();
             SetIsReplaying(inner.Object, true);
-            var tcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<object> tcs = new();
             inner.SetReturnsDefault(tcs.Task);
-            var context = new WrapperOrchestrationContext(inner.Object);
+            WrapperOrchestrationContext context = new(inner.Object);
 
             MethodInfo toInvoke = method.IsGenericMethodDefinition
                 ? method.MakeGenericMethod(typeof(object)) : method;
