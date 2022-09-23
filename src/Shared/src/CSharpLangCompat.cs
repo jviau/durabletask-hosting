@@ -57,7 +57,7 @@ namespace System
     /// </remarks>
     internal readonly struct Index : IEquatable<Index>
     {
-        readonly int _value;
+        private readonly int _value;
 
         /// <summary>Construct an Index using a value and indicating if the index is from the start or from the end.</summary>
         /// <param name="value">The index value. it has to be zero or positive number.</param>
@@ -77,16 +77,16 @@ namespace System
         }
 
         // The following private constructors mainly created for perf reason to avoid the checks
-        Index(int value)
+        private Index(int value)
         {
             _value = value;
         }
 
         /// <summary>Create an Index pointing at first element.</summary>
-        public static Index Start => new Index(0);
+        public static Index Start => new(0);
 
         /// <summary>Create an Index pointing at beyond last element.</summary>
-        public static Index End => new Index(~0);
+        public static Index End => new(~0);
 
         /// <summary>Create an Index from the start at the position indicated by the value.</summary>
         /// <param name="value">The index value from the start.</param>
@@ -159,7 +159,7 @@ namespace System
 
         /// <summary>Indicates whether the current Index object is equal to another object of the same type.</summary>
         /// <param name="value">An object to compare with this object.</param>
-        public override bool Equals(object? value) => value is Index && _value == ((Index)value)._value;
+        public override bool Equals(object? value) => value is Index index && _value == index._value;
 
         /// <summary>Indicates whether the current Index object is equal to another Index object.</summary>
         /// <param name="other">An object to compare with this object.</param>
