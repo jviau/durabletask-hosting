@@ -3,18 +3,17 @@
 
 using DurableTask.Core;
 
-namespace DurableTask.Samples.Generics
+namespace DurableTask.Samples.Generics;
+
+/// <summary>
+/// An example of an open generic activity.
+/// </summary>
+/// <typeparam name="T">The open generic type.</typeparam>
+public class GenericActivity<T> : TaskActivity<T, string>
 {
-    /// <summary>
-    /// An example of an open generic activity.
-    /// </summary>
-    /// <typeparam name="T">The open generic type.</typeparam>
-    public class GenericActivity<T> : TaskActivity<T, string>
+    /// <inheritdoc />
+    protected override string Execute(TaskContext context, T input)
     {
-        /// <inheritdoc />
-        protected override string Execute(TaskContext context, T input)
-        {
-            return $"My generic param is {typeof(T)} with value '{input}'";
-        }
+        return $"My generic param is {typeof(T)} with value '{input}'";
     }
 }

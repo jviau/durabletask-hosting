@@ -1,0 +1,5 @@
+<#
+    Session["ResourceFile"] = "SharedStrings.resx";
+    Session["NoDiagnostics"] = true;
+#>
+<#@ include file="..\..\..\..\eng\Resources.tt" #>

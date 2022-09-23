@@ -1,0 +1,55 @@
+<Project>
+
+  <!-- Azure -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Azure.DurableTask.Core" Version="2.11.0" />
+    <PackageVersion Include="Microsoft.Azure.DurableTask.Emulator" Version="2.2.5" />
+    <PackageVersion Include="Microsoft.Azure.DurableTask.ServiceBus" Version="2.4.0" />
+  </ItemGroup>
+
+  <!-- Microsoft Extensions -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.EventLog" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.EventSource" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsPackageVersion)" />
+  </ItemGroup>
+
+  <!-- Nuget -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+   <!-- Test projects -->
+  <ItemGroup>
+    <PackageVersion Include="Bogus" Version="27.0.1" />
+    <PackageVersion Include="coverlet.collector" Version="3.1.2" />
+    <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
+    <PackageVersion Include="FluentAssertions" Version="6.6.0" />
+    <PackageVersion Include="Moq" Version="4.17.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+    <PackageVersion Include="xunit" Version="2.4.1" />
+    <PackageVersion Include="xunit.analyzers" Version="0.10.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.3" />
+  </ItemGroup>
+
+  <!-- Global -->
+  <ItemGroup>
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.4.255" Condition="'$(EnableGitVersioning)' != 'false'" />
+    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406" Condition="'$(EnableStyleCop)' != 'false'" />
+    <GlobalPackageReference Include="StyleCop.CSharp.Async.Rules" Version="6.1.41" Condition="'$(EnableStyleCop)' != 'false'" />
+  </ItemGroup>
+
+</Project>
