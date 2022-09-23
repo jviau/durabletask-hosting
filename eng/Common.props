@@ -11,6 +11,10 @@
     <ExtensionsPackageVersion Condition="'$(ExtensionsPackageVersion)' == ''">2.1.0</ExtensionsPackageVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
   <PropertyGroup>
     <TopLevelNamespace Condition="'$(TopLevelNamespace)' == ''">Vio</TopLevelNamespace>
     <AssemblyName>$(TopLevelNamespace).$(MSBuildProjectName)</AssemblyName>

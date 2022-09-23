@@ -42,7 +42,7 @@ public static class TaskHubWorkerBuilderExtensions
 
     private static TaskHubClient ClientFactory(ITaskHubWorkerBuilder builder, IServiceProvider serviceProvider)
     {
-        IOrchestrationServiceClient client = serviceProvider.GetService<IOrchestrationServiceClient>();
+        IOrchestrationServiceClient? client = serviceProvider.GetService<IOrchestrationServiceClient>();
 
         if (client is null)
         {

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
+#nullable enable
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using DurableTask.Shared;
@@ -36,7 +38,8 @@ internal static class Check
     /// <param name="name">The name of the element for the exception.</param>
     /// <typeparam name="T">The type of element to check.</typeparam>
     /// <returns>The original element.</returns>
-    public static T NotNull<T>([ValidatedNotNull] T argument, [CallerArgumentExpression("argument")] string name = default)
+    [return: NotNullIfNotNull("argument")]
+    public static T NotNull<T>([NotNull] T? argument, [CallerArgumentExpression("argument")] string? name = default)
         where T : class
     {
         if (argument is null)
@@ -54,7 +57,8 @@ internal static class Check
     /// <param name="argument">The string to check.</param>
     /// <param name="name">The name of the string for the exception.</param>
     /// <returns>The original string.</returns>
-    public static string NotNullOrEmpty([ValidatedNotNull] string argument, [CallerArgumentExpression("argument")] string name = default)
+    [return: NotNullIfNotNull("argument")]
+    public static string NotNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression("argument")] string? name = default)
     {
         if (argument is null)
         {
@@ -76,7 +80,7 @@ internal static class Check
     /// <param name="argument">The type to check.</param>
     /// <param name="name">The name of the argument for the exception message.</param>
     /// <typeparam name="TImplements">The type <paramref name="argument" /> must implement.</typeparam>
-    public static void ConcreteType<TImplements>(Type argument, [CallerArgumentExpression("argument")] string name = default)
+    public static void ConcreteType<TImplements>([NotNull] Type? argument, [CallerArgumentExpression("argument")] string? name = default)
     {
         NotNull(argument, name);
         if (!typeof(TImplements).IsAssignableFrom(argument) || !argument.IsClass || argument.IsAbstract)
@@ -91,7 +95,7 @@ internal static class Check
     /// </summary>
     /// <param name="argument">The type to check.</param>
     /// <param name="name">The name of the argument for the exception message.</param>
-    public static void IsInterface(Type argument, [CallerArgumentExpression("argument")] string name = default)
+    public static void IsInterface([NotNull] Type? argument, [CallerArgumentExpression("argument")] string? name = default)
     {
         NotNull(argument, name);
         if (!argument.IsInterface)

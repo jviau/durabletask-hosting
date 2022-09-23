@@ -2,6 +2,7 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,7 +36,7 @@ internal class WrapperOrchestration : TaskOrchestration
     /// <summary>
     /// Gets the inner orchestration.
     /// </summary>
-    public TaskOrchestration InnerOrchestration { get; private set; }
+    public TaskOrchestration? InnerOrchestration { get; private set; }
 
     /// <summary>
     /// Creates the inner orchestration, setting <see cref="InnerOrchestration" />.
@@ -89,6 +90,7 @@ internal class WrapperOrchestration : TaskOrchestration
         InnerOrchestration.RaiseEvent(context, name, input);
     }
 
+    [MemberNotNull(nameof(InnerOrchestration))]
     private void CheckInnerOrchestration()
     {
         if (InnerOrchestration is null)

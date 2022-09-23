@@ -30,7 +30,7 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     public IServiceCollection Services { get; }
 
     /// <inheritdoc />
-    public IOrchestrationService OrchestrationService { get; set; }
+    public IOrchestrationService? OrchestrationService { get; set; }
 
     /// <inheritdoc />
     public IList<TaskMiddlewareDescriptor> ActivityMiddleware { get; } = new List<TaskMiddlewareDescriptor>

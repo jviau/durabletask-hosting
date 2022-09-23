@@ -2,6 +2,7 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +35,7 @@ internal class WrapperActivity : TaskActivity
     /// <summary>
     /// Gets the inner activity.
     /// </summary>
-    public TaskActivity InnerActivity { get; private set; }
+    public TaskActivity? InnerActivity { get; private set; }
 
     /// <summary>
     /// Creates the inner activity, setting <see cref="InnerActivity" />.
@@ -90,6 +91,7 @@ internal class WrapperActivity : TaskActivity
         return InnerActivity.RunAsync(context, input);
     }
 
+    [MemberNotNull(nameof(InnerActivity))]
     private void CheckInnerActivity()
     {
         if (InnerActivity is null)

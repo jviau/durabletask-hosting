@@ -5,11 +5,8 @@
 // They are defined here to enable certain C# features that otherwise require higher framework versions.
 // Redefining types in this way is a standard practice for library authors that are forced to target .NET Standard 2.0.
 
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 // These extension methods are defined in the global namespace so that they're available everywhere.
 internal static class KeyValuePairExtensions
@@ -32,7 +29,7 @@ internal static class StringExtensions
 
     public static bool EndsWith(this string s, char value)
     {
-        return s.Length > 0 && s[s.Length - 1] == value;
+        return s.Length > 0 && s[^1] == value;
     }
 }
 
@@ -264,34 +261,6 @@ namespace System
 
             return (start, end - start);
         }
-    }
-}
-
-// Copied from https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Diagnostics/CodeAnalysis/NullableAttributes.cs#L69
-namespace System.Diagnostics.CodeAnalysis
-{
-    internal sealed class NotNullWhenAttribute : Attribute
-    {
-        /// <summary>Initializes the attribute with the specified return value condition.</summary>
-        /// <param name="returnValue">
-        /// The return value condition. If the method returns this value, the associated parameter will not be null.
-        /// </param>
-        public NotNullWhenAttribute(bool returnValue) => ReturnValue = returnValue;
-
-        /// <summary>Gets the return value condition.</summary>
-        public bool ReturnValue { get; }
-    }
-
-    internal sealed class NotNullIfNotNullAttribute : Attribute
-    {
-        /// <summary>Initializes the attribute with the associated parameter name.</summary>
-        /// <param name="parameterName">
-        /// The associated parameter name.  The output will be non-null if the argument to the parameter specified is non-null.
-        /// </param>
-        public NotNullIfNotNullAttribute(string parameterName) => ParameterName = parameterName;
-
-        /// <summary>Gets the associated parameter name.</summary>
-        public string ParameterName { get; }
     }
 }
 

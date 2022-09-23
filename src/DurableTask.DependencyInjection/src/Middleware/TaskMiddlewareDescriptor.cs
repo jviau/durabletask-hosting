@@ -34,12 +34,12 @@ public sealed class TaskMiddlewareDescriptor
     /// <summary>
     /// Gets the type held by this descriptor.
     /// </summary>
-    public Type Type { get; }
+    public Type? Type { get; }
 
     /// <summary>
     /// Gets the func to invoke for this middleware.
     /// </summary>
-    public Func<DispatchMiddlewareContext, Func<Task>, Task> Func { get; }
+    public Func<DispatchMiddlewareContext, Func<Task>, Task>? Func { get; }
 
     /// <summary>
     /// Creates a new <see cref="TaskMiddlewareDescriptor"/> with the provided type.
