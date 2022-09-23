@@ -54,7 +54,7 @@ public static class TaskHubWorkerBuilderActivityExtensions
         builder.AddActivity(new TaskActivityDescriptor(type));
         if (includeAliases)
         {
-            foreach ((string name, string version) in type.GetTaskAliases())
+            foreach ((string? name, string? version) in type.GetTaskAliases())
             {
                 builder.AddActivity(new TaskActivityDescriptor(type, name, version));
             }

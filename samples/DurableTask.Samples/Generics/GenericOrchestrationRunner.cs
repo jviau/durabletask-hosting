@@ -22,7 +22,7 @@ public class GenericOrchestrationRunner : TaskOrchestration<string, string>
         result = await context.ScheduleTask<string>(typeof(GenericActivity<MyClass>), new MyClass());
         await PrintAsync(context, result);
 
-        return null;
+        return string.Empty;
     }
 
     private static Task<string> PrintAsync(OrchestrationContext context, string input)

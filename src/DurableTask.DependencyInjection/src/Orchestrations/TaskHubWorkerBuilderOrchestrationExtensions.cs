@@ -54,7 +54,7 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
         builder.AddOrchestration(new TaskOrchestrationDescriptor(type));
         if (includeAliases)
         {
-            foreach ((string name, string version) in type.GetTaskAliases())
+            foreach ((string? name, string? version) in type.GetTaskAliases())
             {
                 builder.AddOrchestration(new TaskOrchestrationDescriptor(type, name, version));
             }

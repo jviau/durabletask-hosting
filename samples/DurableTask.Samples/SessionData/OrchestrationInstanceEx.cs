@@ -40,7 +40,7 @@ public class OrchestrationInstanceEx : OrchestrationInstance
     /// <returns>A new or deserialized instance.</returns>
     public static OrchestrationInstanceEx Initialize(OrchestrationRuntimeState runtimeState)
     {
-        if (runtimeState == null)
+        if (runtimeState is null)
         {
             throw new ArgumentNullException(nameof(runtimeState));
         }
