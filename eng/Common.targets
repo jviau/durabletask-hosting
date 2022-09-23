@@ -20,4 +20,6 @@
     </PropertyGroup>
   </Target>
 
+  <Import Project="$(EngRoot)InternalsVisibleTo.targets" />
+
 </Project>
