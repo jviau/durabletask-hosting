@@ -7,6 +7,7 @@ using DurableTask.Core.Serializing;
 using DurableTask.DependencyInjection;
 using DurableTask.Extensions.Abstractions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DurableTask.Extensions.Middleware;
 
@@ -22,12 +23,12 @@ public sealed class SetOrchestrationDataMiddleware : ITaskMiddleware
     /// Initializes a new instance of the <see cref="SetOrchestrationDataMiddleware"/> class.
     /// </summary>
     /// <param name="loggerFactory">The logger factory. Not null.</param>
-    /// <param name="dataConverter">The data converter. Not null.</param>
-    public SetOrchestrationDataMiddleware(
-        ILoggerFactory loggerFactory, DataConverter? dataConverter = default)
+    /// <param name="options">The data converter. Not null.</param>
+    public SetOrchestrationDataMiddleware(ILoggerFactory loggerFactory, IOptions<DurableExtensionsOptions> options)
     {
         _loggerFactory = Check.NotNull(loggerFactory);
-        _dataConverter = dataConverter ?? JsonDataConverter.Default;
+        DurableExtensionsOptions opt = Check.NotNull(options).Value;
+        _dataConverter = Check.NotNull(opt.DataConverter);
     }
 
     /// <inheritdoc />
@@ -48,7 +49,6 @@ public sealed class SetOrchestrationDataMiddleware : ITaskMiddleware
             baseOrchestration.Initialize(name, version, logger, _dataConverter);
         }
 
-        // We use different operation naming that DTFx.
         await next();
     }
 }

@@ -24,7 +24,24 @@ public static class TaskHubWorkerBuilderExtensions
         this ITaskHubWorkerBuilder builder, IOrchestrationService orchestrationService)
     {
         Check.NotNull(builder);
+        Check.NotNull(orchestrationService);
         builder.Services.TryAddSingleton(orchestrationService);
+        return builder;
+    }
+
+
+    /// <summary>
+    /// Sets the provided <paramref name="orchestrationServiceFactory"/> to the <paramref name="builder" />.
+    /// </summary>
+    /// <param name="builder">The task hub builder.</param>
+    /// <param name="orchestrationServiceFactory">The orchestration service factory to use.</param>
+    /// <returns>The original builder, with orchestration service set.</returns>
+    public static ITaskHubWorkerBuilder WithOrchestrationService(
+        this ITaskHubWorkerBuilder builder, Func<IServiceProvider, IOrchestrationService> orchestrationServiceFactory)
+    {
+        Check.NotNull(builder);
+        Check.NotNull(orchestrationServiceFactory);
+        builder.Services.TryAddSingleton(orchestrationServiceFactory);
         return builder;
     }
 
