@@ -19,7 +19,7 @@ internal static class ServiceProviderExtensions
     /// <returns>The created logger.</returns>
     public static ILogger<T> CreateLogger<T>(this IServiceProvider serviceProvider)
     {
-        Check.NotNull(serviceProvider, nameof(serviceProvider));
+        Check.NotNull(serviceProvider);
         ILoggerFactory factory = serviceProvider.GetRequiredService<ILoggerFactory>();
         return factory.CreateLogger<T>();
     }
@@ -32,7 +32,7 @@ internal static class ServiceProviderExtensions
     /// <returns>The created logger.</returns>
     public static ILogger CreateLogger(this IServiceProvider serviceProvider, Type type)
     {
-        Check.NotNull(serviceProvider, nameof(serviceProvider));
+        Check.NotNull(serviceProvider);
         ILoggerFactory factory = serviceProvider.GetRequiredService<ILoggerFactory>();
         return factory.CreateLogger(type);
     }

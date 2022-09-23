@@ -17,11 +17,10 @@ public class WrapperActivityTests
     private static readonly string s_input = "Input";
 
     private static readonly TaskContext s_taskContext
-        = new TaskContext(
-            new OrchestrationInstance
-            {
-                InstanceId = InstanceId,
-            });
+        = new(new OrchestrationInstance
+        {
+            InstanceId = InstanceId,
+        });
 
     private TaskContext InvokedContext { get; set; }
 

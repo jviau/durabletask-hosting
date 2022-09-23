@@ -24,7 +24,7 @@ internal class WrapperOrchestration : TaskOrchestration
     /// <param name="descriptor">The inner orchestration descriptor.</param>
     public WrapperOrchestration(TaskOrchestrationDescriptor descriptor)
     {
-        Descriptor = Check.NotNull(descriptor, nameof(descriptor));
+        Descriptor = Check.NotNull(descriptor);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ internal class WrapperOrchestration : TaskOrchestration
     /// <param name="serviceProvider">The service provider. Not null.</param>
     public void Initialize(IServiceProvider serviceProvider)
     {
-        Check.NotNull(serviceProvider, nameof(serviceProvider));
+        Check.NotNull(serviceProvider);
 
         if (!s_factories.TryGetValue(Descriptor, out OrchestrationFactory factory))
         {

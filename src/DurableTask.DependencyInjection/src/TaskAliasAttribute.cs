@@ -36,7 +36,7 @@ public class TaskAliasAttribute : Attribute
     /// <param name="version">The version for this task.</param>
     public TaskAliasAttribute(Type type, string version = null)
     {
-        Check.NotNull(type, nameof(type));
+        Check.NotNull(type);
         Name = NameVersionHelper.GetDefaultName(type);
         Version = string.IsNullOrEmpty(version) ? NameVersionHelper.GetDefaultVersion(type) : version;
     }

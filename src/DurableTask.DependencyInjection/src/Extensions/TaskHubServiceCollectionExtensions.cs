@@ -21,8 +21,8 @@ public static class TaskHubServiceCollectionExtensions
     public static IServiceCollection AddTaskHubWorker(
         this IServiceCollection services, Action<ITaskHubWorkerBuilder> configure)
     {
-        Check.NotNull(services, nameof(services));
-        Check.NotNull(configure, nameof(configure));
+        Check.NotNull(services);
+        Check.NotNull(configure);
 
         ITaskHubWorkerBuilder builder = services.AddTaskHubWorkerCore();
         configure(builder);

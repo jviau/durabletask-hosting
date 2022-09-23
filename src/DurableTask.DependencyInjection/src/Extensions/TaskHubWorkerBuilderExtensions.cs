@@ -23,7 +23,7 @@ public static class TaskHubWorkerBuilderExtensions
     public static ITaskHubWorkerBuilder WithOrchestrationService(
         this ITaskHubWorkerBuilder builder, IOrchestrationService orchestrationService)
     {
-        Check.NotNull(builder, nameof(builder));
+        Check.NotNull(builder);
         builder.Services.TryAddSingleton(orchestrationService);
         return builder;
     }
@@ -35,7 +35,7 @@ public static class TaskHubWorkerBuilderExtensions
     /// <returns>The original builder, with <see cref="TaskHubClient"/> added to the service collection.</returns>
     public static ITaskHubWorkerBuilder AddClient(this ITaskHubWorkerBuilder builder)
     {
-        Check.NotNull(builder, nameof(builder));
+        Check.NotNull(builder);
         builder.Services.TryAddSingleton(sp => ClientFactory(builder, sp));
         return builder;
     }

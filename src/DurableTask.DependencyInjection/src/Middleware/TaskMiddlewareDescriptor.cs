@@ -16,8 +16,8 @@ public sealed class TaskMiddlewareDescriptor
     /// <param name="type">The type to describe.</param>
     public TaskMiddlewareDescriptor(Type type)
     {
-        Check.NotNull(type, nameof(type));
-        Check.ConcreteType<ITaskMiddleware>(type, nameof(type));
+        Check.NotNull(type);
+        Check.ConcreteType<ITaskMiddleware>(type);
 
         Type = type;
     }
@@ -28,7 +28,7 @@ public sealed class TaskMiddlewareDescriptor
     /// <param name="func">The func to invoke for this middleware.</param>
     public TaskMiddlewareDescriptor(Func<DispatchMiddlewareContext, Func<Task>, Task> func)
     {
-        Func = Check.NotNull(func, nameof(func));
+        Func = Check.NotNull(func);
     }
 
     /// <summary>
