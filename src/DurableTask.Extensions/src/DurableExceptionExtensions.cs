@@ -15,7 +15,7 @@ internal static class DurableExceptionExtensions
     /// <returns>The first non-DTFx exception, or the inner-most one if they are all DTFx.</returns>
     public static Exception GetDurableFailureCause(this Exception exception)
     {
-        Check.NotNull(exception, nameof(exception));
+        Check.NotNull(exception);
 
         while ((exception is SubOrchestrationFailedException || exception is TaskFailedException)
             && exception.InnerException is not null)

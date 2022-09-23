@@ -13,22 +13,21 @@ namespace DurableTask.Extensions.Abstractions;
 public interface IOrchestrationBase
 {
     /// <summary>
-    /// Gets or sets the name this orchestration was scheduled with.
+    /// Gets the name this orchestration was scheduled with.
     /// </summary>
-    string Name { get; set; }
+    string Name { get; }
 
     /// <summary>
-    /// Gets or sets the version this orchestration was scheduled with.
+    /// Gets the version this orchestration was scheduled with.
     /// </summary>
-    string Version { get; set; }
+    string? Version { get; }
 
     /// <summary>
-    /// Gets or sets the logger for this orchestration.
+    /// Initialize the <see cref="IOrchestrationBase" /> before running.
     /// </summary>
-    ILogger Logger { get; set; }
-
-    /// <summary>
-    /// Gets or sets the data converter for this orchestration.
-    /// </summary>
-    DataConverter DataConverter { get; set; }
+    /// <param name="name">The orchestration name.</param>
+    /// <param name="version">The orchestration version.</param>
+    /// <param name="logger">The logger.</param>
+    /// <param name="converter">The data converter.</param>
+    void Initialize(string name, string? version, ILogger logger, DataConverter converter);
 }

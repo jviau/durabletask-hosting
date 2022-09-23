@@ -21,7 +21,7 @@ public static partial class OrchestrationContextExtensions
     /// <param name="retryOptions">The retry policy. Optional.</param>
     /// <returns>The result of the activity.</returns>
     public static Task<TResult> SendAsync<TResult>(
-        this OrchestrationContext context, IActivityRequest<TResult> request, RetryOptions retryOptions = null)
+        this OrchestrationContext context, IActivityRequest<TResult> request, RetryOptions? retryOptions = null)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
@@ -36,7 +36,7 @@ public static partial class OrchestrationContextExtensions
     /// <param name="retryOptions">The retry policy. Optional.</param>
     /// <returns>A task that completes when the activity is finished.</returns>
     public static Task SendAsync(
-        this OrchestrationContext context, IActivityRequest request, RetryOptions retryOptions = null)
+        this OrchestrationContext context, IActivityRequest request, RetryOptions? retryOptions = null)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
@@ -44,7 +44,7 @@ public static partial class OrchestrationContextExtensions
     }
 
     private static Task<TResult> SendCoreAsync<TResult>(
-        this OrchestrationContext context, IActivityRequest<TResult> request, RetryOptions retryOptions)
+        this OrchestrationContext context, IActivityRequest<TResult> request, RetryOptions? retryOptions)
     {
         TaskActivityDescriptor descriptor = request.GetDescriptor();
         if (retryOptions is null)

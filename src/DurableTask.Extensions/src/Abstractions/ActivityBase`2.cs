@@ -4,6 +4,7 @@
 using DurableTask.Core;
 using DurableTask.Core.Serializing;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace DurableTask.Extensions.Abstractions;
 
@@ -15,44 +16,36 @@ namespace DurableTask.Extensions.Abstractions;
 public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, TResult>, IActivityBase
     where TInput : IActivityRequest<TResult>
 {
-    /// <inheritdoc />
-    /// <remarks>
-    /// This will be set by middleware.
-    /// </remarks>
-    public string Name { get; set; }
+    private TaskContext? _context;
 
     /// <inheritdoc />
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
-    public string Version { get; set; }
+    public virtual string Name { get; private set; } = string.Empty;
 
     /// <inheritdoc />
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
-    public ILogger Logger { get; set; }
+    public virtual string? Version { get; private set; }
 
     /// <inheritdoc />
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
-    DataConverter IActivityBase.DataConverter
-    {
-        get => DataConverter;
-        set => DataConverter = value;
-    }
+    public ILogger Logger { get; private set; } = NullLogger.Instance;
 
     /// <summary>
     /// Gets the task context for this activity.
     /// </summary>
-    protected TaskContext Context { get; private set; }
+    protected TaskContext Context => _context!;
 
     /// <inheritdoc />
     protected override async Task<TResult> ExecuteAsync(TaskContext context, TInput input)
     {
         Check.NotNull(context, nameof(context));
-        Context = context;
+        _context = context;
         return await RunAsync(input);
     }
 
@@ -62,4 +55,12 @@ public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, 
     /// <param name="input">The typed input.</param>
     /// <returns>The typed output from the execution.</returns>
     protected abstract Task<TResult> RunAsync(TInput input);
+
+    void IActivityBase.Initialize(string name, string? version, ILogger logger, DataConverter converter)
+    {
+        Name = Check.NotNull(name);
+        Version = version;
+        Logger = Check.NotNull(logger);
+        DataConverter = Check.NotNull(converter);
+    }
 }

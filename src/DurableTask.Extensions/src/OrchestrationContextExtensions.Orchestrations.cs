@@ -38,13 +38,13 @@ public static partial class OrchestrationContextExtensions
     public static Task<TResult> SendAsync<TResult>(
         this OrchestrationContext context,
         IOrchestrationRequest<TResult> request,
-        string instanceId,
+        string? instanceId,
         bool fireAndForget)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
 
-        Dictionary<string, string> tags = null;
+        Dictionary<string, string>? tags = null;
         if (fireAndForget)
         {
             // see https://github.com/Azure/durabletask/blob/e1d9ecf497c0d4c2af1be6096cd1563123f86bbe/src/DurableTask.Core/OrchestrationTags.cs#L37
@@ -66,7 +66,7 @@ public static partial class OrchestrationContextExtensions
     /// <param name="retryOptions">The retry options. Not null.</param>
     /// <returns>The output of the orchestration.</returns>
     public static Task<TResult> SendAsync<TResult>(
-        this OrchestrationContext context, IOrchestrationRequest<TResult> request, RetryOptions retryOptions = null)
+        this OrchestrationContext context, IOrchestrationRequest<TResult> request, RetryOptions? retryOptions = null)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
@@ -86,7 +86,7 @@ public static partial class OrchestrationContextExtensions
         this OrchestrationContext context,
         IOrchestrationRequest<TResult> request,
         string instanceId,
-        RetryOptions retryOptions = null)
+        RetryOptions? retryOptions = null)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
@@ -117,7 +117,7 @@ public static partial class OrchestrationContextExtensions
     public static Task SendAndForgetAsync(
         this OrchestrationContext context,
         IOrchestrationRequest request,
-        string instanceId = null)
+        string? instanceId = null)
         => context.SendAsync(request, instanceId, fireAndForget: true);
 
     /// <summary>
@@ -131,13 +131,13 @@ public static partial class OrchestrationContextExtensions
     public static Task SendAsync(
         this OrchestrationContext context,
         IOrchestrationRequest request,
-        string instanceId,
+        string? instanceId,
         bool fireAndForget)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
 
-        Dictionary<string, string> tags = null;
+        Dictionary<string, string>? tags = null;
         if (fireAndForget)
         {
             // see https://github.com/Azure/durabletask/blob/e1d9ecf497c0d4c2af1be6096cd1563123f86bbe/src/DurableTask.Core/OrchestrationTags.cs#L37
@@ -158,7 +158,7 @@ public static partial class OrchestrationContextExtensions
     /// <param name="retryOptions">The retry options. Not null.</param>
     /// <returns>A task that completes when the orchestration has finished.</returns>
     public static Task SendAsync(
-        this OrchestrationContext context, IOrchestrationRequest request, RetryOptions retryOptions = null)
+        this OrchestrationContext context, IOrchestrationRequest request, RetryOptions? retryOptions = null)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
@@ -178,7 +178,7 @@ public static partial class OrchestrationContextExtensions
         this OrchestrationContext context,
         IOrchestrationRequest request,
         string instanceId,
-        RetryOptions retryOptions = null)
+        RetryOptions? retryOptions = null)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
@@ -189,8 +189,8 @@ public static partial class OrchestrationContextExtensions
     private static Task<TResult> SendCoreAsync<TResult>(
         this OrchestrationContext context,
         IOrchestrationRequest<TResult> request,
-        string instanceId,
-        IDictionary<string, string> orchestrationTags)
+        string? instanceId,
+        IDictionary<string, string>? orchestrationTags)
     {
         TaskOrchestrationDescriptor descriptor = request.GetDescriptor();
         return context.CreateSubOrchestrationInstance<TResult>(
@@ -204,8 +204,8 @@ public static partial class OrchestrationContextExtensions
     private static Task<TResult> SendCoreAsync<TResult>(
         this OrchestrationContext context,
         IOrchestrationRequest<TResult> request,
-        string instanceId,
-        RetryOptions retryOptions)
+        string? instanceId,
+        RetryOptions? retryOptions)
     {
         TaskOrchestrationDescriptor descriptor = request.GetDescriptor();
         if (retryOptions is not null)

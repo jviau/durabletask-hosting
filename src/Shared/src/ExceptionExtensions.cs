@@ -8,7 +8,7 @@ namespace DurableTask;
 /// <summary>
 /// Extensions for exceptions.
 /// </summary>
-public static class ExceptionExtensions
+internal static class ExceptionExtensions
 {
     /// <summary>
     /// Determines if an exception is fatal, and should not be caught.

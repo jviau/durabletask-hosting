@@ -13,22 +13,21 @@ namespace DurableTask.Extensions.Abstractions;
 public interface IActivityBase
 {
     /// <summary>
-    /// Gets or sets the name this activity was scheduled with.
+    /// Gets the name this activity was scheduled with.
     /// </summary>
-    string Name { get; set; }
+    string Name { get; }
 
     /// <summary>
-    /// Gets or sets the version this activity was scheduled with.
+    /// Gets the version this activity was scheduled with.
     /// </summary>
-    string Version { get; set; }
+    string? Version { get; }
 
     /// <summary>
-    /// Gets or sets the logger for this activity.
+    /// Initialize the <see cref="IActivityBase" /> before running.
     /// </summary>
-    ILogger Logger { get; set; }
-
-    /// <summary>
-    /// Gets or sets the data converter for this activity.
-    /// </summary>
-    DataConverter DataConverter { get; set; }
+    /// <param name="name">The activity name.</param>
+    /// <param name="version">The activity version.</param>
+    /// <param name="logger">The logger.</param>
+    /// <param name="converter">The data converter.</param>
+    void Initialize(string name, string? version, ILogger logger, DataConverter converter);
 }
