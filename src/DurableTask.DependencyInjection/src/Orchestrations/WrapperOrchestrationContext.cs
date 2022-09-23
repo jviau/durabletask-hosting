@@ -19,7 +19,7 @@ internal class WrapperOrchestrationContext : OrchestrationContext
     /// <param name="innerContext">The inner context to wrap.</param>
     public WrapperOrchestrationContext(OrchestrationContext innerContext)
     {
-        _innerContext = Check.NotNull(innerContext, nameof(innerContext));
+        _innerContext = Check.NotNull(innerContext);
         OrchestrationInstance = _innerContext.OrchestrationInstance;
         IsReplaying = _innerContext.IsReplaying;
         MessageDataConverter = _innerContext.MessageDataConverter;

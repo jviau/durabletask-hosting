@@ -18,8 +18,8 @@ public sealed class TaskOrchestrationDescriptor
     /// <param name="version">The version of the type.</param>
     public TaskOrchestrationDescriptor(Type type, string name = null, string version = null)
     {
-        Check.NotNull(type, nameof(type));
-        Check.ConcreteType<TaskOrchestration>(type, nameof(type));
+        Check.NotNull(type);
+        Check.ConcreteType<TaskOrchestration>(type);
 
         Type = type;
         Name = name ?? TypeShortName.ToString(type, false);

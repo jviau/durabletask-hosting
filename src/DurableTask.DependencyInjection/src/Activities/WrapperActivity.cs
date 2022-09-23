@@ -23,7 +23,7 @@ internal class WrapperActivity : TaskActivity
     /// <param name="descriptor">The inner orchestration descriptor.</param>
     public WrapperActivity(TaskActivityDescriptor descriptor)
     {
-        Descriptor = Check.NotNull(descriptor, nameof(descriptor));
+        Descriptor = Check.NotNull(descriptor);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ internal class WrapperActivity : TaskActivity
     /// <param name="serviceProvider">The service provider. Not null.</param>
     public void Initialize(IServiceProvider serviceProvider)
     {
-        Check.NotNull(serviceProvider, nameof(serviceProvider));
+        Check.NotNull(serviceProvider);
 
         // Reflection activity
         if (Descriptor.Method is not null)

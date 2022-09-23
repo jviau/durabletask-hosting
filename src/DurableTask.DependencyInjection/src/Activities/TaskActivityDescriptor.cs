@@ -38,8 +38,8 @@ public sealed class TaskActivityDescriptor
     /// <param name="version">The version of the type.</param>
     public TaskActivityDescriptor(MethodInfo method, string name = null, string version = null)
     {
-        Method = Check.NotNull(method, nameof(method));
-        Check.NotNull(method.DeclaringType, nameof(method) + nameof(method.DeclaringType));
+        Method = Check.NotNull(method);
+        Check.NotNull(method.DeclaringType);
 
         Name = name ?? NameVersionHelper.GetDefaultName(method);
         Version = version ?? NameVersionHelper.GetDefaultVersion(method);

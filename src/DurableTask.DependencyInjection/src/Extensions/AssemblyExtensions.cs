@@ -19,7 +19,7 @@ internal static class AssemblyExtensions
     /// <returns>An enumerable of types.</returns>
     public static IEnumerable<Type> GetConcreteTypes<TBase>(this Assembly assembly, bool includePrivate = false)
     {
-        Check.NotNull(assembly, nameof(assembly));
+        Check.NotNull(assembly);
         return assembly
             .GetTypes()
             .Where(t =>

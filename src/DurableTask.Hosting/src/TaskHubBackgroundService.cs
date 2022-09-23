@@ -30,9 +30,9 @@ public class TaskHubBackgroundService : IHostedService
         ILogger<TaskHubBackgroundService> logger,
         IOptions<TaskHubOptions> options)
     {
-        _worker = Check.NotNull(worker, nameof(worker));
-        _logger = Check.NotNull(logger, nameof(logger));
-        _options = Check.NotNull(options, nameof(options));
+        _worker = Check.NotNull(worker);
+        _logger = Check.NotNull(logger);
+        _options = Check.NotNull(options);
     }
 
     private TaskHubOptions Options => _options.Value;

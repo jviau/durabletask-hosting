@@ -20,7 +20,7 @@ internal readonly struct TypeShortName
     /// <param name="type">The type to get the name for.</param>
     public TypeShortName(Type type)
     {
-        Check.NotNull(type, nameof(type));
+        Check.NotNull(type);
         Name = type.IsConstructedGenericType ? type.GetGenericTypeDefinition().FullName : type.FullName;
         AssemblyName = type.Assembly.GetName().Name;
 
@@ -45,7 +45,7 @@ internal readonly struct TypeShortName
 
     private TypeShortName(string typeShortName, bool genericParam)
     {
-        Check.NotNullOrEmpty(typeShortName, nameof(typeShortName));
+        Check.NotNullOrEmpty(typeShortName);
 
         // Find the ',' separating the assembly name. First check for last `]` make sure we don't grab an inner
         // generic assembly name.

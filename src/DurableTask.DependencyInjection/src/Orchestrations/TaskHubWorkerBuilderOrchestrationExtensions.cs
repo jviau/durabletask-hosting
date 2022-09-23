@@ -22,8 +22,8 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
     public static ITaskHubWorkerBuilder AddOrchestration(
         this ITaskHubWorkerBuilder builder, TaskOrchestrationDescriptor descriptor)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(descriptor, nameof(descriptor));
+        Check.NotNull(builder);
+        Check.NotNull(descriptor);
 
         builder.Orchestrations.Add(descriptor);
         return builder;
@@ -49,9 +49,9 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
     public static ITaskHubWorkerBuilder AddOrchestration(
         this ITaskHubWorkerBuilder builder, Type type, bool includeAliases)
     {
-        Check.NotNull(builder, nameof(builder));
-        builder.AddOrchestration(new TaskOrchestrationDescriptor(type));
+        Check.NotNull(builder);
 
+        builder.AddOrchestration(new TaskOrchestrationDescriptor(type));
         if (includeAliases)
         {
             foreach ((string name, string version) in type.GetTaskAliases())
@@ -97,9 +97,9 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
     public static ITaskHubWorkerBuilder AddOrchestration(
         this ITaskHubWorkerBuilder builder, Type type, string name, string version)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNullOrEmpty(name, nameof(name));
-        Check.NotNull(version, nameof(version));
+        Check.NotNull(builder);
+        Check.NotNullOrEmpty(name);
+        Check.NotNull(version);
 
         builder.AddOrchestration(new TaskOrchestrationDescriptor(type, name, version));
         return builder;
@@ -129,8 +129,8 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
     public static ITaskHubWorkerBuilder AddOrchestrationsFromAssembly(
         this ITaskHubWorkerBuilder builder, Assembly assembly, bool includePrivate = false)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(assembly, nameof(assembly));
+        Check.NotNull(builder);
+        Check.NotNull(assembly);
 
         foreach (Type type in assembly.GetConcreteTypes<TaskOrchestration>(includePrivate))
         {
@@ -161,8 +161,8 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
     public static ITaskHubWorkerBuilder UseOrchestrationMiddleware(
         this ITaskHubWorkerBuilder builder, TaskMiddlewareDescriptor descriptor)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(descriptor, nameof(descriptor));
+        Check.NotNull(builder);
+        Check.NotNull(descriptor);
 
         builder.OrchestrationMiddleware.Add(descriptor);
         return builder;
@@ -176,8 +176,9 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
     /// <returns>The original builder with orchestration middleware added.</returns>
     public static ITaskHubWorkerBuilder UseOrchestrationMiddleware(this ITaskHubWorkerBuilder builder, Type type)
     {
-        Check.NotNull(builder, nameof(builder));
-        builder.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(type));
+        Check.NotNull(builder);
+
+        builder.UseOrchestrationMiddleware(type);
         return builder;
     }
 
@@ -200,8 +201,8 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
     public static ITaskHubWorkerBuilder UseOrchestrationMiddleware(
         this ITaskHubWorkerBuilder builder, Func<DispatchMiddlewareContext, Func<Task>, Task> func)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(func, nameof(func));
+        Check.NotNull(builder);
+        Check.NotNull(func);
 
         builder.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(func));
         return builder;

@@ -28,9 +28,9 @@ internal static class TaskMiddlewareRunner
     public static Task RunAsync(
         TaskMiddlewareDescriptor descriptor, DispatchMiddlewareContext context, Func<Task> next)
     {
-        Check.NotNull(descriptor, nameof(descriptor));
-        Check.NotNull(context, nameof(context));
-        Check.NotNull(next, nameof(next));
+        Check.NotNull(descriptor);
+        Check.NotNull(context);
+        Check.NotNull(next);
 
         IServiceProvider serviceProvider = context.GetProperty<IServiceProvider>();
         ITaskMiddleware middleware = GetMiddleware(descriptor, serviceProvider);
@@ -82,7 +82,7 @@ internal static class TaskMiddlewareRunner
 
         public FuncMiddleware(Func<DispatchMiddlewareContext, Func<Task>, Task> func)
         {
-            _func = Check.NotNull(func, nameof(func));
+            _func = Check.NotNull(func);
         }
 
         public Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)
