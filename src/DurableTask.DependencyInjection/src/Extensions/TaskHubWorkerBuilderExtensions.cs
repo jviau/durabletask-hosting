@@ -2,10 +2,13 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using DurableTask.Core;
+using DurableTask.Core.Serializing;
+using DurableTask.DependencyInjection.Internal;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DurableTask.DependencyInjection;
 
@@ -76,7 +79,10 @@ public static class TaskHubWorkerBuilderExtensions
             }
         }
 
+        // Options does not have to be present.
+        IOptions<TaskHubClientOptions> options = serviceProvider.GetService<IOptions<TaskHubClientOptions>>();
+        DataConverter converter = options?.Value?.DataConverter ?? JsonDataConverter.Default;
         ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-        return new TaskHubClient(client, loggerFactory: loggerFactory);
+        return new TaskHubClient(client, converter, loggerFactory);
     }
 }

@@ -2,9 +2,11 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using DurableTask.Core.Serializing;
+using DurableTask.DependencyInjection.Internal;
 using DurableTask.Extensions;
 using DurableTask.Extensions.Middleware;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace DurableTask.DependencyInjection;
 
@@ -45,6 +47,12 @@ public static class TaskHubWorkerBuilderExtensions
                 }
             })
             .Configure(configure);
+
+        builder.Services.AddOptions<TaskHubClientOptions>()
+            .Configure<IOptions<DurableExtensionsOptions>>((client, ext) =>
+            {
+                client.DataConverter = ext.Value.DataConverter;
+            });
 
         return builder;
     }
