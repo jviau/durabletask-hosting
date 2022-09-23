@@ -2,10 +2,13 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using DurableTask.Core;
+using DurableTask.Core.Serializing;
+using DurableTask.DependencyInjection.Internal;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DurableTask.DependencyInjection;
 
@@ -24,7 +27,24 @@ public static class TaskHubWorkerBuilderExtensions
         this ITaskHubWorkerBuilder builder, IOrchestrationService orchestrationService)
     {
         Check.NotNull(builder);
+        Check.NotNull(orchestrationService);
         builder.Services.TryAddSingleton(orchestrationService);
+        return builder;
+    }
+
+
+    /// <summary>
+    /// Sets the provided <paramref name="orchestrationServiceFactory"/> to the <paramref name="builder" />.
+    /// </summary>
+    /// <param name="builder">The task hub builder.</param>
+    /// <param name="orchestrationServiceFactory">The orchestration service factory to use.</param>
+    /// <returns>The original builder, with orchestration service set.</returns>
+    public static ITaskHubWorkerBuilder WithOrchestrationService(
+        this ITaskHubWorkerBuilder builder, Func<IServiceProvider, IOrchestrationService> orchestrationServiceFactory)
+    {
+        Check.NotNull(builder);
+        Check.NotNull(orchestrationServiceFactory);
+        builder.Services.TryAddSingleton(orchestrationServiceFactory);
         return builder;
     }
 
@@ -59,7 +79,10 @@ public static class TaskHubWorkerBuilderExtensions
             }
         }
 
+        // Options does not have to be present.
+        IOptions<TaskHubClientOptions> options = serviceProvider.GetService<IOptions<TaskHubClientOptions>>();
+        DataConverter converter = options?.Value?.DataConverter ?? JsonDataConverter.Default;
         ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-        return new TaskHubClient(client, loggerFactory: loggerFactory);
+        return new TaskHubClient(client, converter, loggerFactory);
     }
 }
