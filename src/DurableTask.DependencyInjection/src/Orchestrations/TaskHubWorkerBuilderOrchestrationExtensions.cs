@@ -178,7 +178,7 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
     {
         Check.NotNull(builder);
 
-        builder.UseOrchestrationMiddleware(type);
+        builder.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(type));
         return builder;
     }
 
