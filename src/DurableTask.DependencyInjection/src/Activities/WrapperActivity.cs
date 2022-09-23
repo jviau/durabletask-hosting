@@ -2,6 +2,7 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,7 @@ internal class WrapperActivity : TaskActivity
     /// <param name="descriptor">The inner orchestration descriptor.</param>
     public WrapperActivity(TaskActivityDescriptor descriptor)
     {
-        Descriptor = Check.NotNull(descriptor, nameof(descriptor));
+        Descriptor = Check.NotNull(descriptor);
     }
 
     /// <summary>
@@ -34,7 +35,7 @@ internal class WrapperActivity : TaskActivity
     /// <summary>
     /// Gets the inner activity.
     /// </summary>
-    public TaskActivity InnerActivity { get; private set; }
+    public TaskActivity? InnerActivity { get; private set; }
 
     /// <summary>
     /// Creates the inner activity, setting <see cref="InnerActivity" />.
@@ -42,7 +43,7 @@ internal class WrapperActivity : TaskActivity
     /// <param name="serviceProvider">The service provider. Not null.</param>
     public void Initialize(IServiceProvider serviceProvider)
     {
-        Check.NotNull(serviceProvider, nameof(serviceProvider));
+        Check.NotNull(serviceProvider);
 
         // Reflection activity
         if (Descriptor.Method is not null)
@@ -90,6 +91,7 @@ internal class WrapperActivity : TaskActivity
         return InnerActivity.RunAsync(context, input);
     }
 
+    [MemberNotNull(nameof(InnerActivity))]
     private void CheckInnerActivity()
     {
         if (InnerActivity is null)

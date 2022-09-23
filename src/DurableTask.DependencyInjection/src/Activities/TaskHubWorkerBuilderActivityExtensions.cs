@@ -22,8 +22,8 @@ public static class TaskHubWorkerBuilderActivityExtensions
     public static ITaskHubWorkerBuilder AddActivity(
         this ITaskHubWorkerBuilder builder, TaskActivityDescriptor descriptor)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(descriptor, nameof(descriptor));
+        Check.NotNull(builder);
+        Check.NotNull(descriptor);
 
         builder.Activities.Add(descriptor);
         return builder;
@@ -49,12 +49,12 @@ public static class TaskHubWorkerBuilderActivityExtensions
     public static ITaskHubWorkerBuilder AddActivity(
         this ITaskHubWorkerBuilder builder, Type type, bool includeAliases)
     {
-        Check.NotNull(builder, nameof(builder));
+        Check.NotNull(builder);
 
         builder.AddActivity(new TaskActivityDescriptor(type));
         if (includeAliases)
         {
-            foreach ((string name, string version) in type.GetTaskAliases())
+            foreach ((string? name, string? version) in type.GetTaskAliases())
             {
                 builder.AddActivity(new TaskActivityDescriptor(type, name, version));
             }
@@ -74,9 +74,9 @@ public static class TaskHubWorkerBuilderActivityExtensions
     public static ITaskHubWorkerBuilder AddActivity(
         this ITaskHubWorkerBuilder builder, Type type, string name, string version)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNullOrEmpty(name, nameof(name));
-        Check.NotNull(version, nameof(version));
+        Check.NotNull(builder);
+        Check.NotNullOrEmpty(name);
+        Check.NotNull(version);
 
         builder.AddActivity(new TaskActivityDescriptor(type, name, version));
         return builder;
@@ -129,8 +129,8 @@ public static class TaskHubWorkerBuilderActivityExtensions
     public static ITaskHubWorkerBuilder AddActivitiesFromAssembly(
         this ITaskHubWorkerBuilder builder, Assembly assembly, bool includePrivate = false)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(assembly, nameof(assembly));
+        Check.NotNull(builder);
+        Check.NotNull(assembly);
 
         foreach (Type type in assembly.GetConcreteTypes<TaskActivity>(includePrivate))
         {
@@ -162,9 +162,8 @@ public static class TaskHubWorkerBuilderActivityExtensions
     /// <returns>The original builder with activities added.</returns>
     public static ITaskHubWorkerBuilder AddActivitiesFromInterface(this ITaskHubWorkerBuilder builder, Type type)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(type, nameof(type));
-        Check.IsInterface(type, nameof(type));
+        Check.NotNull(builder);
+        Check.IsInterface(type);
 
         foreach (MethodInfo method in type.GetMethods())
         {
@@ -192,8 +191,8 @@ public static class TaskHubWorkerBuilderActivityExtensions
     public static ITaskHubWorkerBuilder UseActivityMiddleware(
         this ITaskHubWorkerBuilder builder, TaskMiddlewareDescriptor descriptor)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(descriptor, nameof(descriptor));
+        Check.NotNull(builder);
+        Check.NotNull(descriptor);
 
         builder.ActivityMiddleware.Add(descriptor);
         return builder;
@@ -207,7 +206,7 @@ public static class TaskHubWorkerBuilderActivityExtensions
     /// <returns>The original builder with activity middleware added.</returns>
     public static ITaskHubWorkerBuilder UseActivityMiddleware(this ITaskHubWorkerBuilder builder, Type type)
     {
-        Check.NotNull(builder, nameof(builder));
+        Check.NotNull(builder);
 
         builder.UseActivityMiddleware(new TaskMiddlewareDescriptor(type));
         return builder;
@@ -232,8 +231,8 @@ public static class TaskHubWorkerBuilderActivityExtensions
     public static ITaskHubWorkerBuilder UseActivityMiddleware(
         this ITaskHubWorkerBuilder builder, Func<DispatchMiddlewareContext, Func<Task>, Task> func)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(func, nameof(func));
+        Check.NotNull(builder);
+        Check.NotNull(func);
 
         builder.UseActivityMiddleware(new TaskMiddlewareDescriptor(func));
         return builder;

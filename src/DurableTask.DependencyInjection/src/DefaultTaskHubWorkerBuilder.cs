@@ -23,14 +23,14 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     /// <param name="services">The current service collection, not null.</param>
     public DefaultTaskHubWorkerBuilder(IServiceCollection services)
     {
-        Services = Check.NotNull(services, nameof(services));
+        Services = Check.NotNull(services);
     }
 
     /// <inheritdoc />
     public IServiceCollection Services { get; }
 
     /// <inheritdoc />
-    public IOrchestrationService OrchestrationService { get; set; }
+    public IOrchestrationService? OrchestrationService { get; set; }
 
     /// <inheritdoc />
     public IList<TaskMiddlewareDescriptor> ActivityMiddleware { get; } = new List<TaskMiddlewareDescriptor>
@@ -57,7 +57,7 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     /// <returns>A new <see cref="TaskHubWorker"/>.</returns>
     public TaskHubWorker Build(IServiceProvider serviceProvider)
     {
-        Check.NotNull(serviceProvider, nameof(serviceProvider));
+        Check.NotNull(serviceProvider);
 
         if (OrchestrationService is null)
         {

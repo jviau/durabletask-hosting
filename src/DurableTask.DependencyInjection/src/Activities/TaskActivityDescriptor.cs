@@ -18,7 +18,7 @@ public sealed class TaskActivityDescriptor
     /// <param name="type">The service type.</param>
     /// <param name="name">The name of the type.</param>
     /// <param name="version">The version of the type.</param>
-    public TaskActivityDescriptor(Type type, string name = null, string version = null)
+    public TaskActivityDescriptor(Type type, string? name = null, string? version = null)
     {
         Check.NotNull(type, nameof(type));
         Check.ConcreteType<TaskActivity>(type, nameof(type));
@@ -36,11 +36,12 @@ public sealed class TaskActivityDescriptor
     /// <param name="method">The method info.</param>
     /// <param name="name">The name of the type.</param>
     /// <param name="version">The version of the type.</param>
-    public TaskActivityDescriptor(MethodInfo method, string name = null, string version = null)
+    public TaskActivityDescriptor(MethodInfo method, string? name = null, string? version = null)
     {
-        Method = Check.NotNull(method, nameof(method));
-        Check.NotNull(method.DeclaringType, nameof(method) + nameof(method.DeclaringType));
+        Check.NotNull(method);
+        Check.NotNull(method.DeclaringType);
 
+        Method = method;
         Name = name ?? NameVersionHelper.GetDefaultName(method);
         Version = version ?? NameVersionHelper.GetDefaultVersion(method);
     }
@@ -58,12 +59,12 @@ public sealed class TaskActivityDescriptor
     /// <summary>
     /// Gets the <see cref="TaskActivity"/> type to fetch and execute.
     /// </summary>
-    public Type Type { get; }
+    public Type? Type { get; }
 
     /// <summary>
     /// Gets the <see cref="MethodInfo"/> to fetch and execute.
     /// </summary>
-    public MethodInfo Method { get; }
+    public MethodInfo? Method { get; }
 
     /// <summary>
     /// Creates a new descriptor for <typeparamref name="T"/>.
@@ -72,7 +73,7 @@ public sealed class TaskActivityDescriptor
     /// <param name="name">The name of the activity. Optional.</param>
     /// <param name="version">The version of the activity. Optional.</param>
     /// <returns>A new descriptor.</returns>
-    public static TaskActivityDescriptor Create<T>(string name = null, string version = null)
+    public static TaskActivityDescriptor Create<T>(string? name = null, string? version = null)
         where T : TaskActivity
-        => new TaskActivityDescriptor(typeof(T), name, version);
+        => new(typeof(T), name, version);
 }

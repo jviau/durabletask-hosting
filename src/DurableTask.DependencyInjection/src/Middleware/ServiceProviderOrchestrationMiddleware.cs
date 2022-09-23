@@ -23,14 +23,14 @@ public class ServiceProviderOrchestrationMiddleware : ITaskMiddleware
     /// <param name="serviceProvider">The service provider. Not null.</param>
     public ServiceProviderOrchestrationMiddleware(IServiceProvider serviceProvider)
     {
-        _serviceProvider = Check.NotNull(serviceProvider, nameof(serviceProvider));
+        _serviceProvider = Check.NotNull(serviceProvider);
     }
 
     /// <inheritdoc />
     public async Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)
     {
-        Check.NotNull(context, nameof(context));
-        Check.NotNull(next, nameof(next));
+        Check.NotNull(context);
+        Check.NotNull(next);
 
         TaskOrchestration taskOrchestration = context.GetProperty<TaskOrchestration>();
 

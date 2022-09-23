@@ -11,6 +11,10 @@
     <ExtensionsPackageVersion Condition="'$(ExtensionsPackageVersion)' == ''">2.1.0</ExtensionsPackageVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
   <PropertyGroup>
     <TopLevelNamespace Condition="'$(TopLevelNamespace)' == ''">Vio</TopLevelNamespace>
     <AssemblyName>$(TopLevelNamespace).$(MSBuildProjectName)</AssemblyName>
@@ -28,13 +32,5 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared' AND '$(IsTestProject)' != 'true'">
-    <Compile Include="$(SrcRoot)Shared/src/**/*.cs" LinkBase="Shared" Visible="false" />
-    <EmbeddedResource Include="$(SrcRoot)Shared/src/**/*.resx" LinkBase="Shared" Visible="false">
-      <RecursiveNamespace>$([System.String]::Copy('%(RecursiveDir)').Replace($([System.IO.Path]::DirectorySeparatorChar.ToString()), '.'))</RecursiveNamespace>
-      <LogicalName>Shared.%(RecursiveNamespace)%(Filename).resources</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
 
 </Project>

@@ -15,9 +15,9 @@ internal static class TypeExtensions
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <returns>The enumerable of task aliases.</returns>
-    public static IEnumerable<(string Name, string Version)> GetTaskAliases(this Type type)
+    public static IEnumerable<(string? Name, string? Version)> GetTaskAliases(this Type type)
     {
-        Check.NotNull(type, nameof(type));
+        Check.NotNull(type);
         foreach (TaskAliasAttribute alias in type.GetCustomAttributes<TaskAliasAttribute>())
         {
             yield return (alias.Name, alias.Version);

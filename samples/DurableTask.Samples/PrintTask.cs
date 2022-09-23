@@ -25,6 +25,6 @@ public class PrintTask : TaskActivity<string, string>
     protected override string Execute(TaskContext context, string input)
     {
         _console.WriteLine(input);
-        return null;
+        return string.Empty;
     }
 }

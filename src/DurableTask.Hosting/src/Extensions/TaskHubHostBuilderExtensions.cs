@@ -22,8 +22,8 @@ public static class TaskHubHostBuilderExtensions
     public static IHostBuilder ConfigureTaskHubWorker(
         this IHostBuilder builder, Action<ITaskHubWorkerBuilder> configure)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(configure, nameof(configure));
+        Check.NotNull(builder);
+        Check.NotNull(configure);
 
         return builder.ConfigureTaskHubWorker(configure, _ => { });
     }
@@ -40,9 +40,9 @@ public static class TaskHubHostBuilderExtensions
         Action<ITaskHubWorkerBuilder> configure,
         Action<TaskHubOptions> configureOptions)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(configure, nameof(configure));
-        Check.NotNull(configureOptions, nameof(configureOptions));
+        Check.NotNull(builder);
+        Check.NotNull(configure);
+        Check.NotNull(configureOptions);
 
         return builder.ConfigureTaskHubWorker((_, b) => configure(b), configureOptions);
     }
@@ -56,8 +56,8 @@ public static class TaskHubHostBuilderExtensions
     public static IHostBuilder ConfigureTaskHubWorker(
         this IHostBuilder builder, Action<HostBuilderContext, ITaskHubWorkerBuilder> configure)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(configure, nameof(configure));
+        Check.NotNull(builder);
+        Check.NotNull(configure);
         return builder.ConfigureTaskHubWorker(configure, _ => { });
     }
 
@@ -73,9 +73,9 @@ public static class TaskHubHostBuilderExtensions
         Action<HostBuilderContext, ITaskHubWorkerBuilder> configure,
         Action<TaskHubOptions> configureOptions)
     {
-        Check.NotNull(builder, nameof(builder));
-        Check.NotNull(configure, nameof(configure));
-        Check.NotNull(configureOptions, nameof(configureOptions));
+        Check.NotNull(builder);
+        Check.NotNull(configure);
+        Check.NotNull(configureOptions);
 
         builder.ConfigureServices((context, services) =>
         {

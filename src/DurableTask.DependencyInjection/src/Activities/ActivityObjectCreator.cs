@@ -18,7 +18,7 @@ internal class ActivityObjectCreator : GenericObjectCreator<TaskActivity>
     /// <param name="descriptor">The activity descriptor. Not null.</param>
     public ActivityObjectCreator(TaskActivityDescriptor descriptor)
     {
-        Check.NotNull(descriptor, nameof(descriptor));
+        Check.NotNull(descriptor);
         Name = descriptor.Name;
         Version = descriptor.Version;
 
@@ -39,7 +39,7 @@ internal class ActivityObjectCreator : GenericObjectCreator<TaskActivity>
     /// <inheritdoc/>
     public override TaskActivity Create(TypeShortName typeName)
     {
-        Check.NotNull(typeName.Name, nameof(typeName) + nameof(typeName.Name));
+        Check.NotNull(typeName.Name);
         if (_descriptor.Type?.IsGenericTypeDefinition != true)
         {
             throw new InvalidOperationException("This is not a generic type definition descriptor.");

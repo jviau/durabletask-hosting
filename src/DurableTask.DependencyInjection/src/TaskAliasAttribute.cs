@@ -23,7 +23,7 @@ public class TaskAliasAttribute : Attribute
     /// </summary>
     /// <param name="name">The name to use. Populated from type if null.</param>
     /// <param name="version">The version to use. Empty if not specified.</param>
-    public TaskAliasAttribute(string name = null, string version = null)
+    public TaskAliasAttribute(string? name = null, string? version = null)
     {
         Name = name;
         Version = version;
@@ -34,9 +34,9 @@ public class TaskAliasAttribute : Attribute
     /// </summary>
     /// <param name="type">The type to get the default name and version from.</param>
     /// <param name="version">The version for this task.</param>
-    public TaskAliasAttribute(Type type, string version = null)
+    public TaskAliasAttribute(Type type, string? version = null)
     {
-        Check.NotNull(type, nameof(type));
+        Check.NotNull(type);
         Name = NameVersionHelper.GetDefaultName(type);
         Version = string.IsNullOrEmpty(version) ? NameVersionHelper.GetDefaultVersion(type) : version;
     }
@@ -44,10 +44,10 @@ public class TaskAliasAttribute : Attribute
     /// <summary>
     /// Gets or sets the name of the task hub entity.
     /// </summary>
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// Gets or sets the version of the task hub entity.
     /// </summary>
-    public string Version { get; set; }
+    public string? Version { get; set; }
 }

@@ -2,6 +2,7 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +25,7 @@ internal class WrapperOrchestration : TaskOrchestration
     /// <param name="descriptor">The inner orchestration descriptor.</param>
     public WrapperOrchestration(TaskOrchestrationDescriptor descriptor)
     {
-        Descriptor = Check.NotNull(descriptor, nameof(descriptor));
+        Descriptor = Check.NotNull(descriptor);
     }
 
     /// <summary>
@@ -35,7 +36,7 @@ internal class WrapperOrchestration : TaskOrchestration
     /// <summary>
     /// Gets the inner orchestration.
     /// </summary>
-    public TaskOrchestration InnerOrchestration { get; private set; }
+    public TaskOrchestration? InnerOrchestration { get; private set; }
 
     /// <summary>
     /// Creates the inner orchestration, setting <see cref="InnerOrchestration" />.
@@ -43,7 +44,7 @@ internal class WrapperOrchestration : TaskOrchestration
     /// <param name="serviceProvider">The service provider. Not null.</param>
     public void Initialize(IServiceProvider serviceProvider)
     {
-        Check.NotNull(serviceProvider, nameof(serviceProvider));
+        Check.NotNull(serviceProvider);
 
         if (!s_factories.TryGetValue(Descriptor, out OrchestrationFactory factory))
         {
@@ -89,6 +90,7 @@ internal class WrapperOrchestration : TaskOrchestration
         InnerOrchestration.RaiseEvent(context, name, input);
     }
 
+    [MemberNotNull(nameof(InnerOrchestration))]
     private void CheckInnerOrchestration()
     {
         if (InnerOrchestration is null)

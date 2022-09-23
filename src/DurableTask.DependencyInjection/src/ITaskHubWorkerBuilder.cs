@@ -21,7 +21,7 @@ public interface ITaskHubWorkerBuilder
     /// service provider.
     /// </summary>
     [Obsolete("Add IOrchestrationService to the IServiceCollection as a singleton instead.")]
-    IOrchestrationService OrchestrationService { get; set; }
+    IOrchestrationService? OrchestrationService { get; set; }
 
     /// <summary>
     /// Gets the activity middleware.

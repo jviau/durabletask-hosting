@@ -5,11 +5,8 @@
 // They are defined here to enable certain C# features that otherwise require higher framework versions.
 // Redefining types in this way is a standard practice for library authors that are forced to target .NET Standard 2.0.
 
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 // These extension methods are defined in the global namespace so that they're available everywhere.
 internal static class KeyValuePairExtensions
@@ -32,7 +29,7 @@ internal static class StringExtensions
 
     public static bool EndsWith(this string s, char value)
     {
-        return s.Length > 0 && s[s.Length - 1] == value;
+        return s.Length > 0 && s[^1] == value;
     }
 }
 
@@ -60,7 +57,7 @@ namespace System
     /// </remarks>
     internal readonly struct Index : IEquatable<Index>
     {
-        readonly int _value;
+        private readonly int _value;
 
         /// <summary>Construct an Index using a value and indicating if the index is from the start or from the end.</summary>
         /// <param name="value">The index value. it has to be zero or positive number.</param>
@@ -80,16 +77,16 @@ namespace System
         }
 
         // The following private constructors mainly created for perf reason to avoid the checks
-        Index(int value)
+        private Index(int value)
         {
             _value = value;
         }
 
         /// <summary>Create an Index pointing at first element.</summary>
-        public static Index Start => new Index(0);
+        public static Index Start => new(0);
 
         /// <summary>Create an Index pointing at beyond last element.</summary>
-        public static Index End => new Index(~0);
+        public static Index End => new(~0);
 
         /// <summary>Create an Index from the start at the position indicated by the value.</summary>
         /// <param name="value">The index value from the start.</param>
@@ -162,7 +159,7 @@ namespace System
 
         /// <summary>Indicates whether the current Index object is equal to another object of the same type.</summary>
         /// <param name="value">An object to compare with this object.</param>
-        public override bool Equals(object? value) => value is Index && _value == ((Index)value)._value;
+        public override bool Equals(object? value) => value is Index index && _value == index._value;
 
         /// <summary>Indicates whether the current Index object is equal to another Index object.</summary>
         /// <param name="other">An object to compare with this object.</param>
@@ -267,34 +264,6 @@ namespace System
     }
 }
 
-// Copied from https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Diagnostics/CodeAnalysis/NullableAttributes.cs#L69
-namespace System.Diagnostics.CodeAnalysis
-{
-    internal sealed class NotNullWhenAttribute : Attribute
-    {
-        /// <summary>Initializes the attribute with the specified return value condition.</summary>
-        /// <param name="returnValue">
-        /// The return value condition. If the method returns this value, the associated parameter will not be null.
-        /// </param>
-        public NotNullWhenAttribute(bool returnValue) => ReturnValue = returnValue;
-
-        /// <summary>Gets the return value condition.</summary>
-        public bool ReturnValue { get; }
-    }
-
-    internal sealed class NotNullIfNotNullAttribute : Attribute
-    {
-        /// <summary>Initializes the attribute with the associated parameter name.</summary>
-        /// <param name="parameterName">
-        /// The associated parameter name.  The output will be non-null if the argument to the parameter specified is non-null.
-        /// </param>
-        public NotNullIfNotNullAttribute(string parameterName) => ParameterName = parameterName;
-
-        /// <summary>Gets the associated parameter name.</summary>
-        public string ParameterName { get; }
-    }
-}
-
 namespace System.Runtime.CompilerServices
 {
     /// <summary>
@@ -304,6 +273,17 @@ namespace System.Runtime.CompilerServices
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     internal static class IsExternalInit { }
+
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
+    internal sealed class CallerArgumentExpressionAttribute : Attribute
+    {
+        public CallerArgumentExpressionAttribute(string parameterName)
+        {
+            ParameterName = parameterName;
+        }
+
+        public string ParameterName { get; }
+    }
 }
 
 #endif

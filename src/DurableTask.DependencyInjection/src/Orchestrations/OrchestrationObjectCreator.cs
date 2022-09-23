@@ -18,7 +18,7 @@ internal class OrchestrationObjectCreator : GenericObjectCreator<TaskOrchestrati
     /// <param name="descriptor">The orchestration descriptor. Not null.</param>
     public OrchestrationObjectCreator(TaskOrchestrationDescriptor descriptor)
     {
-        Check.NotNull(descriptor, nameof(descriptor));
+        Check.NotNull(descriptor);
         Name = descriptor.Name;
         Version = descriptor.Version;
 

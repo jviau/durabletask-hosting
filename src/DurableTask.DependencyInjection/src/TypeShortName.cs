@@ -20,7 +20,7 @@ internal readonly struct TypeShortName
     /// <param name="type">The type to get the name for.</param>
     public TypeShortName(Type type)
     {
-        Check.NotNull(type, nameof(type));
+        Check.NotNull(type);
         Name = type.IsConstructedGenericType ? type.GetGenericTypeDefinition().FullName : type.FullName;
         AssemblyName = type.Assembly.GetName().Name;
 
@@ -45,7 +45,7 @@ internal readonly struct TypeShortName
 
     private TypeShortName(string typeShortName, bool genericParam)
     {
-        Check.NotNullOrEmpty(typeShortName, nameof(typeShortName));
+        Check.NotNullOrEmpty(typeShortName);
 
         // Find the ',' separating the assembly name. First check for last `]` make sure we don't grab an inner
         // generic assembly name.
@@ -56,7 +56,7 @@ internal readonly struct TypeShortName
         }
 
         int nameSeparator = typeShortName.IndexOf(NameSeparator, nameSeparatorStart);
-        AssemblyName = nameSeparator > 0 ? typeShortName.Substring(nameSeparator + 1).Trim() : null;
+        AssemblyName = nameSeparator > 0 ? typeShortName[(nameSeparator + 1)..].Trim() : null;
 
         // If we are a generic parameter, assert that we have an assembly name.
         Check.Argument(
@@ -66,7 +66,7 @@ internal readonly struct TypeShortName
             typeShortName);
 
         // Now get the name. First check for generic start index - if it exists.
-        string name = nameSeparator > 0 ? typeShortName.Substring(0, nameSeparator) : typeShortName;
+        string name = nameSeparator > 0 ? typeShortName[..nameSeparator] : typeShortName;
         int genericStart = name.IndexOf('[');
         if (genericStart == -1)
         {
@@ -79,7 +79,7 @@ internal readonly struct TypeShortName
         // Generic parameter(s) found. Pull them out.
         Name = name[..genericStart];
 
-        IEnumerable<string> generics = SplitGenerics(name.Substring(genericStart));
+        IEnumerable<string> generics = SplitGenerics(name[genericStart..]);
         GenericParams = generics.Select(s => new TypeShortName(s, true)).ToList();
     }
 
@@ -91,7 +91,7 @@ internal readonly struct TypeShortName
     /// <summary>
     /// Gets the assembly short name.
     /// </summary>
-    public string AssemblyName { get; }
+    public string? AssemblyName { get; }
 
     /// <summary>
     /// Gets generic params, if any.
@@ -179,7 +179,7 @@ internal readonly struct TypeShortName
     /// </summary>
     /// <param name="assembly">The optional assembly to load from.</param>
     /// <returns>The loaded type.</returns>
-    public Type Load(Assembly assembly = null)
+    public Type Load(Assembly? assembly = null)
     {
         if (assembly is null)
         {
@@ -216,12 +216,12 @@ internal readonly struct TypeShortName
                 }
                 else if (bracketCount == 0 && c == GenericSeparator)
                 {
-                    yield return typeString.Substring(start, i - start);
+                    yield return typeString[start..i];
                     start = i + 1;
                 }
             }
 
-            yield return start == 0 ? typeString : typeString.Substring(start);
+            yield return start == 0 ? typeString : typeString[start..];
         }
 
         return InnerEnum(typeString).Select(s => s.Trim('[', ']'));

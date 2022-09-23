@@ -16,10 +16,10 @@ public sealed class TaskOrchestrationDescriptor
     /// <param name="type">The service type.</param>
     /// <param name="name">The name of the type.</param>
     /// <param name="version">The version of the type.</param>
-    public TaskOrchestrationDescriptor(Type type, string name = null, string version = null)
+    public TaskOrchestrationDescriptor(Type type, string? name = null, string? version = null)
     {
-        Check.NotNull(type, nameof(type));
-        Check.ConcreteType<TaskOrchestration>(type, nameof(type));
+        Check.NotNull(type);
+        Check.ConcreteType<TaskOrchestration>(type);
 
         Type = type;
         Name = name ?? TypeShortName.ToString(type, false);
@@ -48,7 +48,7 @@ public sealed class TaskOrchestrationDescriptor
     /// <param name="name">The name of the orchestration. Optional.</param>
     /// <param name="version">The version of the orchestration. Optional.</param>
     /// <returns>A new descriptor.</returns>
-    public static TaskOrchestrationDescriptor Create<T>(string name = null, string version = null)
+    public static TaskOrchestrationDescriptor Create<T>(string? name = null, string? version = null)
         where T : TaskOrchestration
         => new(typeof(T), name, version);
 }
