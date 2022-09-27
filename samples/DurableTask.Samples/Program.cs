@@ -32,7 +32,6 @@ public class Program
             })
             .ConfigureTaskHubWorker((context, builder) =>
             {
-                // IOrchestrationService orchestrationService = UseServiceBus(context.Configuration);
                 IOrchestrationService orchestrationService = UseLocalEmulator();
                 builder.WithOrchestrationService(orchestrationService);
 
@@ -48,12 +47,6 @@ public class Program
                     .AddOrchestration<GreetingsOrchestration>()
                     .AddOrchestration<GenericOrchestrationRunner>();
 
-                //builder
-                //    .AddActivity<PrintTask>()
-                //    .AddActivity<GetUserTask>()
-                //    .AddActivity<SendGreetingTask>()
-                //    .AddActivity(typeof(GenericActivity<>));
-
                 builder.AddActivitiesFromAssembly<Program>();
             })
             .UseConsoleLifetime()
@@ -61,29 +54,6 @@ public class Program
 
         return host.RunAsync();
     }
-
-    //private static IOrchestrationService UseServiceBus(IConfiguration config)
-    //{
-    //    string taskHubName = config.GetValue<string>("DurableTask:TaskHubName");
-    //    string azureStorageConnectionString = config.GetValue<string>("DurableTask:AzureStorage:ConnectionString");
-    //    string serviceBusConnectionString = config.GetValue<string>("DurableTask:ServiceBus:ConnectionString");
-
-    //    IOrchestrationServiceInstanceStore instanceStore =
-    //        new AzureTableInstanceStore(taskHubName, azureStorageConnectionString);
-
-    //    var orchestrationService =
-    //        new ServiceBusOrchestrationService(
-    //            serviceBusConnectionString,
-    //            taskHubName,
-    //            instanceStore,
-    //            null,
-    //            null);
-
-    //    // TODO: do by default via config
-    //    orchestrationService.CreateIfNotExistsAsync().GetAwaiter().GetResult();
-
-    //    return orchestrationService;
-    //}
 
     private static IOrchestrationService UseLocalEmulator()
         => new LocalOrchestrationService();

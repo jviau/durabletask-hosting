@@ -5,12 +5,25 @@
    "version": "0.2.0",
    "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "Extensions Samples",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/out/bin/Debug/DurableTask.Samples/netcoreapp3.1/Vio.DurableTask.Samples.dll",
+            "program": "${workspaceFolder}/out/bin/Debug/DurableTask.Extensions.Samples/net6.0/Vio.DurableTask.Extensions.Samples.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/DurableTask.Extensions.Samples",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Samples",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/out/bin/Debug/DurableTask.Samples/net6.0/Vio.DurableTask.Samples.dll",
             "args": [],
             "cwd": "${workspaceFolder}/samples/DurableTask.Samples",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
