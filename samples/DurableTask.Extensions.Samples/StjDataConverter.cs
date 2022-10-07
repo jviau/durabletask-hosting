@@ -9,7 +9,7 @@ namespace DurableTask.Extensions.Samples;
 /// <summary>
 /// DataConverter using System.Text.Json.
 /// </summary>
-internal class StjDataConverter : JsonDataConverter
+internal class StjDataConverter : DataConverter
 {
     private readonly JsonSerializerOptions _options;
 
