@@ -3,6 +3,7 @@
 
 using DurableTask.Core;
 using DurableTask.Core.Serializing;
+using DurableTask.Extensions.Converters;
 using DurableTask.Extensions.Logging;
 using DurableTask.Extensions.Properties;
 using Microsoft.Extensions.Logging;
@@ -47,19 +48,7 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
     public override Task<TResult> RunTask(OrchestrationContext context, TInput input)
     {
         Check.NotNull(context, nameof(context));
-        _context = context;
-
-        if (DataConverter is JsonDataConverter converter)
-        {
-            // Set more data converters. The middleware will have set this to a JsonDataConverter.
-            context.MessageDataConverter = converter;
-            context.ErrorDataConverter = converter;
-        }
-        else
-        {
-            throw new InvalidOperationException(
-                Strings.InvalidDataConverterType(typeof(JsonDataConverter), DataConverter?.GetType()));
-        }
+        _context = PrepareContext(context);
 
         // Wrap the logger the middleware gave us with an orchestration specific logger.
         // This logger will not log when the OrchestrationContext is replaying.
@@ -81,6 +70,23 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
     /// <param name="input">The input for this orchestration.</param>
     /// <returns>The result of this orchestration.</returns>
     protected abstract Task<TResult> RunAsync(TInput input);
+
+    private OrchestrationContext PrepareContext(OrchestrationContext context)
+    {
+        if (DataConverter is null)
+        {
+            return context;
+        }
+
+        if (DataConverter is not JsonDataConverter jsonDataConverter)
+        {
+            jsonDataConverter = new JsonDataConverterShim(DataConverter);
+        }
+
+        context.MessageDataConverter = jsonDataConverter;
+        context.ErrorDataConverter = jsonDataConverter;
+        return context;
+    }
 
     void IOrchestrationBase.Initialize(string name, string? version, ILogger logger, DataConverter converter)
     {

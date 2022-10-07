@@ -11,15 +11,6 @@ namespace DurableTask.Extensions.Properties
             = new ResourceManager("DurableTask.Extensions.Properties.Strings", typeof(Strings).Assembly);
 
         /// <summary>
-        ///     Expected DataConverter to be of or derived from type '{expected}', but instead found type '{actual}'.
-        /// </summary>
-        public static string InvalidDataConverterType(object expected, object actual)
-            => string.Format(
-                GetString("InvalidDataConverterType", nameof(expected), nameof(actual)),
-                expected, actual,
-                CultureInfo.CurrentUICulture);
-
-        /// <summary>
         ///     Expected a non-null descriptor from the provided request.
         /// </summary>
         public static string NullDescriptor
