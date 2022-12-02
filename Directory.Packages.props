@@ -2,9 +2,10 @@
 
   <!-- Azure -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Azure.DurableTask.Core" Version="2.11.0" />
+    <PackageVersion Include="Microsoft.Azure.DurableTask.Core" Version="2.11.1" />
     <PackageVersion Include="Microsoft.Azure.DurableTask.Emulator" Version="2.2.5" />
-    <PackageVersion Include="Microsoft.Azure.DurableTask.ServiceBus" Version="2.4.0" />
+    <PackageVersion Include="Microsoft.Azure.DurableTask.ServiceBus" Version="2.6.0" />
+    <PackageVersion Include="Microsoft.Azure.ServiceBus" Version="4.2.1" />
   </ItemGroup>
 
   <!-- Microsoft Extensions -->
