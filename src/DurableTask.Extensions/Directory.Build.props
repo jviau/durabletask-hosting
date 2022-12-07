@@ -1,0 +1,8 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Not ready for release yet -->
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+</Project>
