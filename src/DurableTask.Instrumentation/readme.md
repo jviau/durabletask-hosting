@@ -10,14 +10,13 @@ This library bridges the existing DurableTask distributed tracing with OpenTelem
 | - | - | - |
 | `start_orchestration` | `Producer` | The `TaskHubClient` starting a new orchestration |
 | `orchestration:{orchestration_name}@{orchestration_version}` | `Server` | `TaskHubWorker` running a `TaskOrchestration`. |
-| `orchestration:{orchestration_name}` | `Client` | A `TaskOrchestration` waiting on a sub-`TaskOrchestration` |
 | `activity:{activity_name}@{activity_version}` | `Server` | `TaskHubWorker` running a `TaskActivity`. |
-| `activity:{activity_name}` | `Client` | A `TaskOrchestration` waiting on a `TaskActivity`. |
+| `send_task:{orchestration_name}` | `Client` | A `TaskOrchestration` waiting on a sub-`TaskOrchestration` or `TaskActivity`. |
 
 ## Known Limitations
 
 - `TaskHubClient` client spans do not contain orchestration name
-- `TaskHubWorker` client spans do not contain many tags, version, or properly track failed orchestrations.
+- `TaskHubWorker` client span does not contain many tags, version, or properly track failed orchestrations. Additionally, it cannot differentiate between an orchestration or activity being ran.
   - The server span for the failed orchestration will report `ERROR` correctly.
 - The following spans are not included due to not being supported by DurableTask.Core:
   - `TaskHubClient` or `TaskOrchestration` sending an event
