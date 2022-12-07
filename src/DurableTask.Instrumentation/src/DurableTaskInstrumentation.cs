@@ -12,7 +12,7 @@ namespace DurableTask.Instrumentation;
 /// <summary>
 /// Instrumentation handler for DUrableTask.
 /// </summary>
-internal class DurableTaskInstrumentation
+internal sealed class DurableTaskInstrumentation
 {
     internal static readonly AssemblyName AssemblyName = typeof(DurableTaskInstrumentation).Assembly.GetName();
     internal static readonly string ClientSourceName = AssemblyName.Name + ".TaskHubClient";
@@ -29,7 +29,6 @@ internal class DurableTaskInstrumentation
         "activity:",
         "orchestration:",
     };
-
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DurableTaskInstrumentation"/> class.
@@ -148,8 +147,10 @@ internal class DurableTaskInstrumentation
         // We unfortunately do not have many details on exactly what is being enqueued here.
         activity.SetSource(ClientSource);
         activity.SetKind(ActivityKind.Producer);
-        activity.DisplayName = SpanNameHelper.GetSpanName("start_orchestration", "unknown", null);
+        activity.DisplayName = "start_orchestration";
         activity.SetTag("durabletask.type", "orchestration");
+        activity.SetEndTime(DateTime.UtcNow);
+        activity.Stop();
     }
 
     /// <summary>
