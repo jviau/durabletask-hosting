@@ -74,9 +74,13 @@ internal class DurableTaskInstrumentation
 
                 inner?.Invoke(context, activity);
             }
-            catch (Exception ex) when (!ex.IsFatal())
+            catch (Exception ex)
             {
-                // TODO: Add EventSource message here
+                DurableTaskInstrumentationEventSource.Log.FailedProcessTrace(ex);
+                if (ex.IsFatal())
+                {
+                    throw;
+                }
             }
         };
     }
@@ -92,7 +96,7 @@ internal class DurableTaskInstrumentation
         const string prefix = "DtOrchestrator ";
         if (!traceContext.OperationName.StartsWith(prefix))
         {
-            // TODO: add EventSource message. This shouldn't happen.
+            DurableTaskInstrumentationEventSource.Log.UnexpectedClientSpanName(traceContext.OperationName);
             return;
         }
 
@@ -141,6 +145,7 @@ internal class DurableTaskInstrumentation
             return;
         }
 
+        // We unfortunately do not have many details on exactly what is being enqueued here.
         activity.SetSource(ClientSource);
         activity.SetKind(ActivityKind.Producer);
         activity.DisplayName = SpanNameHelper.GetSpanName("start_orchestration", "unknown", null);

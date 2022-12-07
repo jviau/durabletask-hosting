@@ -1,6 +1,7 @@
 // Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using System.Runtime.InteropServices;
 using DurableTask.Core.Exceptions;
 
@@ -28,6 +29,27 @@ internal static class ExceptionExtensions
         }
 
         return exception;
+    }
+
+    /// <summary>
+    /// Returns a culture-independent string representation of the given <paramref name="exception"/> object,
+    /// appropriate for diagnostics tracing.
+    /// </summary>
+    /// <param name="exception">Exception to convert to string.</param>
+    /// <returns>Exception as string with no culture.</returns>
+    public static string ToInvariantString(this Exception exception)
+    {
+        CultureInfo originalUICulture = Thread.CurrentThread.CurrentUICulture;
+
+        try
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+            return exception.ToString();
+        }
+        finally
+        {
+            Thread.CurrentThread.CurrentUICulture = originalUICulture;
+        }
     }
 
     /// <summary>
