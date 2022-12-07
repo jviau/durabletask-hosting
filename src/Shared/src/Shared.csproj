@@ -1,35 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.Build.NoTargets">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <IncludeShared>false</IncludeShared>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="Properties\SharedStrings.Designer.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SharedStrings.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>DurableTask.Shared</CustomToolNamespace>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\SharedStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SharedStrings.Designer.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\SharedStrings.resx">
-      <CustomToolNamespace>DurableTask.Shared</CustomToolNamespace>
-    </EmbeddedResource>
+    <PackageReference Include="Microsoft.Azure.DurableTask.Core" />
   </ItemGroup>
 
 </Project>

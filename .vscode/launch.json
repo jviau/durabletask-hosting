@@ -1,40 +1,55 @@
 {
-   // Use IntelliSense to find out which attributes exist for C# debugging
-   // Use hover for the description of the existing attributes
-   // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-   "version": "0.2.0",
-   "configurations": [
-        {
-            "name": "Extensions Samples",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/out/bin/Debug/DurableTask.Extensions.Samples/net6.0/Vio.DurableTask.Extensions.Samples.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/samples/DurableTask.Extensions.Samples",
-            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "console": "internalConsole",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Samples",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/out/bin/Debug/DurableTask.Samples/net6.0/Vio.DurableTask.Samples.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/samples/DurableTask.Samples",
-            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "console": "internalConsole",
-            "stopAtEntry": false
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
-        }
-    ]
+  // Use IntelliSense to find out which attributes exist for C# debugging
+  // Use hover for the description of the existing attributes
+  // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Instrumentation Samples",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/out/bin/Debug/DurableTask.Instrumentation.Samples/net6.0/Vio.DurableTask.Instrumentation.Samples.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/samples/DurableTask.Instrumentation.Samples",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "justMyCode": false
+    },
+    {
+      "name": "Extensions Samples",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/out/bin/Debug/DurableTask.Extensions.Samples/net6.0/Vio.DurableTask.Extensions.Samples.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/samples/DurableTask.Extensions.Samples",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "justMyCode": false
+    },
+    {
+      "name": "Samples",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/out/bin/Debug/DurableTask.Samples/net6.0/Vio.DurableTask.Samples.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/samples/DurableTask.Samples",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickProcess}"
+    }
+  ]
 }
