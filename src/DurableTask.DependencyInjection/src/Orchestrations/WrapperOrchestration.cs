@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
-
 using OrchestrationFactory = System.Func<System.IServiceProvider, DurableTask.Core.TaskOrchestration>;
 
 namespace DurableTask.DependencyInjection.Orchestrations;

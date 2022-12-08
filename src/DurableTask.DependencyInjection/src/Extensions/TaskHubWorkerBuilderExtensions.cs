@@ -32,7 +32,6 @@ public static class TaskHubWorkerBuilderExtensions
         return builder;
     }
 
-
     /// <summary>
     /// Sets the provided <paramref name="orchestrationServiceFactory"/> to the <paramref name="builder" />.
     /// </summary>

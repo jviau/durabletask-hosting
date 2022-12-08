@@ -5,7 +5,6 @@ using DurableTask.Core;
 using DurableTask.Core.Serializing;
 using DurableTask.Extensions.Converters;
 using DurableTask.Extensions.Logging;
-using DurableTask.Extensions.Properties;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -33,7 +32,9 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
     /// </remarks>
     public string? Version { get; private set; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
@@ -64,6 +65,15 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
         return RunAsync(input);
     }
 
+    /// <inheritdoc/>
+    void IOrchestrationBase.Initialize(string name, string? version, ILogger logger, DataConverter converter)
+    {
+        Name = Check.NotNull(name);
+        Version = version;
+        Logger = Check.NotNull(logger);
+        DataConverter = Check.NotNull(converter);
+    }
+
     /// <summary>
     /// Executes this orchestration instance.
     /// </summary>
@@ -86,13 +96,5 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
         context.MessageDataConverter = jsonDataConverter;
         context.ErrorDataConverter = jsonDataConverter;
         return context;
-    }
-
-    void IOrchestrationBase.Initialize(string name, string? version, ILogger logger, DataConverter converter)
-    {
-        Name = Check.NotNull(name);
-        Version = version;
-        Logger = Check.NotNull(logger);
-        DataConverter = Check.NotNull(converter);
     }
 }

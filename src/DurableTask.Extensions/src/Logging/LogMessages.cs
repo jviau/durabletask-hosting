@@ -5,8 +5,14 @@ using Microsoft.Extensions.Logging;
 
 namespace DurableTask;
 
+/// <summary>
+/// Log messages.
+/// </summary>
 internal static class LogMessages
 {
+#pragma warning disable SA1201 // elements should be in correct order
+#pragma warning disable SA1600 // elements should be documented
+
     private static readonly Func<ILogger, string, string?, IDisposable> s_runActivityScope = LoggerMessage
         .DefineScope<string, string?>("ActivityName = {activityName}, ActivityVersion = {activityVersion}");
 
@@ -18,4 +24,7 @@ internal static class LogMessages
 
     public static IDisposable RunOrchestrationScope(this ILogger logger, string name, string? version)
         => s_runOrchestrationScope.Invoke(logger, name, version);
+
+#pragma warning restore SA1201 // elements should be in correct order
+#pragma warning restore SA1600 // elements should be documented
 }
