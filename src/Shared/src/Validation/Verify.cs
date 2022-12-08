@@ -17,6 +17,7 @@ internal static class Verify
     /// <typeparam name="T">The type of the argument.</typeparam>
     /// <param name="argument">The argument to verify.</param>
     /// <param name="message">The optional exception message.</param>
+    /// <returns>The <paramref name="argument" /> parameter, unchanged.</returns>
     [return: NotNullIfNotNull("argument")]
     public static T NotNull<T>([NotNull] T argument, string? message = default)
         where T : class

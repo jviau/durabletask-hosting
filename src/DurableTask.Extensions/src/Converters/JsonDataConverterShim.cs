@@ -13,7 +13,7 @@ internal class JsonDataConverterShim : JsonDataConverter
     private readonly DataConverter _converter;
 
     /// <summary>
-    /// Initializes a new instance of <see cref="JsonDataConverterShim" />.
+    /// Initializes a new instance of the <see cref="JsonDataConverterShim" /> class.
     /// </summary>
     /// <param name="converter">The data converter.</param>
     public JsonDataConverterShim(DataConverter converter)
@@ -21,12 +21,15 @@ internal class JsonDataConverterShim : JsonDataConverter
         _converter = Check.NotNull(converter);
     }
 
+    /// <inheritdoc/>
     public override object Deserialize(string data, Type objectType)
         => _converter.Deserialize(data, objectType);
 
+    /// <inheritdoc/>
     public override string Serialize(object value)
         => _converter.Serialize(value);
 
+    /// <inheritdoc/>
     public override string Serialize(object value, bool formatted)
         => _converter.Serialize(value, formatted);
 }

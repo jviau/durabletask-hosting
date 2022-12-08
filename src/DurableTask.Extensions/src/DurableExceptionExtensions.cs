@@ -5,6 +5,9 @@ using DurableTask.Core.Exceptions;
 
 namespace DurableTask.Extensions;
 
+/// <summary>
+/// Extensions for durable task exceptions.
+/// </summary>
 internal static class DurableExceptionExtensions
 {
     /// <summary>

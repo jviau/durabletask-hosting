@@ -14,6 +14,7 @@ public interface IOrchestrationRequestBase
     /// <summary>
     /// Gets the descriptor for the handler of this request.
     /// </summary>
+    /// <returns>The <see cref="TaskOrchestrationDescriptor" /> for this request.</returns>
     /// <remarks>
     /// This should point to the current name and version of the
     /// <see cref="TaskOrchestration"/> we want to schedule for this request.

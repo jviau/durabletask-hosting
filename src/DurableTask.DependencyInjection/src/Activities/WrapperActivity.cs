@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using DurableTask.Core;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
-
 using ActivityFactory = System.Func<System.IServiceProvider, DurableTask.Core.TaskActivity>;
 
 namespace DurableTask.DependencyInjection.Activities;
