@@ -30,7 +30,9 @@ public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, 
     /// </remarks>
     public virtual string? Version { get; private set; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the logger instance.
+    /// </summary>
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
@@ -40,6 +42,15 @@ public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, 
     /// Gets the task context for this activity.
     /// </summary>
     protected TaskContext Context => _context!;
+
+    /// <inheritdoc />
+    void IActivityBase.Initialize(string name, string? version, ILogger logger, DataConverter converter)
+    {
+        Name = Check.NotNull(name);
+        Version = version;
+        Logger = Check.NotNull(logger);
+        DataConverter = Check.NotNull(converter);
+    }
 
     /// <inheritdoc />
     protected override async Task<TResult> ExecuteAsync(TaskContext context, TInput input)
@@ -55,12 +66,4 @@ public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, 
     /// <param name="input">The typed input.</param>
     /// <returns>The typed output from the execution.</returns>
     protected abstract Task<TResult> RunAsync(TInput input);
-
-    void IActivityBase.Initialize(string name, string? version, ILogger logger, DataConverter converter)
-    {
-        Name = Check.NotNull(name);
-        Version = version;
-        Logger = Check.NotNull(logger);
-        DataConverter = Check.NotNull(converter);
-    }
 }

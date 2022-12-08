@@ -14,6 +14,7 @@ public interface IActivityRequestBase
     /// <summary>
     /// Gets the descriptor for the handler of this request.
     /// </summary>
+    /// <returns>The <see cref="TaskActivityDescriptor" /> for this request.</returns>
     /// <remarks>
     /// This should point to the current name and version of the
     /// <see cref="TaskActivity"/> we want to schedule for this request.
