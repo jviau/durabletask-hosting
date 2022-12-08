@@ -14,11 +14,34 @@ namespace DurableTask.Instrumentation;
 /// </summary>
 internal sealed class DurableTaskInstrumentation
 {
+    /// <summary>
+    /// The assembly name.
+    /// </summary>
     internal static readonly AssemblyName AssemblyName = typeof(DurableTaskInstrumentation).Assembly.GetName();
+
+    /// <summary>
+    /// The "TaskHubClient" activity source name.
+    /// </summary>
     internal static readonly string ClientSourceName = AssemblyName.Name + ".TaskHubClient";
+
+    /// <summary>
+    /// The "TaskHubWorker" activity source name.
+    /// </summary>
     internal static readonly string WorkerSourceName = AssemblyName.Name + ".TaskHubWorker";
+
+    /// <summary>
+    /// The activity source version.
+    /// </summary>
     internal static readonly string ActivityVersion = AssemblyName.Version.ToString();
+
+    /// <summary>
+    /// The "TaskHubClient" activity source.
+    /// </summary>
     internal static readonly ActivitySource ClientSource = new(ClientSourceName, ActivityVersion);
+
+    /// <summary>
+    /// The "TaskHubWorker" activity source.
+    /// </summary>
     internal static readonly ActivitySource WorkerSource = new(WorkerSourceName, ActivityVersion);
 
     private static readonly HashSet<string> s_trackedPrefixes = new(StringComparer.Ordinal)
@@ -58,7 +81,7 @@ internal sealed class DurableTaskInstrumentation
                 }
 
                 using ActivityContextShim shim = new(context, stop: true);
-                if (Activity.Current is not {} activity)
+                if (Activity.Current is not { } activity)
                 {
                     return;
                 }
@@ -90,6 +113,23 @@ internal sealed class DurableTaskInstrumentation
             && s_trackedPrefixes.Any(s => context.OperationName.StartsWith(s));
     }
 
+    private static void OnClient(TraceContextBase context)
+    {
+        if (context.TelemetryType == TelemetryType.Request
+            || Activity.Current is not { } activity)
+        {
+            return;
+        }
+
+        // We unfortunately do not have many details on exactly what is being enqueued here.
+        activity.SetSource(ClientSource);
+        activity.SetKind(ActivityKind.Producer);
+        activity.DisplayName = "start_orchestration";
+        activity.SetTag("durabletask.type", "orchestration");
+        activity.SetEndTime(DateTime.UtcNow);
+        activity.Stop();
+    }
+
     private void OnDependencyTelemetry(TraceContextBase traceContext, Activity activity)
     {
         const string prefix = "DtOrchestrator ";
@@ -111,7 +151,7 @@ internal sealed class DurableTaskInstrumentation
     {
         // Some exceptions are logged later. Restore context for them (if possible).
         using ActivityContextShim shim = new(CorrelationTraceContext.Current, stop: false);
-        if (Activity.Current is not {} activity)
+        if (Activity.Current is not { } activity)
         {
             return;
         }
@@ -134,23 +174,6 @@ internal sealed class DurableTaskInstrumentation
         {
             activity.SetException(cause);
         }
-    }
-
-    private static void OnClient(TraceContextBase context)
-    {
-        if (context.TelemetryType == TelemetryType.Request
-            || Activity.Current is not {} activity)
-        {
-            return;
-        }
-
-        // We unfortunately do not have many details on exactly what is being enqueued here.
-        activity.SetSource(ClientSource);
-        activity.SetKind(ActivityKind.Producer);
-        activity.DisplayName = "start_orchestration";
-        activity.SetTag("durabletask.type", "orchestration");
-        activity.SetEndTime(DateTime.UtcNow);
-        activity.Stop();
     }
 
     /// <summary>

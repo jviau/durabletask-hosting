@@ -1,8 +1,7 @@
-using DurableTask;
-using DurableTask.Core;
 // Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
+using DurableTask;
 using DurableTask.Instrumentation;
 
 namespace OpenTelemetry.Trace;

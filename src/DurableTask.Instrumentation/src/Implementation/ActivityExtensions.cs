@@ -7,6 +7,9 @@ using DurableTask.Reflection;
 
 namespace DurableTask.Instrumentation;
 
+/// <summary>
+/// Extensions for <see cref="Activity" />.
+/// </summary>
 internal static class ActivityExtensions
 {
     /// <summary>

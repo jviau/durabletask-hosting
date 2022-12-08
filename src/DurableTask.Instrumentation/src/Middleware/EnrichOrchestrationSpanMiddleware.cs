@@ -21,7 +21,7 @@ public sealed class EnrichOrchestrationSpanMiddleware : ITaskMiddleware
 
         using (StartActivity())
         {
-            if (Activity.Current is {} activity)
+            if (Activity.Current is { } activity)
             {
                 EnrichActivity(activity, context);
             }

@@ -17,7 +17,7 @@ public sealed class EnrichActivitySpanMiddleware : ITaskMiddleware
     /// <inheritdoc/>
     public Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)
     {
-        if (Activity.Current is {} activity)
+        if (Activity.Current is { } activity)
         {
             EnrichActivity(activity, context);
         }
