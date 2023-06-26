@@ -31,8 +31,8 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <ReleaseNotesFile>$(RepoRoot)releasenotes.md</ReleaseNotesFile>
-    <ReadmeFile Condition="'$(ReadmeFile)' == '' AND Exists('README.md')">README.md</ReadmeFile>
+    <ReleaseNotesFile>../releasenotes.md</ReleaseNotesFile>
+    <ReadmeFile Condition="'$(ReadmeFile)' == ''">../README.md</ReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>

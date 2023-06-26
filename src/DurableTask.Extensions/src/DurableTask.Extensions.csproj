@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <ReleaseNotesFile>../releasenotes.md</ReleaseNotesFile>
-    <ReadmeFile>../readme.md</ReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>

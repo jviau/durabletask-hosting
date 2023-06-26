@@ -11,7 +11,7 @@ Extends `DurableTask.Core` with useful helpers, middleware, and new base classes
 });
 ```
 
-## Summary
+## Features
 
 - Provides a mediator/ref pattern for invoking activities and orchestrations.
   - `IActivityRequest`, `IActivityRequest<TOutput>`
