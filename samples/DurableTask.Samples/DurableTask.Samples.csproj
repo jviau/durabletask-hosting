@@ -10,8 +10,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.DurableTask.Core" />
     <PackageReference Include="Microsoft.Azure.DurableTask.Emulator" />
-    <PackageReference Include="Microsoft.Azure.DurableTask.ServiceBus" />
-    <PackageReference Include="Microsoft.Azure.ServiceBus" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
   </ItemGroup>

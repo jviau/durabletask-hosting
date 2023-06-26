@@ -8,9 +8,6 @@ using DurableTask.Hosting;
 using DurableTask.Hosting.Options;
 using DurableTask.Samples.Generics;
 using DurableTask.Samples.Greetings;
-using DurableTask.ServiceBus;
-using DurableTask.ServiceBus.Settings;
-using DurableTask.ServiceBus.Tracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,11 +36,7 @@ public class Program
                 });
                 services.AddSingleton<IConsole, ConsoleWrapper>();
                 services.AddHostedService<TaskEnqueuer>();
-                services.AddSingleton(sp =>
-                {
-                    IConfiguration config = sp.GetRequiredService<IConfiguration>();
-                    return UseServiceBus(config);
-                });
+                services.AddSingleton(UseLocalEmulator());
             })
             .ConfigureTaskHubWorker((context, builder) =>
             {
@@ -65,18 +58,6 @@ public class Program
 
     private static IOrchestrationService UseLocalEmulator()
         => new LocalOrchestrationService();
-
-    private static IOrchestrationService UseServiceBus(IConfiguration configuration)
-    {
-        string hubName = configuration["DurableTask:HubName"];
-        string storageConnectionString = configuration.GetConnectionString("AzureStorage");
-        string serviceBusConnectionString = configuration.GetConnectionString("ServiceBus");
-        AzureStorageBlobStore blobStore = new(hubName, storageConnectionString);
-        AzureTableInstanceStore instanceStore = new(hubName, storageConnectionString);
-        ServiceBusOrchestrationServiceSettings settings = new();
-        return new ServiceBusOrchestrationService(
-            serviceBusConnectionString, hubName, instanceStore, blobStore, settings);
-    }
 
     private class TaskEnqueuer : BackgroundService
     {
