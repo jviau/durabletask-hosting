@@ -5,8 +5,10 @@ using DurableTask.Core;
 using DurableTask.DependencyInjection;
 using DurableTask.Emulator;
 using DurableTask.Hosting;
+using DurableTask.Hosting.Options;
 using DurableTask.Samples.Generics;
 using DurableTask.Samples.Greetings;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -25,22 +27,21 @@ public class Program
     public static Task Main(string[] args)
     {
         IHost host = Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(builder => builder.AddUserSecrets<Program>())
             .ConfigureServices(services =>
             {
+                services.Configure<TaskHubOptions>(opt =>
+                {
+                    opt.CreateIfNotExists = true;
+                });
                 services.AddSingleton<IConsole, ConsoleWrapper>();
                 services.AddHostedService<TaskEnqueuer>();
+                services.AddSingleton(UseLocalEmulator());
             })
             .ConfigureTaskHubWorker((context, builder) =>
             {
-                IOrchestrationService orchestrationService = UseLocalEmulator();
-                builder.WithOrchestrationService(orchestrationService);
-
                 builder.AddClient();
-
-                builder.UseOrchestrationMiddleware<OrchestrationInstanceExMiddleware>();
                 builder.UseOrchestrationMiddleware<SampleMiddleware>();
-
-                builder.UseActivityMiddleware<ActivityInstanceExMiddleware>();
                 builder.UseActivityMiddleware<SampleMiddleware>();
 
                 builder
