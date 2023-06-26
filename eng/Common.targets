@@ -1,6 +1,10 @@
 <Project>
 
   <PropertyGroup>
+    <BeforePack>$(BeforePack);GetReleaseNotes</BeforePack>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageReadmeFile Condition="'$(ReadmeFile)' != ''">README.md</PackageReadmeFile>
   </PropertyGroup>
 
@@ -26,7 +30,7 @@
     <AdditionalFiles Include="$(RepoRoot)stylecop.json" Visible="false" />
   </ItemGroup>
 
-  <Target Name="GetReleaseNotes" BeforeTargets="BeforeBuild">
+  <Target Name="GetReleaseNotes" Condition="'$(PackageReleaseNotes)' == '' and Exists('$(ReleaseNotesFile)')">
     <PropertyGroup>
       <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(ReleaseNotesFile)'))</PackageReleaseNotes>
     </PropertyGroup>
