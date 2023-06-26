@@ -11,9 +11,7 @@ namespace DurableTask.Extensions;
 /// <summary>
 /// A base <see cref="TaskActivity" /> with additional semantics.
 /// </summary>
-/// <typeparam name="TInput">The input for the activity.</typeparam>
-/// <typeparam name="TResult">The output for the activity.</typeparam>
-public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, TResult>, IActivityBase
+public abstract class ActivityBase : AsyncTaskActivity<object?, Unit>, IActivityBase
 {
     private TaskContext? _context;
 
@@ -52,17 +50,17 @@ public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, 
     }
 
     /// <inheritdoc />
-    protected override Task<TResult> ExecuteAsync(TaskContext context, TInput input)
+    protected override async Task<Unit> ExecuteAsync(TaskContext context, object? input)
     {
         Check.NotNull(context, nameof(context));
         _context = context;
-        return RunAsync(input);
+        await RunAsync();
+        return Unit.Value;
     }
 
     /// <summary>
     /// Abstract method for executing a task activity asynchronously.
     /// </summary>
-    /// <param name="input">The typed input.</param>
-    /// <returns>The typed output from the execution.</returns>
-    protected abstract Task<TResult> RunAsync(TInput input);
+    /// <returns>A task that completes when the activity is finished.</returns>
+    protected abstract Task RunAsync();
 }

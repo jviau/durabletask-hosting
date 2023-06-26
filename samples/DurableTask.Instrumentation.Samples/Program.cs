@@ -5,6 +5,7 @@ using System.Diagnostics;
 using DurableTask.AzureStorage;
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
+using DurableTask.Extensions;
 using DurableTask.Extensions.Samples;
 using DurableTask.Hosting;
 using Microsoft.Extensions.DependencyInjection;

@@ -4,6 +4,7 @@
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
 using DurableTask.Emulator;
+using DurableTask.Extensions;
 using DurableTask.Extensions.Samples;
 using DurableTask.Hosting;
 using Microsoft.Extensions.DependencyInjection;

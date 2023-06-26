@@ -3,7 +3,6 @@
 
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
-using DurableTask.Extensions.Abstractions;
 using DurableTask.Extensions.Properties;
 
 namespace DurableTask.Extensions;
@@ -199,7 +198,7 @@ public static partial class OrchestrationContextExtensions
                 descriptor.Name,
                 descriptor.Version,
                 instanceId,
-                request,
+                request.GetInput(),
                 tags: orchestrationTags);
     }
 
@@ -214,10 +213,10 @@ public static partial class OrchestrationContextExtensions
         if (retryOptions is not null)
         {
             return context.CreateSubOrchestrationInstanceWithRetry<TResult>(
-                descriptor.Name, descriptor.Version, instanceId, retryOptions, request);
+                descriptor.Name, descriptor.Version, instanceId, retryOptions, request.GetInput());
         }
 
         return context.CreateSubOrchestrationInstance<TResult>(
-                descriptor.Name, descriptor.Version, instanceId, request);
+                descriptor.Name, descriptor.Version, instanceId, request.GetInput());
     }
 }
