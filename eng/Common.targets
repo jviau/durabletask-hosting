@@ -1,5 +1,9 @@
 <Project>
 
+  <PropertyGroup>
+    <PackageReadmeFile Condition="'$(ReadmeFile)' != ''">README.md</PackageReadmeFile>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(IncludeShared)' != 'false' AND '$(IsTestProject)' != 'true'">
     <Compile Include="$(SrcRoot)Shared/src/**/*.cs" LinkBase="Shared" Visible="false" />
     <EmbeddedResource Include="$(SrcRoot)Shared/src/**/*.resx" LinkBase="Shared" Visible="false">
@@ -24,7 +28,7 @@
 
   <Target Name="GetReleaseNotes" BeforeTargets="BeforeBuild">
     <PropertyGroup>
-      <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(RepoRoot)releasenotes.md'))</PackageReleaseNotes>
+      <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(ReleaseNotesFile)'))</PackageReleaseNotes>
     </PropertyGroup>
   </Target>
 

@@ -2,7 +2,8 @@
 
 This library bridges the existing DurableTask distributed tracing with OpenTelemetry SDK. See [DurableTask.Instrumentation.Samples](../../samples/DurableTask.Instrumentation.Samples/) for an example on what it provides.
 
-## ⚠ Important: This library only works for DurableTask.AzureStorage orchestration service ⚠
+## ⚠ Important: This library only works for DurableTask.AzureStorage orchestration service. ⚠
+## ⚠ Important: This library is non-shipping as DurableTask.Core is implementing its own improved instrumentation. ⚠
 
 ## Emitted Spans
 
