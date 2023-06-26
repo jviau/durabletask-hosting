@@ -61,11 +61,12 @@ internal sealed class SendGreetingActivity : IActivityRequest
             if (!string.IsNullOrWhiteSpace(user) && user.Equals("TimedOut"))
             {
                 _console.WriteLine("GetUser Timed out!!!");
+                throw new TimeoutException();
             }
             else
             {
                 _console.WriteLine($"Sending greetings to user: {user}...");
-                await Task.Delay(5 * 1000);
+                await Task.Delay(TimeSpan.FromSeconds(5));
                 _console.WriteLine($"Greetings sent to {user}");
             }
         }
