@@ -55,7 +55,7 @@ internal sealed class SendGreetingActivity : IActivityRequest
             => _console = console ?? throw new ArgumentNullException(nameof(console));
 
         /// <inheritdoc />
-        protected override async Task<Unit> RunAsync(SendGreetingActivity input)
+        protected override async Task RunAsync(SendGreetingActivity input)
         {
             string user = input.User;
             if (!string.IsNullOrWhiteSpace(user) && user.Equals("TimedOut"))
@@ -68,8 +68,6 @@ internal sealed class SendGreetingActivity : IActivityRequest
                 await Task.Delay(5 * 1000);
                 _console.WriteLine($"Greetings sent to {user}");
             }
-
-            return Unit.Value;
         }
     }
 }
