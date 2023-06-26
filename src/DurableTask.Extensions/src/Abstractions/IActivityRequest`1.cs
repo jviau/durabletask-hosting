@@ -8,7 +8,7 @@ namespace DurableTask.Extensions;
 /// <summary>
 /// Represents a request to run a <see cref="TaskActivity" />.
 /// </summary>
-/// <typeparam name="TResult">The result of the activity.</typeparam>
-public interface IActivityRequest<TResult> : IBaseActivityRequest
+/// <typeparam name="TOutput">The result of the activity.</typeparam>
+public interface IActivityRequest<TOutput> : IBaseActivityRequest
 {
 }

@@ -26,13 +26,13 @@ public class TopOrchestration : OrchestrationBase<TopOrchestration.Request, stri
             }
         }
 
-        await Context.SendAsync(new FanOutOrchestration.Request());
-        await Context.SendAsync(SimpleOrchestration.CreateRequest(0));
+        await Context.RunAsync(new FanOutOrchestration.Request());
+        await Context.RunAsync(SimpleOrchestration.CreateRequest(0));
 
-        await Catch(() => Context.SendAsync(SimpleOrchestration.CreateRequest(2)));
-        await Catch(() => Context.SendAsync(SimpleOrchestration.CreateRequest(4)));
-        await Catch(() => Context.SendAsync(SimpleActivity.CreateRequest(true)));
-        await Context.SendAsync(SimpleActivity.CreateRequest(false));
+        await Catch(() => Context.RunAsync(SimpleOrchestration.CreateRequest(2)));
+        await Catch(() => Context.RunAsync(SimpleOrchestration.CreateRequest(4)));
+        await Catch(() => Context.RunAsync(SimpleActivity.CreateRequest(true)));
+        await Context.RunAsync(SimpleActivity.CreateRequest(false));
 
         return "succeeded";
     }
@@ -57,10 +57,10 @@ public class FanOutOrchestration : OrchestrationBase<FanOutOrchestration.Request
     {
         List<Task> tasks = new()
         {
-            Context.SendAsync(SimpleOrchestration.CreateRequest(0)),
-            Context.SendAsync(SimpleOrchestration.CreateRequest(1)),
-            Context.SendAsync(SimpleOrchestration.CreateRequest(3)),
-            Context.SendAsync(SimpleOrchestration.CreateRequest(1)),
+            Context.RunAsync(SimpleOrchestration.CreateRequest(0)),
+            Context.RunAsync(SimpleOrchestration.CreateRequest(1)),
+            Context.RunAsync(SimpleOrchestration.CreateRequest(3)),
+            Context.RunAsync(SimpleOrchestration.CreateRequest(1)),
         };
 
         await Task.WhenAll(tasks);
@@ -108,14 +108,14 @@ public class SimpleOrchestration : OrchestrationBase<SimpleOrchestration.Request
         switch (input.Mode)
         {
             case 1:
-                await Context.SendAsync(SimpleActivity.CreateRequest(false));
+                await Context.RunAsync(SimpleActivity.CreateRequest(false));
                 break;
             case 2:
                 throw new InvalidOperationException("orchestration failed");
             case 3:
                 try
                 {
-                    await Context.SendAsync(SimpleActivity.CreateRequest(true));
+                    await Context.RunAsync(SimpleActivity.CreateRequest(true));
                 }
                 catch
                 {
@@ -123,7 +123,7 @@ public class SimpleOrchestration : OrchestrationBase<SimpleOrchestration.Request
 
                 break;
             case 4:
-                await Context.SendAsync(SimpleActivity.CreateRequest(true));
+                await Context.RunAsync(SimpleActivity.CreateRequest(true));
                 break;
         }
 

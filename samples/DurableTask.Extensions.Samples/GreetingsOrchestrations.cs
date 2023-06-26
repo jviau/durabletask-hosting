@@ -13,8 +13,8 @@ internal class GreetingsOrchestration : IOrchestrationRequest<string>
     {
         protected override async Task<string> RunAsync(GreetingsOrchestration input)
         {
-            string user = await Context.SendAsync(new GetUserActivity());
-            await Context.SendAsync(new SendGreetingActivity(user));
+            string user = await Context.RunAsync(new GetUserActivity());
+            await Context.RunAsync(new SendGreetingActivity(user));
             return user;
         }
     }

@@ -18,7 +18,7 @@ See [Samples](./samples/DurableTask.Samples) for a quick start example.
 2. Add to your host builder:
 
 ``` CSharp
-Host.CreateDefaultBuilder()
+await Host.CreateDefaultBuilder()
     .ConfigureServices(services =>
     {
         // Can configure orchestrations, activities, and middleware in the service
