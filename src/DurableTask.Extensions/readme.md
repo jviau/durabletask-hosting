@@ -17,7 +17,7 @@ Extends `DurableTask.Core` with useful helpers, middleware, and new base classes
   - `IActivityRequest`, `IActivityRequest<TOutput>`
   - `IOrchestrationRequest`, `IOrchestrationRequest<TOutput>`
 - Provides useful extension methods on `OrchestrationContext`
-  - `context.SendAsync(TRequest)`, giving strongly typed input and output constraints.
+  - `context.RunAsync(TRequest)`, giving strongly typed input and output constraints.
   - `context.Delay(TimeSpan)`, convenient `Task.Delay`-like helper.
 - Provides new activity and orchestration base classes
   - `ActivityBase`, `ActivityBase<TInput>` `ActivityBase<TInput, TOutput>`

@@ -12,18 +12,18 @@ namespace DurableTask.Extensions;
 public static class OrchestrationRequest
 {
     /// <summary>
-    /// Gets an <see cref="IOrchestrationRequest{TResult}" /> which has an explicitly provided input.
+    /// Gets an <see cref="IOrchestrationRequest{TOutput}" /> which has an explicitly provided input.
     /// </summary>
     /// <remarks>
     /// This is useful when you want to use an existing type for input (like <see cref="string" />) and not derive an
     /// entirely new type.
     /// </remarks>
-    /// <typeparam name="TResult">The result type of the orchestration.</typeparam>
+    /// <typeparam name="TOutput">The result type of the orchestration.</typeparam>
     /// <param name="descriptor">The descriptor of the orchestration to run.</param>
     /// <param name="input">The input for the orchestration.</param>
     /// <returns>A request that can be used to enqueue an orchestration.</returns>
-    public static IOrchestrationRequest<TResult> Create<TResult>(TaskOrchestrationDescriptor descriptor, object? input = null)
-        => new Request<TResult>(Check.NotNull(descriptor), input);
+    public static IOrchestrationRequest<TOutput> Create<TOutput>(TaskOrchestrationDescriptor descriptor, object? input = null)
+        => new Request<TOutput>(Check.NotNull(descriptor), input);
 
     /// <summary>
     /// Gets an <see cref="IOrchestrationRequest" /> which has an explicitly provided input.
@@ -53,7 +53,7 @@ public static class OrchestrationRequest
         return request;
     }
 
-    private class Request<TResult> : RequestCore, IOrchestrationRequest<TResult>
+    private class Request<TOutput> : RequestCore, IOrchestrationRequest<TOutput>
     {
         public Request(TaskOrchestrationDescriptor descriptor, object? input)
             : base(descriptor, input)
