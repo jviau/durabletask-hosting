@@ -4,20 +4,21 @@
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
 
-namespace DurableTask.Extensions.Abstractions;
+namespace DurableTask.Extensions;
 
 /// <summary>
-/// Represents a request to run a <see cref="TaskActivity" />.
+/// Represents a request to run a <see cref="TaskOrchestration" />.
 /// </summary>
-public interface IActivityRequestBase
+public interface IBaseOrchestrationRequest
 {
     /// <summary>
     /// Gets the descriptor for the handler of this request.
     /// </summary>
-    /// <returns>The <see cref="TaskActivityDescriptor" /> for this request.</returns>
+    /// <returns>The <see cref="TaskOrchestrationDescriptor" /> for this request.</returns>
     /// <remarks>
     /// This should point to the current name and version of the
-    /// <see cref="TaskActivity"/> we want to schedule for this request.
+    /// <see cref="TaskOrchestration"/> we want to schedule for this request.
+    /// This must not return <c>null</c>.
     /// </remarks>
-    TaskActivityDescriptor GetDescriptor();
+    TaskOrchestrationDescriptor GetDescriptor();
 }

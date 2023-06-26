@@ -1,11 +1,11 @@
 // Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
+using DurableTask.Core;
 using DurableTask.DependencyInjection;
-using DurableTask.Extensions.Abstractions;
 using DurableTask.Extensions.Properties;
 
-namespace DurableTask.Core;
+namespace DurableTask.Extensions;
 
 /// <summary>
 /// Extensions for <see cref="TaskHubClient" />.
@@ -19,14 +19,14 @@ public static class TaskHubClientExtensions
     /// <param name="request">The orchestration request.</param>
     /// <returns>The scheduled orchestration instance.</returns>
     public static Task<OrchestrationInstance> StartOrchestrationAsync(
-        this TaskHubClient client, IOrchestrationRequestBase request)
+        this TaskHubClient client, IBaseOrchestrationRequest request)
     {
         Check.NotNull(client);
         Check.NotNull(request);
 
         TaskOrchestrationDescriptor descriptor = request.GetDescriptor();
         Verify.NotNull(descriptor, Strings.NullDescriptor);
-        return client.CreateOrchestrationInstanceAsync(descriptor.Name, descriptor.Version, request);
+        return client.CreateOrchestrationInstanceAsync(descriptor.Name, descriptor.Version, request.GetInput());
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public static class TaskHubClientExtensions
     /// <param name="request">The orchestration request.</param>
     /// <returns>The scheduled orchestration instance.</returns>
     public static Task<OrchestrationInstance> StartOrchestrationAsync(
-        this TaskHubClient client, string instanceId, IOrchestrationRequestBase request)
+        this TaskHubClient client, string instanceId, IBaseOrchestrationRequest request)
     {
         Check.NotNull(client);
         Check.NotNull(request);
@@ -45,7 +45,7 @@ public static class TaskHubClientExtensions
 
         TaskOrchestrationDescriptor descriptor = request.GetDescriptor();
         Verify.NotNull(descriptor, Strings.NullDescriptor);
-        return client.CreateOrchestrationInstanceAsync(descriptor.Name, descriptor.Version, instanceId, request);
+        return client.CreateOrchestrationInstanceAsync(descriptor.Name, descriptor.Version, instanceId, request.GetInput());
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public static class TaskHubClientExtensions
     /// <returns>The scheduled orchestration instance for managing this orchestration.</returns>
     public static Task<OrchestrationInstance> StartOrchestrationAsync(
         this TaskHubClient client,
-        IOrchestrationRequestBase request,
+        IBaseOrchestrationRequest request,
         string instanceId,
         IDictionary<string, string> tags)
     {
@@ -70,6 +70,6 @@ public static class TaskHubClientExtensions
         TaskOrchestrationDescriptor descriptor = request.GetDescriptor();
         Verify.NotNull(descriptor, Strings.NullDescriptor);
         return client.CreateOrchestrationInstanceAsync(
-            descriptor.Name, descriptor.Version, instanceId, request, tags);
+            descriptor.Name, descriptor.Version, instanceId, request.GetInput(), tags);
     }
 }

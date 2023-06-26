@@ -1,13 +1,11 @@
 // Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
-using System.Configuration;
 using System.Reflection;
 using DurableTask.Core;
 using DurableTask.Core.History;
 using DurableTask.Core.Middleware;
 using DurableTask.Core.Serializing;
-using DurableTask.Extensions.Abstractions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

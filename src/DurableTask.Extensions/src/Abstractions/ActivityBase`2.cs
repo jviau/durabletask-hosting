@@ -6,7 +6,7 @@ using DurableTask.Core.Serializing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace DurableTask.Extensions.Abstractions;
+namespace DurableTask.Extensions;
 
 /// <summary>
 /// A base <see cref="TaskActivity" /> with additional semantics.
@@ -14,7 +14,6 @@ namespace DurableTask.Extensions.Abstractions;
 /// <typeparam name="TInput">The input for the activity.</typeparam>
 /// <typeparam name="TResult">The output for the activity.</typeparam>
 public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, TResult>, IActivityBase
-    where TInput : IActivityRequest<TResult>
 {
     private TaskContext? _context;
 
@@ -53,11 +52,11 @@ public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, 
     }
 
     /// <inheritdoc />
-    protected override async Task<TResult> ExecuteAsync(TaskContext context, TInput input)
+    protected override Task<TResult> ExecuteAsync(TaskContext context, TInput input)
     {
         Check.NotNull(context, nameof(context));
         _context = context;
-        return await RunAsync(input);
+        return RunAsync(input);
     }
 
     /// <summary>
