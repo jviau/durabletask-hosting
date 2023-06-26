@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\DurableTask.DependencyInjection\src\DurableTask.DependencyInjection.csproj" />
   </ItemGroup>
 

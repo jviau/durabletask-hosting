@@ -14,7 +14,10 @@ See [Vio.DurableTask.Hosting](https://www.nuget.org/packages/Vio.DurableTask.Hos
   - `<ITaskHubWorkerBuilder>.UseOrchestrationMiddleware<TMiddleware>()`
   - `<ITaskHubWorkerBuilder>.UseActivityMiddleware<TMiddleware>()`
   - Middleware not explicitly added to DI container are transient by default.
-- Builder style configuration via `.ConfigureTaskHubWorker`
+- Builder style configuration via `ITaskHubWorkerBuilder`
+  - Used for registering middleware, orchestrations, and activities.
+  - Pulls `IOrchestrationService` from DI container, if available.
+  - Can be used to add `TaskHubClient` to DI container as well.
 
 ## Service Scope
 
