@@ -21,7 +21,11 @@ internal sealed class OrchestrationLogger : ILogger
     public OrchestrationLogger(OrchestrationContext context, ILogger logger)
     {
         _context = Check.NotNull(context, nameof(context));
-        InnerLogger = Check.NotNull(logger, nameof(logger));
+        InnerLogger = logger switch
+        {
+            OrchestrationLogger ol => ol.InnerLogger,
+            _ => Check.NotNull(logger),
+        };
     }
 
     /// <summary>

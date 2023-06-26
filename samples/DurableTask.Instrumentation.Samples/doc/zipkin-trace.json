@@ -1,0 +1,708 @@
+[
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "bda31bdf8dd7fe5e",
+    "id": "0f9879e58a8a3b8e",
+    "kind": "PRODUCER",
+    "name": "start_orchestration:unknown",
+    "timestamp": 1670437376991210,
+    "duration": 10194,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.type": "orchestration",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubClient",
+      "otel.library.version": "1.0.0.0"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "d0cf316f90831ef4",
+    "id": "244474aa5ab447ac",
+    "kind": "SERVER",
+    "name": "orchestration:simpleorchestration@0",
+    "timestamp": 1670437380651292,
+    "duration": 69038,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "durabletask.task.execution_id": "bd58f8f9178742c880a3a6ecc6eb11c9",
+      "durabletask.task.instance_id": "185dd325e78b48f29c7a979f61b55dff:0",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleOrchestration",
+      "durabletask.task.version": "0",
+      "durabletask.type": "orchestration",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "fe6fa6101925a055",
+    "id": "f177a4367ab4f8ea",
+    "kind": "SERVER",
+    "name": "activity:simpleactivity",
+    "timestamp": 1670437380921580,
+    "duration": 69841,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "3",
+      "durabletask.task.execution_id": "14a341afb2eb4f0298c41098346cb733",
+      "durabletask.task.instance_id": "185dd325e78b48f29c7a979f61b55dff:3",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleActivity",
+      "durabletask.task.version": "",
+      "durabletask.type": "activity",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "ec4616802177daf6",
+    "id": "5d8951ab91d97725",
+    "kind": "SERVER",
+    "name": "activity:simpleactivity",
+    "timestamp": 1670437380868045,
+    "duration": 123482,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "3",
+      "durabletask.task.execution_id": "13e6fe06b3ee4775ae91ba198276b34c",
+      "durabletask.task.instance_id": "185dd325e78b48f29c7a979f61b55dff:1",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleActivity",
+      "durabletask.task.version": "",
+      "durabletask.type": "activity",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "cf5c88c23b78a7a5",
+    "id": "d0cf316f90831ef4",
+    "kind": "CLIENT",
+    "name": "send_task:simpleorchestration",
+    "timestamp": 1670437380601704,
+    "duration": 479868,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "0e07ab34fad83149",
+    "id": "a93d4550ad59e882",
+    "kind": "SERVER",
+    "name": "activity:simpleactivity",
+    "timestamp": 1670437380790949,
+    "duration": 465378,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "3",
+      "durabletask.task.execution_id": "344db7056b7b46acbd117c00b8cb6357",
+      "durabletask.task.instance_id": "185dd325e78b48f29c7a979f61b55dff:2",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleActivity",
+      "durabletask.task.version": "",
+      "durabletask.type": "activity",
+      "error": "activity failed",
+      "exception.type": "System.InvalidOperationException",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "ERROR"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "09392b4ff31d270b",
+    "id": "fe6fa6101925a055",
+    "kind": "CLIENT",
+    "name": "send_task:simpleactivity",
+    "timestamp": 1670437380736404,
+    "duration": 8579109,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "3",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "04ab819957aed0ae",
+    "id": "0e07ab34fad83149",
+    "kind": "CLIENT",
+    "name": "send_task:simpleactivity",
+    "timestamp": 1670437380730491,
+    "duration": 8590607,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "3",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "0f10fa556facce75",
+    "id": "09392b4ff31d270b",
+    "kind": "SERVER",
+    "name": "orchestration:simpleorchestration@1",
+    "timestamp": 1670437380693673,
+    "duration": 8747743,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "durabletask.task.execution_id": "14a341afb2eb4f0298c41098346cb733",
+      "durabletask.task.instance_id": "185dd325e78b48f29c7a979f61b55dff:3",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleOrchestration",
+      "durabletask.task.version": "1",
+      "durabletask.type": "orchestration",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "cf5c88c23b78a7a5",
+    "id": "0f10fa556facce75",
+    "kind": "CLIENT",
+    "name": "send_task:simpleorchestration",
+    "timestamp": 1670437380610636,
+    "duration": 8878776,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "e54086ce6e31b152",
+    "id": "04ab819957aed0ae",
+    "kind": "SERVER",
+    "name": "orchestration:simpleorchestration@3",
+    "timestamp": 1670437380689450,
+    "duration": 8802806,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "durabletask.task.execution_id": "344db7056b7b46acbd117c00b8cb6357",
+      "durabletask.task.instance_id": "185dd325e78b48f29c7a979f61b55dff:2",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleOrchestration",
+      "durabletask.task.version": "3",
+      "durabletask.type": "orchestration",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "cf5c88c23b78a7a5",
+    "id": "e54086ce6e31b152",
+    "kind": "CLIENT",
+    "name": "send_task:simpleorchestration",
+    "timestamp": 1670437380607915,
+    "duration": 8980110,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "d6b49672d66094c9",
+    "id": "ec4616802177daf6",
+    "kind": "CLIENT",
+    "name": "send_task:simpleactivity",
+    "timestamp": 1670437380732566,
+    "duration": 9077930,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "3",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "261f1edbe9033bbd",
+    "id": "d6b49672d66094c9",
+    "kind": "SERVER",
+    "name": "orchestration:simpleorchestration@1",
+    "timestamp": 1670437380674028,
+    "duration": 9158960,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "durabletask.task.execution_id": "13e6fe06b3ee4775ae91ba198276b34c",
+      "durabletask.task.instance_id": "185dd325e78b48f29c7a979f61b55dff:1",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleOrchestration",
+      "durabletask.task.version": "1",
+      "durabletask.type": "orchestration",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "cf5c88c23b78a7a5",
+    "id": "261f1edbe9033bbd",
+    "kind": "CLIENT",
+    "name": "send_task:simpleorchestration",
+    "timestamp": 1670437380604841,
+    "duration": 9258413,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "8988052b4b566416",
+    "id": "cf5c88c23b78a7a5",
+    "kind": "SERVER",
+    "name": "orchestration:fanoutorchestration",
+    "timestamp": 1670437380575063,
+    "duration": 9326502,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "durabletask.task.execution_id": "185dd325e78b48f29c7a979f61b55dff",
+      "durabletask.task.instance_id": "091e70ce37ee476bab92ae823536fe92:0",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.FanOutOrchestration",
+      "durabletask.task.version": "",
+      "durabletask.type": "orchestration",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "09d505f3daa394a8",
+    "id": "8988052b4b566416",
+    "kind": "CLIENT",
+    "name": "send_task:fanoutorchestration",
+    "timestamp": 1670437380540173,
+    "duration": 9385981,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "184156d254beb3dc",
+    "id": "a09544deba375b0f",
+    "kind": "SERVER",
+    "name": "orchestration:simpleorchestration@0",
+    "timestamp": 1670437389985746,
+    "duration": 25390,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "durabletask.task.execution_id": "fe60529de030452db88a0e87ddb5fd40",
+      "durabletask.task.instance_id": "091e70ce37ee476bab92ae823536fe92:1",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleOrchestration",
+      "durabletask.task.version": "0",
+      "durabletask.type": "orchestration",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "09d505f3daa394a8",
+    "id": "184156d254beb3dc",
+    "kind": "CLIENT",
+    "name": "send_task:simpleorchestration",
+    "timestamp": 1670437389937257,
+    "duration": 128667,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "a1dba8d89e5bae29",
+    "id": "abc60e0971d3bd32",
+    "kind": "SERVER",
+    "name": "orchestration:simpleorchestration@2",
+    "timestamp": 1670437390118909,
+    "duration": 101045,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "durabletask.task.execution_id": "2817a69b89dd479cb7ea2d944c8ac92e",
+      "durabletask.task.instance_id": "091e70ce37ee476bab92ae823536fe92:2",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleOrchestration",
+      "durabletask.task.version": "2",
+      "durabletask.type": "orchestration",
+      "error": "orchestration failed",
+      "exception.type": "DurableTask.Core.Exceptions.OrchestrationFailureException",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "ERROR"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "09d505f3daa394a8",
+    "id": "a1dba8d89e5bae29",
+    "kind": "CLIENT",
+    "name": "send_task:simpleorchestration",
+    "timestamp": 1670437390077641,
+    "duration": 180302,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "404f72079f81fd3f",
+    "id": "d3374a21a2659ae1",
+    "kind": "SERVER",
+    "name": "activity:simpleactivity",
+    "timestamp": 1670437390452612,
+    "duration": 204983,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "durabletask.task.execution_id": "da1f453faadc4d688142b69670d76e7f",
+      "durabletask.task.instance_id": "091e70ce37ee476bab92ae823536fe92:3",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleActivity",
+      "durabletask.task.version": "",
+      "durabletask.type": "activity",
+      "error": "activity failed",
+      "exception.type": "System.InvalidOperationException",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "ERROR"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "059d6329f30705b3",
+    "id": "404f72079f81fd3f",
+    "kind": "CLIENT",
+    "name": "send_task:simpleactivity",
+    "timestamp": 1670437390415606,
+    "duration": 288634,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "2",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "3e01a4acd393e666",
+    "id": "059d6329f30705b3",
+    "kind": "SERVER",
+    "name": "orchestration:simpleorchestration@4",
+    "timestamp": 1670437390403354,
+    "duration": 507334,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "durabletask.task.execution_id": "da1f453faadc4d688142b69670d76e7f",
+      "durabletask.task.instance_id": "091e70ce37ee476bab92ae823536fe92:3",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleOrchestration",
+      "durabletask.task.version": "4",
+      "durabletask.type": "orchestration",
+      "error": "activity failed",
+      "exception.type": "DurableTask.Core.Exceptions.OrchestrationFailureException",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "ERROR"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "09d505f3daa394a8",
+    "id": "3e01a4acd393e666",
+    "kind": "CLIENT",
+    "name": "send_task:simpleorchestration",
+    "timestamp": 1670437390362513,
+    "duration": 582889,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "7d89e8fcab5ae7dc",
+    "id": "3342b1e575c7a3eb",
+    "kind": "SERVER",
+    "name": "activity:simpleactivity",
+    "timestamp": 1670437391153815,
+    "duration": 180162,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "durabletask.task.execution_id": "091e70ce37ee476bab92ae823536fe92",
+      "durabletask.task.instance_id": "de8e7c62-3167-4c91-87e4-a28f7c60d60b",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleActivity",
+      "durabletask.task.version": "",
+      "durabletask.type": "activity",
+      "error": "activity failed",
+      "exception.type": "System.InvalidOperationException",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "ERROR"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "09d505f3daa394a8",
+    "id": "7d89e8fcab5ae7dc",
+    "kind": "CLIENT",
+    "name": "send_task:simpleactivity",
+    "timestamp": 1670437391124407,
+    "duration": 260690,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "d4fbccf289401bad",
+    "id": "b1e2fa80081df862",
+    "kind": "SERVER",
+    "name": "activity:simpleactivity",
+    "timestamp": 1670437391705856,
+    "duration": 22796,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "durabletask.task.execution_id": "091e70ce37ee476bab92ae823536fe92",
+      "durabletask.task.instance_id": "de8e7c62-3167-4c91-87e4-a28f7c60d60b",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.SimpleActivity",
+      "durabletask.task.version": "",
+      "durabletask.type": "activity",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "09d505f3daa394a8",
+    "id": "d4fbccf289401bad",
+    "kind": "CLIENT",
+    "name": "send_task:simpleactivity",
+    "timestamp": 1670437391680390,
+    "duration": 114126,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "durabletask.task.depth": "1",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "parentId": "0f9879e58a8a3b8e",
+    "id": "09d505f3daa394a8",
+    "kind": "SERVER",
+    "name": "orchestration:toporchestration",
+    "timestamp": 1670437380430639,
+    "duration": 11658125,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "annotations": [
+      {
+        "timestamp": 1670437385969144,
+        "value": "orchestration_event:sample-event"
+      }
+    ],
+    "tags": {
+      "durabletask.task.depth": "0",
+      "durabletask.task.execution_id": "091e70ce37ee476bab92ae823536fe92",
+      "durabletask.task.instance_id": "de8e7c62-3167-4c91-87e4-a28f7c60d60b",
+      "durabletask.task.name": "DurableTask.Extensions.Samples.TopOrchestration",
+      "durabletask.task.version": "",
+      "durabletask.type": "orchestration",
+      "otel.library.name": "Vio.DurableTask.Instrumentation.TaskHubWorker",
+      "otel.library.version": "1.0.0.0",
+      "otel.status_code": "OK"
+    }
+  },
+  {
+    "traceId": "73bc8ad39f969ad3097f088e6b6e2fc8",
+    "id": "bda31bdf8dd7fe5e",
+    "name": "run_sample",
+    "timestamp": 1670437376851721,
+    "duration": 17212656,
+    "localEndpoint": {
+      "serviceName": "sample",
+      "ipv4": "10.12.0.6",
+      "ipv6": "fe80::62de:b06f:c9eb:a5e3"
+    },
+    "tags": {
+      "otel.library.name": "DurableTask.Instrumentation.Samples",
+      "otel.library.version": "0.1"
+    }
+  }
+]

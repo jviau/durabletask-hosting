@@ -3,21 +3,18 @@
 
 using DurableTask.Core;
 using DurableTask.Core.Serializing;
-using DurableTask.Extensions.Converters;
 using DurableTask.Extensions.Logging;
-using DurableTask.Extensions.Properties;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace DurableTask.Extensions.Abstractions;
+namespace DurableTask.Extensions;
 
 /// <summary>
-/// A base <see cref="TaskOrchestration" /> with additional semantics..
+/// A base <see cref="TaskOrchestration" /> with additional semantics.
 /// </summary>
 /// <typeparam name="TInput">The input for the orchestration.</typeparam>
-/// <typeparam name="TResult">The result of the orchestration.</typeparam>
-public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TResult, TInput>, IOrchestrationBase
-    where TInput : IOrchestrationRequest<TResult>
+/// <typeparam name="TOutput">The result of the orchestration.</typeparam>
+public abstract class OrchestrationBase<TInput, TOutput> : TaskOrchestration<TOutput, TInput>, IOrchestrationBase
 {
     private OrchestrationContext? _context;
 
@@ -33,7 +30,9 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
     /// </remarks>
     public string? Version { get; private set; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
@@ -45,49 +44,23 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
     protected OrchestrationContext Context => _context!;
 
     /// <inheritdoc />
-    public override Task<TResult> RunTask(OrchestrationContext context, TInput input)
+    public override Task<TOutput> RunTask(OrchestrationContext context, TInput input)
     {
         Check.NotNull(context, nameof(context));
-        _context = PrepareContext(context);
+        _context = context;
+        _context.SetDataConverter(DataConverter);
 
         // Wrap the logger the middleware gave us with an orchestration specific logger.
         // This logger will not log when the OrchestrationContext is replaying.
         if (Logger is not null)
         {
-            Logger = Logger switch
-            {
-                OrchestrationLogger ol => new OrchestrationLogger(context, ol.InnerLogger),
-                _ => new OrchestrationLogger(context, Logger),
-            };
+            Logger = new OrchestrationLogger(context, Logger);
         }
 
         return RunAsync(input);
     }
 
-    /// <summary>
-    /// Executes this orchestration instance.
-    /// </summary>
-    /// <param name="input">The input for this orchestration.</param>
-    /// <returns>The result of this orchestration.</returns>
-    protected abstract Task<TResult> RunAsync(TInput input);
-
-    private OrchestrationContext PrepareContext(OrchestrationContext context)
-    {
-        if (DataConverter is null)
-        {
-            return context;
-        }
-
-        if (DataConverter is not JsonDataConverter jsonDataConverter)
-        {
-            jsonDataConverter = new JsonDataConverterShim(DataConverter);
-        }
-
-        context.MessageDataConverter = jsonDataConverter;
-        context.ErrorDataConverter = jsonDataConverter;
-        return context;
-    }
-
+    /// <inheritdoc/>
     void IOrchestrationBase.Initialize(string name, string? version, ILogger logger, DataConverter converter)
     {
         Name = Check.NotNull(name);
@@ -95,4 +68,11 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
         Logger = Check.NotNull(logger);
         DataConverter = Check.NotNull(converter);
     }
+
+    /// <summary>
+    /// Executes this orchestration instance.
+    /// </summary>
+    /// <param name="input">The input for this orchestration.</param>
+    /// <returns>The result of this orchestration.</returns>
+    protected abstract Task<TOutput> RunAsync(TInput input);
 }

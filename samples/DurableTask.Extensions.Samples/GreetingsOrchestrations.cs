@@ -2,7 +2,6 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using DurableTask.DependencyInjection;
-using DurableTask.Extensions.Abstractions;
 
 namespace DurableTask.Extensions.Samples;
 
@@ -14,8 +13,8 @@ internal class GreetingsOrchestration : IOrchestrationRequest<string>
     {
         protected override async Task<string> RunAsync(GreetingsOrchestration input)
         {
-            string user = await Context.SendAsync(new GetUserActivity());
-            await Context.SendAsync(new SendGreetingActivity(user));
+            string user = await Context.RunAsync(new GetUserActivity());
+            await Context.RunAsync(new SendGreetingActivity(user));
             return user;
         }
     }
@@ -56,21 +55,20 @@ internal sealed class SendGreetingActivity : IActivityRequest
             => _console = console ?? throw new ArgumentNullException(nameof(console));
 
         /// <inheritdoc />
-        protected override async Task<Empty> RunAsync(SendGreetingActivity input)
+        protected override async Task RunAsync(SendGreetingActivity input)
         {
             string user = input.User;
             if (!string.IsNullOrWhiteSpace(user) && user.Equals("TimedOut"))
             {
                 _console.WriteLine("GetUser Timed out!!!");
+                throw new TimeoutException();
             }
             else
             {
                 _console.WriteLine($"Sending greetings to user: {user}...");
-                await Task.Delay(5 * 1000);
+                await Task.Delay(TimeSpan.FromSeconds(5));
                 _console.WriteLine($"Greetings sent to {user}");
             }
-
-            return Empty.Value;
         }
     }
 }

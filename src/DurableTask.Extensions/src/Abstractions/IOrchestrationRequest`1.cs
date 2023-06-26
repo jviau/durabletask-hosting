@@ -3,12 +3,12 @@
 
 using DurableTask.Core;
 
-namespace DurableTask.Extensions.Abstractions;
+namespace DurableTask.Extensions;
 
 /// <summary>
 /// Represents a request to run a <see cref="TaskOrchestration" />.
 /// </summary>
-/// <typeparam name="TResult">The result of the orchestration.</typeparam>
-public interface IOrchestrationRequest<TResult> : IOrchestrationRequestBase
+/// <typeparam name="TOutput">The result of the orchestration.</typeparam>
+public interface IOrchestrationRequest<TOutput> : IBaseOrchestrationRequest
 {
 }

@@ -3,11 +3,11 @@
 
 using DurableTask.Core;
 
-namespace DurableTask.Extensions.Abstractions;
+namespace DurableTask.Extensions;
 
 /// <summary>
 /// Represents a request to run a <see cref="TaskOrchestration" />.
 /// </summary>
-public interface IOrchestrationRequest : IOrchestrationRequest<Empty>
+public interface IOrchestrationRequest : IOrchestrationRequest<Unit>
 {
 }

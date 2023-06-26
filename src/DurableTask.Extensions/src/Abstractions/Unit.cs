@@ -1,25 +1,27 @@
 // Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
-namespace DurableTask.Extensions.Abstractions;
+namespace DurableTask.Extensions;
 
 /// <summary>
 /// Represents an empty (void) result.
 /// </summary>
-public sealed class Empty : IEquatable<Empty>, IComparable<Empty>
+public readonly struct Unit : IEquatable<Unit>, IComparable<Unit>
 {
 #pragma warning disable CA1801 // unused parameters
 #pragma warning disable IDE0060 // unused parameters
 
-    /// <summary>
-    /// Default value for <see cref="Empty" />.
-    /// </summary>
-    public static readonly Empty Value = new();
+    private static readonly Unit s_refValue;
 
     /// <summary>
-    /// Task result for a <see cref="Empty" />.
+    /// Gets the default value for <see cref="Unit" />.
     /// </summary>
-    public static readonly Task<Empty> Task = System.Threading.Tasks.Task.FromResult(Value);
+    public static ref readonly Unit Value => ref s_refValue;
+
+    /// <summary>
+    /// Gets the task result for a <see cref="Unit" />.
+    /// </summary>
+    public static Task<Unit> Task { get; } = System.Threading.Tasks.Task.FromResult(Value);
 
     /// <summary>
     /// Compares two empties for equality. Always true.
@@ -27,7 +29,7 @@ public sealed class Empty : IEquatable<Empty>, IComparable<Empty>
     /// <param name="left">The left empty.</param>
     /// <param name="right">The right empty.</param>
     /// <returns>Always true.</returns>
-    public static bool operator ==(Empty left, Empty right) => Equals(left, right);
+    public static bool operator ==(Unit left, Unit right) => true;
 
     /// <summary>
     /// Compares two empties for inequality. Always false.
@@ -35,7 +37,7 @@ public sealed class Empty : IEquatable<Empty>, IComparable<Empty>
     /// <param name="left">The left empty.</param>
     /// <param name="right">The right empty.</param>
     /// <returns>Always false.</returns>
-    public static bool operator !=(Empty left, Empty right) => !Equals(left, right);
+    public static bool operator !=(Unit left, Unit right) => false;
 
     /// <summary>
     /// Compares two empties. Always false.
@@ -43,7 +45,7 @@ public sealed class Empty : IEquatable<Empty>, IComparable<Empty>
     /// <param name="left">The left empty.</param>
     /// <param name="right">The right empty.</param>
     /// <returns>Always false.</returns>
-    public static bool operator <(Empty left, Empty right) => false;
+    public static bool operator <(Unit left, Unit right) => false;
 
     /// <summary>
     /// Compares two empties. Always true.
@@ -51,7 +53,7 @@ public sealed class Empty : IEquatable<Empty>, IComparable<Empty>
     /// <param name="left">The left empty.</param>
     /// <param name="right">The right empty.</param>
     /// <returns>Always true.</returns>
-    public static bool operator <=(Empty left, Empty right) => Equals(left, right);
+    public static bool operator <=(Unit left, Unit right) => true;
 
     /// <summary>
     /// Compares two empties. Always false.
@@ -59,7 +61,7 @@ public sealed class Empty : IEquatable<Empty>, IComparable<Empty>
     /// <param name="left">The left empty.</param>
     /// <param name="right">The right empty.</param>
     /// <returns>Always false.</returns>
-    public static bool operator >(Empty left, Empty right) => false;
+    public static bool operator >(Unit left, Unit right) => false;
 
     /// <summary>
     /// Compares two empties. Always true.
@@ -67,32 +69,22 @@ public sealed class Empty : IEquatable<Empty>, IComparable<Empty>
     /// <param name="left">The left empty.</param>
     /// <param name="right">The right empty.</param>
     /// <returns>Always true.</returns>
-    public static bool operator >=(Empty left, Empty right) => Equals(left, right);
+    public static bool operator >=(Unit left, Unit right) => true;
 
     /// <inheritdoc />
-    public int CompareTo(Empty other) => 0;
+    public int CompareTo(Unit other) => 0;
 
     /// <inheritdoc />
-    public bool Equals(Empty other) => other is not null;
+    public bool Equals(Unit other) => true;
 
     /// <inheritdoc />
-    public override bool Equals(object obj) => obj is Empty;
+    public override bool Equals(object obj) => obj is Unit;
 
     /// <inheritdoc />
     public override int GetHashCode() => 0;
 
     /// <inheritdoc />
-    public override string ToString() => "{}";
-
-    private static bool Equals(Empty left, Empty right)
-    {
-        if (left is null ^ right is null)
-        {
-            return false;
-        }
-
-        return true;
-    }
+    public override string ToString() => "()"; // Same as F# Unit string representation.
 
 #pragma warning restore CA1801 // unused parameters
 #pragma warning restore IDE0060 // unused parameters

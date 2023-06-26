@@ -31,6 +31,12 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ReleaseNotesFile>../releasenotes.md</ReleaseNotesFile>
+    <ReadmeFile Condition="'$(ReadmeFile)' == ''">../readme.md</ReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="$(ReadmeFile)" Pack="true" PackagePath="/" Condition="Exists('$(ReadmeFile)')" />
+  </ItemGroup>
 
 </Project>

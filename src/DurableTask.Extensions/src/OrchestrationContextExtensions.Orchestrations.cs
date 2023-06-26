@@ -3,7 +3,6 @@
 
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
-using DurableTask.Extensions.Abstractions;
 using DurableTask.Extensions.Properties;
 
 namespace DurableTask.Extensions;
@@ -16,29 +15,29 @@ public static partial class OrchestrationContextExtensions
     /// <summary>
     /// Schedules a sub orchestration and waits for completion.
     /// </summary>
-    /// <typeparam name="TResult">The result type of the orchestration request.</typeparam>
+    /// <typeparam name="TOutput">The result type of the orchestration request.</typeparam>
     /// <param name="context">The orchestration context. Not null.</param>
     /// <param name="request">The orchestration request. Not null.</param>
     /// <param name="fireAndForget">A flag indicating if this orchestration is a fire and forget execution.</param>
     /// <returns>The output of the orchestration.</returns>
-    public static Task<TResult> SendAsync<TResult>(
+    public static Task<TOutput> RunAsync<TOutput>(
         this OrchestrationContext context,
-        IOrchestrationRequest<TResult> request,
+        IOrchestrationRequest<TOutput> request,
         bool fireAndForget)
-        => context.SendAsync(request, instanceId: null, fireAndForget);
+        => context.RunAsync(request, instanceId: null, fireAndForget);
 
     /// <summary>
     /// Schedules a sub orchestration and waits for completion.
     /// </summary>
-    /// <typeparam name="TResult">The result type of the orchestration request.</typeparam>
+    /// <typeparam name="TOutput">The result type of the orchestration request.</typeparam>
     /// <param name="context">The orchestration context. Not null.</param>
     /// <param name="request">The orchestration request. Not null.</param>
     /// <param name="instanceId">The orchestration instance id to use.</param>
     /// <param name="fireAndForget">A flag indicating if this orchestration is a fire and forget execution.</param>
     /// <returns>The output of the orchestration.</returns>
-    public static Task<TResult> SendAsync<TResult>(
+    public static Task<TOutput> RunAsync<TOutput>(
         this OrchestrationContext context,
-        IOrchestrationRequest<TResult> request,
+        IOrchestrationRequest<TOutput> request,
         string? instanceId,
         bool fireAndForget)
     {
@@ -55,44 +54,44 @@ public static partial class OrchestrationContextExtensions
             };
         }
 
-        return context.SendCoreAsync(request, instanceId, tags);
+        return context.RunCoreAsync(request, instanceId, tags);
     }
 
     /// <summary>
     /// Schedules a sub orchestration and waits for completion.
     /// </summary>
-    /// <typeparam name="TResult">The result type of the orchestration request.</typeparam>
+    /// <typeparam name="TOutput">The result type of the orchestration request.</typeparam>
     /// <param name="context">The orchestration context. Not null.</param>
     /// <param name="request">The orchestration request. Not null.</param>
     /// <param name="retryOptions">The retry options. Not null.</param>
     /// <returns>The output of the orchestration.</returns>
-    public static Task<TResult> SendAsync<TResult>(
-        this OrchestrationContext context, IOrchestrationRequest<TResult> request, RetryOptions? retryOptions = null)
+    public static Task<TOutput> RunAsync<TOutput>(
+        this OrchestrationContext context, IOrchestrationRequest<TOutput> request, RetryOptions? retryOptions = null)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
-        return context.SendCoreAsync(request, instanceId: null, retryOptions);
+        return context.RunCoreAsync(request, instanceId: null, retryOptions);
     }
 
     /// <summary>
     /// Schedules a sub orchestration and waits for completion.
     /// </summary>
-    /// <typeparam name="TResult">The result type of the orchestration request.</typeparam>
+    /// <typeparam name="TOutput">The result type of the orchestration request.</typeparam>
     /// <param name="context">The orchestration context. Not null.</param>
     /// <param name="request">The orchestration request. Not null.</param>
     /// <param name="instanceId">The orchestration instance id to use.</param>
     /// <param name="retryOptions">The retry options. Optional.</param>
     /// <returns>The output of the orchestration.</returns>
-    public static Task<TResult> SendAsync<TResult>(
+    public static Task<TOutput> RunAsync<TOutput>(
         this OrchestrationContext context,
-        IOrchestrationRequest<TResult> request,
+        IOrchestrationRequest<TOutput> request,
         string instanceId,
         RetryOptions? retryOptions = null)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
 
-        return context.SendCoreAsync(request, instanceId, retryOptions);
+        return context.RunCoreAsync(request, instanceId, retryOptions);
     }
 
     /// <summary>
@@ -102,11 +101,11 @@ public static partial class OrchestrationContextExtensions
     /// <param name="request">The orchestration request. Not null.</param>
     /// <param name="fireAndForget">A flag indicating if this orchestration is a fire and forget execution.</param>
     /// <returns>A task that completes when the orchestration has finished.</returns>
-    public static Task SendAsync(
+    public static Task RunAsync(
         this OrchestrationContext context,
         IOrchestrationRequest request,
         bool fireAndForget)
-        => context.SendAsync(request, instanceId: null, fireAndForget);
+        => context.RunAsync(request, instanceId: null, fireAndForget);
 
     /// <summary>
     /// Schedules a sub orchestration and doesn't wait for completion.
@@ -115,11 +114,11 @@ public static partial class OrchestrationContextExtensions
     /// <param name="request">The orchestration request. Not null.</param>
     /// <param name="instanceId">The orchestration instance id to use.</param>
     /// <returns>A task that completes when the orchestration has finished.</returns>
-    public static Task SendAndForgetAsync(
+    public static Task RunAndForgetAsync(
         this OrchestrationContext context,
         IOrchestrationRequest request,
         string? instanceId = null)
-        => context.SendAsync(request, instanceId, fireAndForget: true);
+        => context.RunAsync(request, instanceId, fireAndForget: true);
 
     /// <summary>
     /// Schedules a sub orchestration and waits for completion.
@@ -129,7 +128,7 @@ public static partial class OrchestrationContextExtensions
     /// <param name="instanceId">The orchestration instance id to use.</param>
     /// <param name="fireAndForget">A flag indicating if this orchestration is a fire and forget execution.</param>
     /// <returns>A task that completes when the orchestration has finished.</returns>
-    public static Task SendAsync(
+    public static Task RunAsync(
         this OrchestrationContext context,
         IOrchestrationRequest request,
         string? instanceId,
@@ -148,7 +147,7 @@ public static partial class OrchestrationContextExtensions
             };
         }
 
-        return context.SendCoreAsync(request, instanceId, tags);
+        return context.RunCoreAsync(request, instanceId, tags);
     }
 
     /// <summary>
@@ -158,13 +157,13 @@ public static partial class OrchestrationContextExtensions
     /// <param name="request">The orchestration request. Not null.</param>
     /// <param name="retryOptions">The retry options. Not null.</param>
     /// <returns>A task that completes when the orchestration has finished.</returns>
-    public static Task SendAsync(
+    public static Task RunAsync(
         this OrchestrationContext context, IOrchestrationRequest request, RetryOptions? retryOptions = null)
     {
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
 
-        return context.SendCoreAsync(request, instanceId: null, retryOptions);
+        return context.RunCoreAsync(request, instanceId: null, retryOptions);
     }
 
     /// <summary>
@@ -175,7 +174,7 @@ public static partial class OrchestrationContextExtensions
     /// <param name="instanceId">The orchestration instance id to use.</param>
     /// <param name="retryOptions">The retry options. Optional.</param>
     /// <returns>A task that completes when the orchestration has finished.</returns>
-    public static Task SendAsync(
+    public static Task RunAsync(
         this OrchestrationContext context,
         IOrchestrationRequest request,
         string instanceId,
@@ -184,28 +183,28 @@ public static partial class OrchestrationContextExtensions
         Check.NotNull(context, nameof(context));
         Check.NotNull(request, nameof(request));
 
-        return context.SendCoreAsync(request, instanceId, retryOptions);
+        return context.RunCoreAsync(request, instanceId, retryOptions);
     }
 
-    private static Task<TResult> SendCoreAsync<TResult>(
+    private static Task<TOutput> RunCoreAsync<TOutput>(
         this OrchestrationContext context,
-        IOrchestrationRequest<TResult> request,
+        IOrchestrationRequest<TOutput> request,
         string? instanceId,
         IDictionary<string, string>? orchestrationTags)
     {
         TaskOrchestrationDescriptor descriptor = request.GetDescriptor();
         Verify.NotNull(descriptor, Strings.NullDescriptor);
-        return context.CreateSubOrchestrationInstance<TResult>(
+        return context.CreateSubOrchestrationInstance<TOutput>(
                 descriptor.Name,
                 descriptor.Version,
                 instanceId,
-                request,
+                request.GetInput(),
                 tags: orchestrationTags);
     }
 
-    private static Task<TResult> SendCoreAsync<TResult>(
+    private static Task<TOutput> RunCoreAsync<TOutput>(
         this OrchestrationContext context,
-        IOrchestrationRequest<TResult> request,
+        IOrchestrationRequest<TOutput> request,
         string? instanceId,
         RetryOptions? retryOptions)
     {
@@ -213,11 +212,11 @@ public static partial class OrchestrationContextExtensions
         Verify.NotNull(descriptor, Strings.NullDescriptor);
         if (retryOptions is not null)
         {
-            return context.CreateSubOrchestrationInstanceWithRetry<TResult>(
-                descriptor.Name, descriptor.Version, instanceId, retryOptions, request);
+            return context.CreateSubOrchestrationInstanceWithRetry<TOutput>(
+                descriptor.Name, descriptor.Version, instanceId, retryOptions, request.GetInput());
         }
 
-        return context.CreateSubOrchestrationInstance<TResult>(
-                descriptor.Name, descriptor.Version, instanceId, request);
+        return context.CreateSubOrchestrationInstance<TOutput>(
+                descriptor.Name, descriptor.Version, instanceId, request.GetInput());
     }
 }

@@ -1,0 +1,3 @@
+- Rev `Microsoft.Azure.DurableTask.Core` dependency to `2.13.0`
+- Add readme
+- update dotnet SDK.

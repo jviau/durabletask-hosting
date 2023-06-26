@@ -6,15 +6,14 @@ using DurableTask.Core.Serializing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace DurableTask.Extensions.Abstractions;
+namespace DurableTask.Extensions;
 
 /// <summary>
 /// A base <see cref="TaskActivity" /> with additional semantics.
 /// </summary>
 /// <typeparam name="TInput">The input for the activity.</typeparam>
-/// <typeparam name="TResult">The output for the activity.</typeparam>
-public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, TResult>, IActivityBase
-    where TInput : IActivityRequest<TResult>
+/// <typeparam name="TOutput">The output for the activity.</typeparam>
+public abstract class ActivityBase<TInput, TOutput> : AsyncTaskActivity<TInput, TOutput>, IActivityBase
 {
     private TaskContext? _context;
 
@@ -30,7 +29,9 @@ public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, 
     /// </remarks>
     public virtual string? Version { get; private set; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the logger instance.
+    /// </summary>
     /// <remarks>
     /// This will be set by middleware.
     /// </remarks>
@@ -42,20 +43,6 @@ public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, 
     protected TaskContext Context => _context!;
 
     /// <inheritdoc />
-    protected override async Task<TResult> ExecuteAsync(TaskContext context, TInput input)
-    {
-        Check.NotNull(context, nameof(context));
-        _context = context;
-        return await RunAsync(input);
-    }
-
-    /// <summary>
-    /// Abstract method for executing a task activity asynchronously.
-    /// </summary>
-    /// <param name="input">The typed input.</param>
-    /// <returns>The typed output from the execution.</returns>
-    protected abstract Task<TResult> RunAsync(TInput input);
-
     void IActivityBase.Initialize(string name, string? version, ILogger logger, DataConverter converter)
     {
         Name = Check.NotNull(name);
@@ -63,4 +50,19 @@ public abstract class ActivityBase<TInput, TResult> : AsyncTaskActivity<TInput, 
         Logger = Check.NotNull(logger);
         DataConverter = Check.NotNull(converter);
     }
+
+    /// <inheritdoc />
+    protected override Task<TOutput> ExecuteAsync(TaskContext context, TInput input)
+    {
+        Check.NotNull(context, nameof(context));
+        _context = context;
+        return RunAsync(input);
+    }
+
+    /// <summary>
+    /// Abstract method for executing a task activity asynchronously.
+    /// </summary>
+    /// <param name="input">The typed input.</param>
+    /// <returns>The typed output from the execution.</returns>
+    protected abstract Task<TOutput> RunAsync(TInput input);
 }
