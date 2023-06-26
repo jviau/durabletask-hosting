@@ -32,7 +32,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <ReleaseNotesFile>../releasenotes.md</ReleaseNotesFile>
-    <ReadmeFile Condition="'$(ReadmeFile)' == ''">../README.md</ReadmeFile>
+    <ReadmeFile Condition="'$(ReadmeFile)' == ''">../readme.md</ReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>

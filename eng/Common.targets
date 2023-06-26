@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageReadmeFile Condition="'$(ReadmeFile)' != ''">README.md</PackageReadmeFile>
+    <PackageReadmeFile Condition="'$(ReadmeFile)' != ''">readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IncludeShared)' != 'false' AND '$(IsTestProject)' != 'true'">
