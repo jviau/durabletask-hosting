@@ -12,7 +12,6 @@
     <PackageReference Include="Microsoft.Azure.DurableTask.Core" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" />
   </ItemGroup>
 
   <ItemGroup>
