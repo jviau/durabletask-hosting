@@ -13,8 +13,7 @@ namespace DurableTask.Extensions;
 /// A base <see cref="TaskOrchestration" /> with additional semantics.
 /// </summary>
 /// <typeparam name="TInput">The input for the orchestration.</typeparam>
-/// <typeparam name="TResult">The result of the orchestration.</typeparam>
-public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TResult, TInput>, IOrchestrationBase
+public abstract class OrchestrationBase<TInput> : TaskOrchestration<Unit, TInput>, IOrchestrationBase
 {
     private OrchestrationContext? _context;
 
@@ -44,7 +43,7 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
     protected OrchestrationContext Context => _context!;
 
     /// <inheritdoc />
-    public override Task<TResult> RunTask(OrchestrationContext context, TInput input)
+    public override async Task<Unit> RunTask(OrchestrationContext context, TInput input)
     {
         Check.NotNull(context, nameof(context));
         _context = context;
@@ -57,7 +56,8 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
             Logger = new OrchestrationLogger(context, Logger);
         }
 
-        return RunAsync(input);
+        await RunAsync(input);
+        return Unit.Value;
     }
 
     /// <inheritdoc/>
@@ -74,5 +74,5 @@ public abstract class OrchestrationBase<TInput, TResult> : TaskOrchestration<TRe
     /// </summary>
     /// <param name="input">The input for this orchestration.</param>
     /// <returns>The result of this orchestration.</returns>
-    protected abstract Task<TResult> RunAsync(TInput input);
+    protected abstract Task RunAsync(TInput input);
 }

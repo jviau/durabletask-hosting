@@ -3,11 +3,11 @@
 
 using DurableTask.Core;
 
-namespace DurableTask.Extensions.Abstractions;
+namespace DurableTask.Extensions;
 
 /// <summary>
 /// Represents a request to run a <see cref="TaskActivity" />.
 /// </summary>
-public interface IActivityRequest : IActivityRequest<Empty>
+public interface IActivityRequest : IActivityRequest<Unit>
 {
 }

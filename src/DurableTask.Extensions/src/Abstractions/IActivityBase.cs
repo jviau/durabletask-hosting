@@ -5,7 +5,7 @@ using DurableTask.Core;
 using DurableTask.Core.Serializing;
 using Microsoft.Extensions.Logging;
 
-namespace DurableTask.Extensions.Abstractions;
+namespace DurableTask.Extensions;
 
 /// <summary>
 /// Interface for <see cref="TaskActivity"/>.

@@ -3,7 +3,6 @@
 
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
-using DurableTask.Extensions.Abstractions;
 using DurableTask.Extensions.Properties;
 
 namespace DurableTask.Extensions;
@@ -51,10 +50,10 @@ public static partial class OrchestrationContextExtensions
         Verify.NotNull(descriptor, Strings.NullDescriptor);
         if (retryOptions is null)
         {
-            return context.ScheduleTask<TResult>(descriptor.Name, descriptor.Version, request);
+            return context.ScheduleTask<TResult>(descriptor.Name, descriptor.Version, request.GetInput());
         }
 
         return context.ScheduleWithRetry<TResult>(
-            descriptor.Name, descriptor.Version, retryOptions, request);
+            descriptor.Name, descriptor.Version, retryOptions, request.GetInput());
     }
 }
