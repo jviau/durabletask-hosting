@@ -26,32 +26,32 @@ public class Program
     /// <returns>A task that completes when this program is finished running.</returns>
     public static Task Main(string[] args)
     {
-        IHost host = Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration(builder => builder.AddUserSecrets<Program>())
-            .ConfigureServices(services =>
-            {
-                services.Configure<TaskHubOptions>(opt =>
-                {
-                    opt.CreateIfNotExists = true;
-                });
-                services.AddSingleton<IConsole, ConsoleWrapper>();
-                services.AddHostedService<TaskEnqueuer>();
-                services.AddSingleton(UseLocalEmulator());
-            })
-            .ConfigureTaskHubWorker((context, builder) =>
-            {
-                builder.AddClient();
-                builder.UseOrchestrationMiddleware<SampleMiddleware>();
-                builder.UseActivityMiddleware<SampleMiddleware>();
+        HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-                builder
-                    .AddOrchestration<GreetingsOrchestration>()
-                    .AddOrchestration<GenericOrchestrationRunner>();
+        builder.Configuration.AddUserSecrets<Program>();
 
-                builder.AddActivitiesFromAssembly<Program>();
-            })
-            .UseConsoleLifetime()
-            .Build();
+        builder.Services.Configure<TaskHubOptions>(opt =>
+        {
+            opt.CreateIfNotExists = true;
+        });
+        builder.Services.AddSingleton<IConsole, ConsoleWrapper>();
+        builder.Services.AddHostedService<TaskEnqueuer>();
+        builder.Services.AddSingleton(UseLocalEmulator());
+
+        builder.ConfigureTaskHubWorker((context, builder) =>
+        {
+            builder.AddClient();
+            builder.UseOrchestrationMiddleware<SampleMiddleware>();
+            builder.UseActivityMiddleware<SampleMiddleware>();
+
+            builder
+                .AddOrchestration<GreetingsOrchestration>()
+                .AddOrchestration<GenericOrchestrationRunner>();
+
+            builder.AddActivitiesFromAssembly<Program>();
+        });
+
+        IHost host = builder.Build();
 
         return host.RunAsync();
     }
