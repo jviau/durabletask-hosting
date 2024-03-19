@@ -9,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 namespace DurableTask.Hosting;
 
 /// <summary>
-/// Extensions for configuring a task hub worker service on <see cref="IHostBuilder"/>.
+/// Extensions for configuring a task hub worker service on <see cref="IHostBuilder"/> or <see cref="IHostApplicationBuilder"/>.
 /// </summary>
 public static class TaskHubHostBuilderExtensions
 {
