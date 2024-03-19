@@ -21,12 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
 
@@ -43,7 +43,7 @@ jobs:
       run: dotnet pack $solution --configuration $config --no-build
 
     - name: Upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: pkg
         path: ./out/pkg
@@ -55,16 +55,16 @@ jobs:
 
     steps:
     - name: Download Build Artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: pkg
         path: pkg
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
-          7.0.x
+          8.0.x
 
     - name: Push Nuget
       env:
