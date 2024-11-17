@@ -22,23 +22,22 @@ using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
     .AddZipkinExporter()
     .Build();
 
-IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
-    {
-        services.AddSingleton<IConsole, ConsoleWrapper>();
-        services.AddHostedService<TaskEnqueuer>();
-    })
-    .ConfigureTaskHubWorker((context, builder) =>
-    {
-        builder.WithOrchestrationService(GetOrchestrationService());
-        builder.AddDurableExtensions();
-        builder.AddDurableInstrumentation();
-        builder.AddClient();
-        builder.AddOrchestrationsFromAssembly<TopOrchestration>(includePrivate: true);
-        builder.AddActivitiesFromAssembly<TopOrchestration>(includePrivate: true);
-    })
-    .UseConsoleLifetime()
-    .Build();
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+
+builder.Services.AddSingleton<IConsole, ConsoleWrapper>();
+builder.Services.AddHostedService<TaskEnqueuer>();
+
+builder.ConfigureTaskHubWorker((context, builder) =>
+{
+    builder.WithOrchestrationService(GetOrchestrationService());
+    builder.AddDurableExtensions();
+    builder.AddDurableInstrumentation();
+    builder.AddClient();
+    builder.AddOrchestrationsFromAssembly<TopOrchestration>(includePrivate: true);
+    builder.AddActivitiesFromAssembly<TopOrchestration>(includePrivate: true);
+});
+    
+IHost host = builder.Build();
 
 await host.RunAsync();
 
