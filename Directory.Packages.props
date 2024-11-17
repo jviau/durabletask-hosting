@@ -35,10 +35,6 @@
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
   </ItemGroup>
 
-  <!-- Nuget -->
-  <ItemGroup>
-  </ItemGroup>
-
    <!-- Test projects -->
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="27.0.1" />
@@ -57,9 +53,6 @@
   <!-- Global -->
   <ItemGroup>
     <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" Condition="'$(EnableGitVersioning)' != 'false'" />
-    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406" Condition="'$(EnableStyleCop)' != 'false'" />
-    <GlobalPackageReference Include="StyleCop.CSharp.Async.Rules" Version="6.1.41" Condition="'$(EnableStyleCop)' != 'false'" />
-    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" Condition="'$(IsPackable)' != 'false'" />
   </ItemGroup>
 
 </Project>
