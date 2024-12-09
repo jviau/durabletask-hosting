@@ -10,9 +10,11 @@ indent_style = space
 
 # Code files
 [*.{cs,csx,vb,vbx}]
+file_header_template = "Copyright (c) Jacob Viau. All rights reserved.\nLicensed under the Apache License 2.0. See LICENSE file in the project root for full license information."
 indent_size = 4
 insert_final_newline = true
 charset = utf-8-bom
+trim_trailing_whitespace = true
 
 [*.xaml]
 indent_size = 4
@@ -123,6 +125,9 @@ dotnet_naming_style.pascal_case_and_prefix_with_I_style.capitalization          
 # CSharp code style settings:
 [*.cs]
 
+# Modifier preferences
+csharp_preferred_modifier_order = public,private,protected,internal,file,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,required,volatile,async:warning
+
 # Prefer "var" only when the type is apparent
 csharp_style_var_for_built_in_types = false:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
@@ -157,6 +162,9 @@ dotnet_style_prefer_conditional_expression_over_return = false
 dotnet_style_prefer_conditional_expression_over_assignment = false
 dotnet_style_prefer_auto_properties = false
 
+# 'using' directive preferences
+csharp_using_directive_placement = outside_namespace:warning
+
 # Newline settings
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
@@ -170,7 +178,7 @@ csharp_new_line_between_query_expression_clauses = true
 csharp_indent_case_contents = true
 csharp_indent_case_contents_when_block = false
 csharp_indent_switch_labels = true
-csharp_indent_labels = no_change
+csharp_indent_labels = one_less_than_current
 csharp_indent_block_contents = true
 csharp_indent_braces = false
 
@@ -241,15 +249,6 @@ dotnet_diagnostic.CA2007.severity = none # Consider calling ConfigureAwait on th
 # Security rules
 dotnet_diagnostic.CA2326.severity = none # Do not use TypeNameHandling values other than None
 dotnet_diagnostic.CA2327.severity = none # Do not use insecure JsonSerializerSettings
-
-# StyleCop rules
-dotnet_diagnostic.SA1101.severity = none  # Prefix local calls with this
-dotnet_diagnostic.SA1308.severity = none  # Variable names should not be prefixed
-dotnet_diagnostic.SA1309.severity = none  # Field names should not begin with underscore
-dotnet_diagnostic.SA1311.severity = none  # Static readonly fields should begin with upper-case letter
-dotnet_diagnostic.SX1101.severity = error # Do not prefix local calls with 'this.'
-dotnet_diagnostic.SX1309.severity = error # Field names should begin with underscore
-dotnet_diagnostic.SX1309S.severity = none # Static field names should begin with underscore
 
 [**/*Tests/**/*.cs]
 # We allow usage of "var" inside tests as it reduces churn as we remove/rename types
