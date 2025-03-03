@@ -6,13 +6,12 @@ using DurableTask.DependencyInjection;
 using DurableTask.Emulator;
 using DurableTask.Hosting;
 using DurableTask.Hosting.Options;
-using DurableTask.Samples.Generics;
-using DurableTask.Samples.Greetings;
+using DurableTask.Named.Samples.Generics;
+using DurableTask.Named.Samples.Greetings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using DurableTask.DependencyInjection.Extensions;
-using DurableTask.Samples;
 
 namespace DurableTask.Named.Samples;
 
@@ -34,25 +33,33 @@ public class Program
             .ConfigureAppConfiguration(builder => builder.AddUserSecrets<Program>())
             .ConfigureServices(services =>
             {
+                IOrchestrationService orchestrationService = UseLocalEmulator();
+
+                services.AddTaskHubWorker(s_taskHubName, (builder) =>
+                {
+                    builder
+                        .UseBuildTarget<DurableTaskHubWorker>()
+                        .WithOrchestrationService(orchestrationService)
+
+                        .UseOrchestrationMiddleware<SampleMiddleware>()
+                        .UseActivityMiddleware<SampleMiddleware>()
+
+                        .AddOrchestration<GreetingsOrchestration>()
+                        .AddOrchestration<GenericOrchestrationRunner>()
+                        .AddActivitiesFromAssembly<Program>();
+                });
+                services.AddTaskHubClient(s_taskHubName, (builder) =>
+                {
+                    builder
+                        .UseBuildTarget<DurableTaskHubClient>()
+                        .WithOrchestrationService((IOrchestrationServiceClient)orchestrationService);
+                });
                 services.Configure<TaskHubOptions>(opt =>
                 {
                     opt.CreateIfNotExists = true;
                 });
                 services.AddSingleton<IConsole, ConsoleWrapper>();
                 services.AddHostedService<TaskEnqueuer>();
-                services.AddSingleton(UseLocalEmulator());
-            })
-            .ConfigureTaskHubWorker((context, builder) =>
-            {
-                builder.AddClient();
-                builder.UseOrchestrationMiddleware<SampleMiddleware>();
-                builder.UseActivityMiddleware<SampleMiddleware>();
-
-                builder
-                    .AddOrchestration<GreetingsOrchestration>()
-                    .AddOrchestration<GenericOrchestrationRunner>();
-
-                builder.AddActivitiesFromAssembly<Program>();
             })
             .UseConsoleLifetime()
             .Build();
@@ -69,9 +76,9 @@ public class Program
         private readonly IConsole _console;
         private readonly string _instanceId = Guid.NewGuid().ToString();
 
-        public TaskEnqueuer(TaskHubClient client, IConsole console)
+        public TaskEnqueuer(ITaskHubClientProvider clientProvider, IConsole console)
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _client = ((DurableTaskHubClient)clientProvider.GetClient(s_taskHubName)).Client;
             _console = console ?? throw new ArgumentNullException(nameof(console));
         }
 

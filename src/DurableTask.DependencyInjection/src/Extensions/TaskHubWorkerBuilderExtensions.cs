@@ -5,10 +5,10 @@ using DurableTask.Core;
 using DurableTask.Core.Serializing;
 using DurableTask.DependencyInjection.Internal;
 using DurableTask.DependencyInjection.Properties;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace DurableTask.DependencyInjection;
 
@@ -29,6 +29,7 @@ public static class TaskHubWorkerBuilderExtensions
         Check.NotNull(builder);
         Check.NotNull(orchestrationService);
         builder.Services.TryAddSingleton(orchestrationService);
+        builder.OrchestrationServiceFactory = (sp) => orchestrationService;
         return builder;
     }
 
@@ -43,7 +44,7 @@ public static class TaskHubWorkerBuilderExtensions
     {
         Check.NotNull(builder);
         Check.NotNull(orchestrationServiceFactory);
-        builder.Services.TryAddSingleton(orchestrationServiceFactory);
+        builder.OrchestrationServiceFactory = orchestrationServiceFactory;
         return builder;
     }
 
@@ -65,10 +66,8 @@ public static class TaskHubWorkerBuilderExtensions
 
         if (client is null)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
             IOrchestrationService service = builder.OrchestrationService
                 ?? serviceProvider.GetRequiredService<IOrchestrationService>();
-#pragma warning restore CS0618 // Type or member is obsolete
 
             client = service as IOrchestrationServiceClient;
             if (client is null)

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116 d17.12
+VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DurableTask.DependencyInjection", "DurableTask.DependencyInjection", "{F7C54D09-8F90-40A6-A7ED-DBF11FD97354}"
 EndProject
@@ -40,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableTask.Instrumentation.Tests", "DurableTask.Instrumentation\test\DurableTask.Instrumentation.Tests.csproj", "{E1AD91B6-6458-4502-9AC1-0FFE93D2FBE6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableTask.Instrumentation.Samples", "..\samples\DurableTask.Instrumentation.Samples\DurableTask.Instrumentation.Samples.csproj", "{A51D0C94-E0B9-4063-A8C9-7424362CDB80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableTask.Named.Samples", "..\samples\DurableTask.Named.Samples\DurableTask.Named.Samples.csproj", "{4CC61EE5-758E-9BA1-C895-B3055EE75096}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -207,6 +209,18 @@ Global
 		{A51D0C94-E0B9-4063-A8C9-7424362CDB80}.Release|x64.Build.0 = Release|Any CPU
 		{A51D0C94-E0B9-4063-A8C9-7424362CDB80}.Release|x86.ActiveCfg = Release|Any CPU
 		{A51D0C94-E0B9-4063-A8C9-7424362CDB80}.Release|x86.Build.0 = Release|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Debug|x64.Build.0 = Debug|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Debug|x86.Build.0 = Debug|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Release|x64.ActiveCfg = Release|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Release|x64.Build.0 = Release|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Release|x86.ActiveCfg = Release|Any CPU
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -224,6 +238,7 @@ Global
 		{052B06E1-0268-446A-BA1A-57B8A8AD8B22} = {2CEE0150-2FD3-4246-82DA-2EB68A95FCF3}
 		{E1AD91B6-6458-4502-9AC1-0FFE93D2FBE6} = {2CEE0150-2FD3-4246-82DA-2EB68A95FCF3}
 		{A51D0C94-E0B9-4063-A8C9-7424362CDB80} = {796C6FFF-5FB6-4918-88B7-61B6EA4D2801}
+		{4CC61EE5-758E-9BA1-C895-B3055EE75096} = {796C6FFF-5FB6-4918-88B7-61B6EA4D2801}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {65A5E590-4609-44E1-B012-0EA997E18DB7}

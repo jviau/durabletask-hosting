@@ -1,4 +1,4 @@
-// Copyright (c) Jacob Viau. All rights reserved.
+﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using DurableTask.Core.Serializing;
@@ -13,7 +13,7 @@ namespace DurableTask.DependencyInjection.Internal;
 /// </summary>
 /// <remarks>
 /// This is internal because it is only a piece of the puzzle for replacing the <see cref="DataConverter" />
-/// throughout all of DTFx. Please us Vio.DurableTask.Extensions package to properly replace the entire
+/// throughout all of DTFx. Please use Vio.DurableTask.Extensions package to properly replace the entire
 /// data converter.
 /// </remarks>
 public sealed class TaskHubClientOptions

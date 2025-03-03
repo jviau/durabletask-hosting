@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
+using DurableTask.Core;
 using DurableTask.DependencyInjection;
 using DurableTask.Hosting.Options;
 using Microsoft.Extensions.DependencyInjection;
@@ -87,8 +88,11 @@ public static class TaskHubHostBuilderExtensions
                 .Bind(context.Configuration.GetSection("TaskHub"))
                 .Configure(configureOptions);
 
-            services.AddTaskHubWorker(taskHubBuilder => configure(context, taskHubBuilder));
-            services.AddHostedService<TaskHubBackgroundService>();
+            services.AddTaskHubWorker(taskHubBuilder => {
+                taskHubBuilder.UseBuildTarget<TaskHubBackgroundService>();
+                configure(context, taskHubBuilder);
+                });
+            //services.AddHostedService<TaskHubBackgroundService>();
         });
 
         return builder;

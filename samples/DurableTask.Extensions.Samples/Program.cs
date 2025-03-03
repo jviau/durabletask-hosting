@@ -3,6 +3,7 @@
 
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
+using DurableTask.DependencyInjection.Extensions;
 using DurableTask.Emulator;
 using DurableTask.Extensions;
 using DurableTask.Extensions.Samples;
@@ -14,17 +15,30 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         // Can register DataConvert in service container, or in options below.
-        // services.AddSingleton<DataConverter>(new StjDataConverter());
+        //services.AddSingleton<DataConverter>(new StjDataConverter());
         services.AddSingleton<IConsole, ConsoleWrapper>();
         services.AddHostedService<TaskEnqueuer>();
-    })
-    .ConfigureTaskHubWorker((context, builder) =>
-    {
-        builder.WithOrchestrationService(new LocalOrchestrationService());
-        builder.AddDurableExtensions(opt => opt.DataConverter = new StjDataConverter());
-        builder.AddClient();
-        builder.AddOrchestrationsFromAssembly<GreetingsOrchestration>(includePrivate: true);
-        builder.AddActivitiesFromAssembly<GreetingsOrchestration>(includePrivate: true);
+
+        IOrchestrationService orchestrationService = new LocalOrchestrationService();
+
+        services.AddTaskHubWorker((builder) =>
+        {
+            builder
+                .UseBuildTarget<DurableTaskHubWorker>()
+                .WithOrchestrationService(orchestrationService)
+
+                .AddDurableExtensions(opt => opt.DataConverter = new StjDataConverter())
+
+                .AddOrchestrationsFromAssembly<GreetingsOrchestration>(includePrivate: true)
+                .AddActivitiesFromAssembly<GreetingsOrchestration>(includePrivate: true);
+        });
+        services.AddTaskHubClient((builder) =>
+        {
+            builder
+                .UseBuildTarget<DurableTaskHubClient>()
+                .WithOrchestrationService((IOrchestrationServiceClient)orchestrationService);
+        });
+
     })
     .UseConsoleLifetime()
     .Build();
@@ -37,9 +51,9 @@ internal class TaskEnqueuer : BackgroundService
     private readonly IConsole _console;
     private readonly string _instanceId = Guid.NewGuid().ToString();
 
-    public TaskEnqueuer(TaskHubClient client, IConsole console)
+    public TaskEnqueuer(ITaskHubClientProvider clientProvider, IConsole console)
     {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _client = ((DurableTaskHubClient)clientProvider.GetClient()).Client;
         _console = console ?? throw new ArgumentNullException(nameof(console));
     }
 

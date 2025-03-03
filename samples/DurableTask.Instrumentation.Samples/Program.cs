@@ -5,6 +5,7 @@ using System.Diagnostics;
 using DurableTask.AzureStorage;
 using DurableTask.Core;
 using DurableTask.DependencyInjection;
+using DurableTask.DependencyInjection.Extensions;
 using DurableTask.Extensions;
 using DurableTask.Extensions.Samples;
 using DurableTask.Hosting;
@@ -25,18 +26,40 @@ using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
+        IOrchestrationService orchestrationService = GetOrchestrationService();
+
+        services.AddTaskHubWorker((builder) =>
+        {
+            builder
+                .UseBuildTarget<DurableTaskHubWorker>()
+                .WithOrchestrationService(orchestrationService)
+
+                .AddDurableExtensions()
+                .AddDurableInstrumentation()
+
+                .AddOrchestrationsFromAssembly<TopOrchestration>(includePrivate: true)
+                .AddActivitiesFromAssembly<TopOrchestration>(includePrivate: true);
+        });
+        services.AddTaskHubClient((builder) =>
+        {
+            builder
+                .UseBuildTarget<DurableTaskHubClient>()
+                .WithOrchestrationService((IOrchestrationServiceClient)orchestrationService);
+        });
+
         services.AddSingleton<IConsole, ConsoleWrapper>();
         services.AddHostedService<TaskEnqueuer>();
+
     })
-    .ConfigureTaskHubWorker((context, builder) =>
-    {
-        builder.WithOrchestrationService(GetOrchestrationService());
-        builder.AddDurableExtensions();
-        builder.AddDurableInstrumentation();
-        builder.AddClient();
-        builder.AddOrchestrationsFromAssembly<TopOrchestration>(includePrivate: true);
-        builder.AddActivitiesFromAssembly<TopOrchestration>(includePrivate: true);
-    })
+    //.ConfigureTaskHubWorker((context, builder) =>
+    //{
+    //    builder.WithOrchestrationService(GetOrchestrationService());
+    //    builder.AddDurableExtensions();
+    //    builder.AddDurableInstrumentation();
+    //    //builder.AddClient();
+    //    builder.AddOrchestrationsFromAssembly<TopOrchestration>(includePrivate: true);
+    //    builder.AddActivitiesFromAssembly<TopOrchestration>(includePrivate: true);
+    //})
     .UseConsoleLifetime()
     .Build();
 
@@ -60,9 +83,9 @@ internal class TaskEnqueuer : BackgroundService
     private readonly IConsole _console;
     private readonly string _instanceId = Guid.NewGuid().ToString();
 
-    public TaskEnqueuer(TaskHubClient client, IConsole console)
+    public TaskEnqueuer(ITaskHubClientProvider clientProvider, IConsole console)
     {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _client = ((DurableTaskHubClient)clientProvider.GetClient()).Client;
         _console = console ?? throw new ArgumentNullException(nameof(console));
     }
 

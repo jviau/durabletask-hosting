@@ -8,7 +8,10 @@ using DurableTask.DependencyInjection.Middleware;
 using DurableTask.DependencyInjection.Orchestrations;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
 
 namespace DurableTask.DependencyInjection;
 
@@ -17,14 +20,31 @@ namespace DurableTask.DependencyInjection;
 /// </summary>
 public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
 {
+    private Type? _buildTarget;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultTaskHubWorkerBuilder"/> class.
     /// </summary>
+    /// <param name="name">The name for this builder.</param>
     /// <param name="services">The current service collection, not null.</param>
-    public DefaultTaskHubWorkerBuilder(IServiceCollection services)
+    public DefaultTaskHubWorkerBuilder(IServiceCollection services) :
+        this(Options.DefaultName, services)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DefaultTaskHubWorkerBuilder"/> class.
+    /// </summary>
+    /// <param name="name">The name for this builder.</param>
+    /// <param name="services">The current service collection, not null.</param>
+    public DefaultTaskHubWorkerBuilder(string name, IServiceCollection services)
+    {
+        Name = name ?? Options.DefaultName;
         Services = Check.NotNull(services);
     }
+
+    /// <inheritdoc />
+    public string Name { get; }
 
     /// <inheritdoc />
     public IServiceCollection Services { get; }
@@ -32,37 +52,62 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     /// <inheritdoc />
     public IOrchestrationService? OrchestrationService { get; set; }
 
-    /// <inheritdoc />
-    public IList<TaskMiddlewareDescriptor> ActivityMiddleware { get; } = new List<TaskMiddlewareDescriptor>
-    {
-        new TaskMiddlewareDescriptor(typeof(ServiceProviderActivityMiddleware)),
-    };
-
-    /// <inheritdoc />
-    public IList<TaskMiddlewareDescriptor> OrchestrationMiddleware { get; } = new List<TaskMiddlewareDescriptor>
-    {
-        new TaskMiddlewareDescriptor(typeof(ServiceProviderOrchestrationMiddleware)),
-    };
+    public Func<IServiceProvider, IOrchestrationService>? OrchestrationServiceFactory { get; set; }
 
     /// <inheritdoc/>
-    public IList<TaskActivityDescriptor> Activities { get; } = new List<TaskActivityDescriptor>();
+    public Type? BuildTarget
+    {
+        get => _buildTarget;
+        set
+        {
+            if (value is not null)
+            {
+                Check.ConcreteType<BaseTaskHubWorker>(value);
+            }
+
+            _buildTarget = value;
+        }
+    }
+
+    /// <inheritdoc />
+    public IList<TaskMiddlewareDescriptor> ActivityMiddleware { get; } =
+    [
+        new(typeof(ServiceProviderActivityMiddleware)),
+    ];
+
+    /// <inheritdoc />
+    public IList<TaskMiddlewareDescriptor> OrchestrationMiddleware { get; } =
+    [
+        new(typeof(ServiceProviderOrchestrationMiddleware)),
+    ];
 
     /// <inheritdoc/>
-    public IList<TaskOrchestrationDescriptor> Orchestrations { get; } = new List<TaskOrchestrationDescriptor>();
+    public IList<TaskActivityDescriptor> Activities { get; } = [];
+
+    /// <inheritdoc/>
+    public IList<TaskOrchestrationDescriptor> Orchestrations { get; } = [];
 
     /// <summary>
     /// Builds and returns a <see cref="TaskHubWorker"/> using the configurations from this instance.
     /// </summary>
     /// <param name="serviceProvider">The service provider.</param>
     /// <returns>A new <see cref="TaskHubWorker"/>.</returns>
-    public TaskHubWorker Build(IServiceProvider serviceProvider)
+    public IHostedService Build(IServiceProvider serviceProvider)
     {
         Check.NotNull(serviceProvider);
 
-        if (OrchestrationService is null)
+        const string error = "No valid DurableTask worker target was registered. Ensure a valid worker has been"
+            + " configured via 'UseBuildTarget(Type target)'.";
+        //Check.NotNull(_buildTarget, error);
+
+        IOrchestrationService orchestrationService = serviceProvider.GetService<IOrchestrationService>();
+        if (orchestrationService is null && OrchestrationServiceFactory is not null)
         {
-            OrchestrationService = serviceProvider.GetRequiredService<IOrchestrationService>();
+            orchestrationService = OrchestrationServiceFactory(serviceProvider);
         }
+        const string error2 = "No valid OrchestrationService was registered. Ensure a valid OrchestrationService has been"
+            + " configured via 'WithOrchestrationService(IOrchestrationService orchestrationService)'.";
+        Check.NotNull(orchestrationService, error2);
 
         // Verify we still have our ServiceProvider middleware
         if (OrchestrationMiddleware.FirstOrDefault(x => x.Type == typeof(ServiceProviderOrchestrationMiddleware))
@@ -80,7 +125,7 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
 
         ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         TaskHubWorker worker = new(
-            OrchestrationService,
+            orchestrationService,
             new GenericObjectManager<TaskOrchestration>(),
             new GenericObjectManager<TaskActivity>(),
             loggerFactory);
@@ -102,7 +147,7 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
             worker.AddActivityDispatcherMiddleware(WrapMiddleware(middlewareDescriptor));
         }
 
-        return worker;
+        return (IHostedService)ActivatorUtilities.CreateInstance(serviceProvider, _buildTarget, Name, worker, loggerFactory);
     }
 
     private static Func<DispatchMiddlewareContext, Func<Task>, Task> WrapMiddleware(

@@ -13,28 +13,28 @@ namespace DurableTask.Hosting;
 /// <summary>
 /// A dotnet hosted service for <see cref="TaskHubWorker"/>.
 /// </summary>
-public class TaskHubBackgroundService : BaseTaskHubWorker
+public class DurableTaskHubWorker : BaseTaskHubWorker
 {
     private readonly TaskHubWorker _worker;
     private readonly ILogger _logger;
     private readonly IOptions<TaskHubOptions> _options;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TaskHubBackgroundService"/> class.
+    /// Initializes a new instance of the <see cref="DurableTaskHubWorker"/> class.
     /// </summary>
+    /// <param name="name">The name of the worker.</param>
     /// <param name="worker">The task hub worker. Not null.</param>
-    /// <param name="logger">The logger. Not null.</param>
+    /// <param name="loggerFactory">The logger factory. Not null.</param>
     /// <param name="options">The task hub options.</param>
-    public TaskHubBackgroundService(
-        string? name,
+    public DurableTaskHubWorker(
+        string name,
         TaskHubWorker worker,
         ILoggerFactory loggerFactory,
-        IOptions<TaskHubOptions> options)
-        : base(name)
+        IOptions<TaskHubOptions> options) :
+        base(name)
     {
         _worker = Check.NotNull(worker);
         _logger = loggerFactory.CreateLogger($"{typeof(DurableTaskHubWorker).Namespace}.{nameof(DurableTaskHubWorker)}");
-        //_logger = Check.NotNull(logger);
         _options = Check.NotNull(options);
     }
 
@@ -52,8 +52,7 @@ public class TaskHubBackgroundService : BaseTaskHubWorker
 
         await _worker.StartAsync().ConfigureAwait(false);
         _worker.TaskActivityDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(IncludeDetails.Activities);
-        _worker.TaskOrchestrationDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(
-            IncludeDetails.Orchestrations);
+        _worker.TaskOrchestrationDispatcher.IncludeDetails = Options.IncludeDetails.HasFlag(IncludeDetails.Orchestrations);
         _worker.ErrorPropagationMode = Options.ErrorPropagationMode;
     }
 
