@@ -15,34 +15,30 @@ namespace DurableTask.DependencyInjection;
 /// <summary>
 /// The default builder for task hub worker.
 /// </summary>
-public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
+/// <remarks>
+/// Initializes a new instance of the <see cref="DefaultTaskHubWorkerBuilder"/> class.
+/// </remarks>
+/// <param name="services">The current service collection, not null.</param>
+public class DefaultTaskHubWorkerBuilder(IServiceCollection services) : ITaskHubWorkerBuilder
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DefaultTaskHubWorkerBuilder"/> class.
-    /// </summary>
-    /// <param name="services">The current service collection, not null.</param>
-    public DefaultTaskHubWorkerBuilder(IServiceCollection services)
-    {
-        Services = Check.NotNull(services);
-    }
 
     /// <inheritdoc />
-    public IServiceCollection Services { get; }
+    public IServiceCollection Services { get; } = Check.NotNull(services);
 
     /// <inheritdoc />
     public IOrchestrationService? OrchestrationService { get; set; }
 
     /// <inheritdoc />
-    public IList<TaskMiddlewareDescriptor> ActivityMiddleware { get; } = new List<TaskMiddlewareDescriptor>
-    {
-        new TaskMiddlewareDescriptor(typeof(ServiceProviderActivityMiddleware)),
-    };
+    public IList<TaskMiddlewareDescriptor> ActivityMiddleware { get; } =
+    [
+        new(typeof(ServiceProviderActivityMiddleware)),
+    ];
 
     /// <inheritdoc />
-    public IList<TaskMiddlewareDescriptor> OrchestrationMiddleware { get; } = new List<TaskMiddlewareDescriptor>
-    {
-        new TaskMiddlewareDescriptor(typeof(ServiceProviderOrchestrationMiddleware)),
-    };
+    public IList<TaskMiddlewareDescriptor> OrchestrationMiddleware { get; } =
+    [
+        new(typeof(ServiceProviderOrchestrationMiddleware)),
+    ];
 
     /// <inheritdoc/>
     public IList<TaskActivityDescriptor> Activities { get; } = new List<TaskActivityDescriptor>();

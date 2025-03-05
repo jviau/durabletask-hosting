@@ -18,7 +18,7 @@ internal static class Verify
     /// <param name="argument">The argument to verify.</param>
     /// <param name="message">The optional exception message.</param>
     /// <returns>The <paramref name="argument" /> parameter, unchanged.</returns>
-    [return: NotNullIfNotNull("argument")]
+    [return: NotNullIfNotNull(nameof(argument))]
     public static T NotNull<T>([NotNull] T argument, string? message = default)
         where T : class
     {

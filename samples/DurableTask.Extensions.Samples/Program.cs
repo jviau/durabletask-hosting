@@ -31,17 +31,11 @@ IHost host = Host.CreateDefaultBuilder(args)
 
 await host.RunAsync();
 
-internal class TaskEnqueuer : BackgroundService
+internal class TaskEnqueuer(TaskHubClient client, IConsole console) : BackgroundService
 {
-    private readonly TaskHubClient _client;
-    private readonly IConsole _console;
+    private readonly TaskHubClient _client = client ?? throw new ArgumentNullException(nameof(client));
+    private readonly IConsole _console = console ?? throw new ArgumentNullException(nameof(console));
     private readonly string _instanceId = Guid.NewGuid().ToString();
-
-    public TaskEnqueuer(TaskHubClient client, IConsole console)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _console = console ?? throw new ArgumentNullException(nameof(console));
-    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

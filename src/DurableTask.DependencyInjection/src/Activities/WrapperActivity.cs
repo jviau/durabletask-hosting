@@ -13,23 +13,18 @@ namespace DurableTask.DependencyInjection.Activities;
 /// <summary>
 /// An activity that wraps the real activity type.
 /// </summary>
-internal class WrapperActivity : TaskActivity
+/// <remarks>
+/// Initializes a new instance of the <see cref="WrapperActivity"/> class.
+/// </remarks>
+/// <param name="descriptor">The inner orchestration descriptor.</param>
+internal class WrapperActivity(TaskActivityDescriptor descriptor) : TaskActivity
 {
     private static readonly ConcurrentDictionary<TaskActivityDescriptor, ActivityFactory> s_factories = new();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WrapperActivity"/> class.
-    /// </summary>
-    /// <param name="descriptor">The inner orchestration descriptor.</param>
-    public WrapperActivity(TaskActivityDescriptor descriptor)
-    {
-        Descriptor = Check.NotNull(descriptor);
-    }
-
-    /// <summary>
     /// Gets the activity descriptor.
     /// </summary>
-    public TaskActivityDescriptor Descriptor { get; }
+    public TaskActivityDescriptor Descriptor { get; } = Check.NotNull(descriptor);
 
     /// <summary>
     /// Gets the inner activity.
@@ -65,10 +60,8 @@ internal class WrapperActivity : TaskActivity
             }
             else
             {
-                ObjectFactory objectFactory = ActivatorUtilities.CreateFactory(
-                    Descriptor.Type, Array.Empty<Type>());
-                factory = s_factories.GetOrAdd(
-                    Descriptor, sp => (TaskActivity)objectFactory.Invoke(sp, Array.Empty<object>()));
+                ObjectFactory objectFactory = ActivatorUtilities.CreateFactory(Descriptor.Type, []);
+                factory = s_factories.GetOrAdd(Descriptor, sp => (TaskActivity)objectFactory.Invoke(sp, []));
             }
         }
 

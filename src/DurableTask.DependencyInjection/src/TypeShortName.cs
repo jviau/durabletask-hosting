@@ -30,7 +30,7 @@ internal readonly struct TypeShortName
         }
         else
         {
-            GenericParams = Enumerable.Empty<TypeShortName>();
+            GenericParams = [];
         }
     }
 
@@ -72,7 +72,7 @@ internal readonly struct TypeShortName
         {
             // Not a generic type, just use name as is.
             Name = name;
-            GenericParams = Enumerable.Empty<TypeShortName>();
+            GenericParams = [];
             return;
         }
 

@@ -168,19 +168,12 @@ public class WrapperOrchestrationTests
         return services.BuildServiceProvider();
     }
 
-    private class TestOrchestration : TaskOrchestration
+    private class TestOrchestration(WrapperOrchestrationTests test) : TaskOrchestration
     {
-        private readonly WrapperOrchestrationTests _test;
-
-        public TestOrchestration(WrapperOrchestrationTests test)
-        {
-            _test = test;
-        }
-
         public override Task<string> Execute(OrchestrationContext context, string input)
         {
-            _test.InvokedContext = context;
-            _test.InvokedInput = input;
+            test.InvokedContext = context;
+            test.InvokedInput = input;
             return Task.FromResult(input);
         }
 
@@ -191,33 +184,26 @@ public class WrapperOrchestrationTests
 
         public override void RaiseEvent(OrchestrationContext context, string name, string input)
         {
-            _test.InvokedContext = context;
-            _test.InvokedInput = input;
-            _test.EventRaised = name;
+            test.InvokedContext = context;
+            test.InvokedInput = input;
+            test.EventRaised = name;
         }
     }
 
-    private class TestOrchestrationOfT : TaskOrchestration<string, string>
+    private class TestOrchestrationOfT(WrapperOrchestrationTests test) : TaskOrchestration<string, string>
     {
-        private readonly WrapperOrchestrationTests _test;
-
-        public TestOrchestrationOfT(WrapperOrchestrationTests test)
-        {
-            _test = test;
-        }
-
         public override Task<string> RunTask(OrchestrationContext context, string input)
         {
-            _test.InvokedContext = context;
-            _test.InvokedInput = input;
+            test.InvokedContext = context;
+            test.InvokedInput = input;
             return Task.FromResult(input);
         }
 
         public override void OnEvent(OrchestrationContext context, string name, string input)
         {
-            _test.InvokedContext = context;
-            _test.InvokedInput = input;
-            _test.EventRaised = name;
+            test.InvokedContext = context;
+            test.InvokedInput = input;
+            test.EventRaised = name;
         }
 
         public override string OnGetStatus()

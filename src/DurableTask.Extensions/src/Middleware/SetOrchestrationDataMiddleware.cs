@@ -5,7 +5,6 @@ using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using DurableTask.Core.Serializing;
 using DurableTask.DependencyInjection;
-using DurableTask.Extensions.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

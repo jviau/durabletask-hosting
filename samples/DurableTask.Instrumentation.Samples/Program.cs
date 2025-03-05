@@ -53,18 +53,12 @@ static IOrchestrationService GetOrchestrationService()
     return new AzureStorageOrchestrationService(settings);
 }
 
-internal class TaskEnqueuer : BackgroundService
+internal class TaskEnqueuer(TaskHubClient client, IConsole console) : BackgroundService
 {
     private readonly ActivitySource _source = new("DurableTask.Instrumentation.Samples", "0.1");
-    private readonly TaskHubClient _client;
-    private readonly IConsole _console;
+    private readonly TaskHubClient _client = client ?? throw new ArgumentNullException(nameof(client));
+    private readonly IConsole _console = console ?? throw new ArgumentNullException(nameof(console));
     private readonly string _instanceId = Guid.NewGuid().ToString();
-
-    public TaskEnqueuer(TaskHubClient client, IConsole console)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _console = console ?? throw new ArgumentNullException(nameof(console));
-    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

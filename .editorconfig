@@ -44,7 +44,6 @@ guidelines = 120 # https://marketplace.visualstudio.com/items?itemName=PaulHarri
 
 # Sort using and Import directives with System.* appearing first
 dotnet_sort_system_directives_first = true
-dotnet_style_require_accessibility_modifiers = always:error
 
 # Put a blank line between System.* and Microsoft.*
 dotnet_separate_import_directive_groups = false
@@ -123,6 +122,7 @@ dotnet_naming_style.pascal_case_and_prefix_with_I_style.required_prefix         
 dotnet_naming_style.pascal_case_and_prefix_with_I_style.capitalization                                = pascal_case
 
 # CSharp code style settings:
+
 [*.cs]
 
 # Modifier preferences
@@ -161,6 +161,8 @@ dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggesti
 dotnet_style_prefer_conditional_expression_over_return = false
 dotnet_style_prefer_conditional_expression_over_assignment = false
 dotnet_style_prefer_auto_properties = false
+dotnet_style_namespace_match_folder = false
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:error
 
 # 'using' directive preferences
 csharp_using_directive_placement = outside_namespace:warning
@@ -174,7 +176,7 @@ csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
 
-# Identation options
+# Indentation options
 csharp_indent_case_contents = true
 csharp_indent_case_contents_when_block = false
 csharp_indent_switch_labels = true

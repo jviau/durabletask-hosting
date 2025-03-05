@@ -6,7 +6,7 @@ using DurableTask.Core;
 using FluentAssertions;
 using Xunit;
 
-namespace DurableTask.DependencyInjection.Activitys.Tests;
+namespace DurableTask.DependencyInjection.Activities.Tests;
 
 public class TaskActivityDescriptorTests
 {

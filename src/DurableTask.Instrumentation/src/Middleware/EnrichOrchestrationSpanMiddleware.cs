@@ -47,7 +47,7 @@ public sealed class EnrichOrchestrationSpanMiddleware : ITaskMiddleware
         activity.SetTag("durabletask.task.execution_id", state.OrchestrationInstance!.ExecutionId);
     }
 
-    private static IDisposable? StartActivity()
+    private static ActivityRestorer? StartActivity()
     {
         // If Activity.Current is not set, and we have a DTFx context, then restore the activity.
         if (Activity.Current is null && CorrelationTraceContext.Current is W3CTraceContext current)

@@ -24,12 +24,9 @@ internal class GetUserActivity : IActivityRequest<string>
 {
     public TaskActivityDescriptor GetDescriptor() => new(typeof(Handler));
 
-    public class Handler : ActivityBase<GetUserActivity, string>
+    public class Handler(IConsole console) : ActivityBase<GetUserActivity, string>
     {
-        private readonly IConsole _console;
-
-        public Handler(IConsole console)
-            => _console = console ?? throw new ArgumentNullException(nameof(console));
+        private readonly IConsole _console = console ?? throw new ArgumentNullException(nameof(console));
 
         protected override Task<string> RunAsync(GetUserActivity input)
         {
@@ -47,12 +44,9 @@ internal sealed class SendGreetingActivity : IActivityRequest
 
     public TaskActivityDescriptor GetDescriptor() => new(typeof(Handler));
 
-    public class Handler : ActivityBase<SendGreetingActivity>
+    public class Handler(IConsole console) : ActivityBase<SendGreetingActivity>
     {
-        private readonly IConsole _console;
-
-        public Handler(IConsole console)
-            => _console = console ?? throw new ArgumentNullException(nameof(console));
+        private readonly IConsole _console = console ?? throw new ArgumentNullException(nameof(console));
 
         /// <inheritdoc />
         protected override async Task RunAsync(SendGreetingActivity input)

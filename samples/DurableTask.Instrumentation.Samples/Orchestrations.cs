@@ -2,8 +2,6 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using DurableTask.DependencyInjection;
-using DurableTask.Extensions.Abstractions;
-using Newtonsoft.Json;
 
 namespace DurableTask.Extensions.Samples;
 
@@ -55,13 +53,13 @@ public class FanOutOrchestration : OrchestrationBase<FanOutOrchestration.Request
     /// <inheritdoc/>
     protected override async Task<string> RunAsync(Request input)
     {
-        List<Task> tasks = new()
-        {
+        List<Task> tasks =
+        [
             Context.RunAsync(SimpleOrchestration.CreateRequest(0)),
             Context.RunAsync(SimpleOrchestration.CreateRequest(1)),
             Context.RunAsync(SimpleOrchestration.CreateRequest(3)),
             Context.RunAsync(SimpleOrchestration.CreateRequest(1)),
-        };
+        ];
 
         await Task.WhenAll(tasks);
         return "success";

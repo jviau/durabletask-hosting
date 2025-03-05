@@ -8,18 +8,13 @@ namespace DurableTask.Samples;
 /// <summary>
 /// An activity to print to the console.
 /// </summary>
-public class PrintTask : TaskActivity<string, string>
+/// <remarks>
+/// Initializes a new instance of the <see cref="PrintTask"/> class.
+/// </remarks>
+/// <param name="console">The console to print to.</param>
+public class PrintTask(IConsole console) : TaskActivity<string, string>
 {
-    private readonly IConsole _console;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PrintTask"/> class.
-    /// </summary>
-    /// <param name="console">The console to print to.</param>
-    public PrintTask(IConsole console)
-    {
-        _console = console ?? throw new ArgumentNullException(nameof(console));
-    }
+    private readonly IConsole _console = console ?? throw new ArgumentNullException(nameof(console));
 
     /// <inheritdoc />
     protected override string Execute(TaskContext context, string input)

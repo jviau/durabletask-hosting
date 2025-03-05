@@ -56,9 +56,9 @@ internal class WrapperOrchestration : TaskOrchestration
             else
             {
                 ObjectFactory objectFactory = ActivatorUtilities.CreateFactory(
-                    Descriptor.Type, Array.Empty<Type>());
+                    Descriptor.Type, []);
                 factory = s_factories.GetOrAdd(
-                    Descriptor, sp => (TaskOrchestration)objectFactory.Invoke(sp, Array.Empty<object>()));
+                    Descriptor, sp => (TaskOrchestration)objectFactory.Invoke(sp, []));
             }
         }
 

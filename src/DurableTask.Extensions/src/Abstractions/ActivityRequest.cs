@@ -53,32 +53,21 @@ public static class ActivityRequest
         return request;
     }
 
-    private class Request<TOutput> : RequestCore, IActivityRequest<TOutput>
+    private class Request<TOutput>(TaskActivityDescriptor descriptor, object? input)
+        : RequestCore(descriptor, input), IActivityRequest<TOutput>
     {
-        public Request(TaskActivityDescriptor descriptor, object? input)
-            : base(descriptor, input)
-        {
-        }
     }
 
-    private class Request : RequestCore, IActivityRequest
+    private class Request(TaskActivityDescriptor descriptor, object? input)
+        : RequestCore(descriptor, input), IActivityRequest
     {
-        public Request(TaskActivityDescriptor descriptor, object? input)
-            : base(descriptor, input)
-        {
-        }
     }
 
-    private class RequestCore : IBaseActivityRequest, IProvidesInput
+    private class RequestCore(TaskActivityDescriptor descriptor, object? input)
+        : IBaseActivityRequest, IProvidesInput
     {
-        private readonly TaskActivityDescriptor _descriptor;
-        private readonly object? _input;
-
-        public RequestCore(TaskActivityDescriptor descriptor, object? input)
-        {
-            _descriptor = descriptor;
-            _input = input;
-        }
+        private readonly TaskActivityDescriptor _descriptor = descriptor;
+        private readonly object? _input = input;
 
         public object? GetInput() => _input;
 

@@ -73,11 +73,11 @@ public class WrapperActivityTests
         WrapperActivity wrapperActivity = new(descriptor);
         ServiceCollection services = new();
         services.AddSingleton<IMyService, MyService>();
-        JArray input = new()
-        {
+        JArray input =
+        [
             "some_string",
             10
-        };
+        ];
 
         // act
         wrapperActivity.Initialize(services.BuildServiceProvider());
@@ -166,53 +166,32 @@ public class WrapperActivityTests
         return services.BuildServiceProvider();
     }
 
-    private class TestActivity : TaskActivity
+    private class TestActivity(WrapperActivityTests test) : TaskActivity
     {
-        private readonly WrapperActivityTests _test;
-
-        public TestActivity(WrapperActivityTests test)
-        {
-            _test = test;
-        }
-
         public override string Run(TaskContext context, string input)
         {
-            _test.InvokedContext = context;
-            _test.InvokedInput = input;
+            test.InvokedContext = context;
+            test.InvokedInput = input;
             return input;
         }
     }
 
-    private class TestActivityOfT : TaskActivity<string, string>
+    private class TestActivityOfT(WrapperActivityTests test) : TaskActivity<string, string>
     {
-        private readonly WrapperActivityTests _test;
-
-        public TestActivityOfT(WrapperActivityTests test)
-        {
-            _test = test;
-        }
-
         protected override string Execute(TaskContext context, string input)
         {
-            _test.InvokedContext = context;
-            _test.InvokedInput = input;
+            test.InvokedContext = context;
+            test.InvokedInput = input;
             return input;
         }
     }
 
-    private class AsyncTestActivity : AsyncTaskActivity<string, string>
+    private class AsyncTestActivity(WrapperActivityTests test) : AsyncTaskActivity<string, string>
     {
-        private readonly WrapperActivityTests _test;
-
-        public AsyncTestActivity(WrapperActivityTests test)
-        {
-            _test = test;
-        }
-
         protected override Task<string> ExecuteAsync(TaskContext context, string input)
         {
-            _test.InvokedContext = context;
-            _test.InvokedInput = input;
+            test.InvokedContext = context;
+            test.InvokedInput = input;
             return Task.FromResult(input);
         }
     }

@@ -9,12 +9,9 @@ namespace DurableTask.Extensions.Samples;
 /// <summary>
 /// DataConverter using System.Text.Json.
 /// </summary>
-internal class StjDataConverter : DataConverter
+internal class StjDataConverter(JsonSerializerOptions options = null) : DataConverter
 {
-    private readonly JsonSerializerOptions _options;
-
-    public StjDataConverter(JsonSerializerOptions options = null)
-        => _options = options ?? new();
+    private readonly JsonSerializerOptions _options = options ?? new();
 
     public override string Serialize(object value) => Serialize(value, false);
 

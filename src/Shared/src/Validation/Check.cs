@@ -23,7 +23,7 @@ internal static class Check
     /// <param name="args">The message args for formatting.</param>
     public static void Argument(bool condition, string name, string message, params object[] args)
     {
-        args ??= Array.Empty<object>();
+        args ??= [];
         if (!condition)
         {
             throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, message, args), name);
@@ -38,8 +38,8 @@ internal static class Check
     /// <param name="name">The name of the element for the exception.</param>
     /// <typeparam name="T">The type of element to check.</typeparam>
     /// <returns>The original element.</returns>
-    [return: NotNullIfNotNull("argument")]
-    public static T NotNull<T>([NotNull] T? argument, [CallerArgumentExpression("argument")] string? name = default)
+    [return: NotNullIfNotNull(nameof(argument))]
+    public static T NotNull<T>([NotNull] T? argument, [CallerArgumentExpression(nameof(argument))] string? name = default)
         where T : class
     {
         if (argument is null)
@@ -57,8 +57,8 @@ internal static class Check
     /// <param name="argument">The string to check.</param>
     /// <param name="name">The name of the string for the exception.</param>
     /// <returns>The original string.</returns>
-    [return: NotNullIfNotNull("argument")]
-    public static string NotNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression("argument")] string? name = default)
+    [return: NotNullIfNotNull(nameof(argument))]
+    public static string NotNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? name = default)
     {
         if (argument is null)
         {
@@ -80,7 +80,7 @@ internal static class Check
     /// <param name="argument">The type to check.</param>
     /// <param name="name">The name of the argument for the exception message.</param>
     /// <typeparam name="TImplements">The type <paramref name="argument" /> must implement.</typeparam>
-    public static void ConcreteType<TImplements>([NotNull] Type? argument, [CallerArgumentExpression("argument")] string? name = default)
+    public static void ConcreteType<TImplements>([NotNull] Type? argument, [CallerArgumentExpression(nameof(argument))] string? name = default)
     {
         NotNull(argument, name);
         if (!typeof(TImplements).IsAssignableFrom(argument) || !argument.IsClass || argument.IsAbstract)
@@ -95,7 +95,7 @@ internal static class Check
     /// </summary>
     /// <param name="argument">The type to check.</param>
     /// <param name="name">The name of the argument for the exception message.</param>
-    public static void IsInterface([NotNull] Type? argument, [CallerArgumentExpression("argument")] string? name = default)
+    public static void IsInterface([NotNull] Type? argument, [CallerArgumentExpression(nameof(argument))] string? name = default)
     {
         NotNull(argument, name);
         if (!argument.IsInterface)

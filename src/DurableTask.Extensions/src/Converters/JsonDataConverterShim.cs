@@ -8,18 +8,13 @@ namespace DurableTask.Extensions.Converters;
 /// <summary>
 /// A shim to work around some JsonDataConverter requirements.
 /// </summary>
-internal class JsonDataConverterShim : JsonDataConverter
+/// <remarks>
+/// Initializes a new instance of the <see cref="JsonDataConverterShim" /> class.
+/// </remarks>
+/// <param name="converter">The data converter.</param>
+internal class JsonDataConverterShim(DataConverter converter) : JsonDataConverter
 {
-    private readonly DataConverter _converter;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JsonDataConverterShim" /> class.
-    /// </summary>
-    /// <param name="converter">The data converter.</param>
-    public JsonDataConverterShim(DataConverter converter)
-    {
-        _converter = Check.NotNull(converter);
-    }
+    private readonly DataConverter _converter = Check.NotNull(converter);
 
     /// <inheritdoc/>
     public override object Deserialize(string data, Type objectType)

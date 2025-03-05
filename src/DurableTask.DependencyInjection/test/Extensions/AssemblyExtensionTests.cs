@@ -11,7 +11,7 @@ public class AssemblyExtensionTests
     [Fact]
     public void GetConcreteTypes_PublicOnly_Interface()
     {
-        // arrage, act
+        // arrange, act
         IEnumerable<Type> types = GetType().Assembly
             .GetConcreteTypes<ITestInterface>(includePrivate: false);
 
@@ -23,7 +23,7 @@ public class AssemblyExtensionTests
     [Fact]
     public void GetConcreteTypes_PublicOnly_AbstractBase()
     {
-        // arrage, act
+        // arrange, act
         IEnumerable<Type> types = GetType().Assembly
             .GetConcreteTypes<TestBase>(includePrivate: false);
 
@@ -35,7 +35,7 @@ public class AssemblyExtensionTests
     [Fact]
     public void GetConcreteTypes_IncludePrivate_Interface()
     {
-        // arrage, act
+        // arrange, act
         IEnumerable<Type> types = GetType().Assembly
             .GetConcreteTypes<ITestInterface>(includePrivate: true);
 
@@ -50,7 +50,7 @@ public class AssemblyExtensionTests
     [Fact]
     public void GetConcreteTypes_IncludePrivate_AbstractBase()
     {
-        // arrage, act
+        // arrange, act
         IEnumerable<Type> types = GetType().Assembly
             .GetConcreteTypes<TestBase>(includePrivate: true);
 

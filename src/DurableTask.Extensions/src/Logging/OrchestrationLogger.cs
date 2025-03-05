@@ -9,29 +9,23 @@ namespace DurableTask.Extensions.Logging;
 /// <summary>
 /// A logger for use in orchestrations, to avoid duplicate logging during replays.
 /// </summary>
-internal sealed class OrchestrationLogger : ILogger
+/// <remarks>
+/// Initializes a new instance of the <see cref="OrchestrationLogger"/> class.
+/// </remarks>
+/// <param name="context">The orchestration context.</param>
+/// <param name="logger">The underlying logger.</param>
+internal sealed class OrchestrationLogger(OrchestrationContext context, ILogger logger) : ILogger
 {
-    private readonly OrchestrationContext _context;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="OrchestrationLogger"/> class.
-    /// </summary>
-    /// <param name="context">The orchestration context.</param>
-    /// <param name="logger">The underlying logger.</param>
-    public OrchestrationLogger(OrchestrationContext context, ILogger logger)
-    {
-        _context = Check.NotNull(context, nameof(context));
-        InnerLogger = logger switch
-        {
-            OrchestrationLogger ol => ol.InnerLogger,
-            _ => Check.NotNull(logger),
-        };
-    }
+    private readonly OrchestrationContext _context = Check.NotNull(context, nameof(context));
 
     /// <summary>
     /// Gets the internal logger.
     /// </summary>
-    internal ILogger InnerLogger { get; }
+    internal ILogger InnerLogger { get; } = logger switch
+    {
+        OrchestrationLogger ol => ol.InnerLogger,
+        _ => Check.NotNull(logger),
+    };
 
     /// <inheritdoc />
     public IDisposable BeginScope<TState>(TState state)

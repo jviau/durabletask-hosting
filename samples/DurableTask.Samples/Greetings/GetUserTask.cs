@@ -8,18 +8,13 @@ namespace DurableTask.Samples.Greetings;
 /// <summary>
 /// A task activity for getting a username from console.
 /// </summary>
-public class GetUserTask : TaskActivity<string, string>
+/// <remarks>
+/// Initializes a new instance of the <see cref="GetUserTask"/> class.
+/// </remarks>
+/// <param name="console">The console output helper.</param>
+public class GetUserTask(IConsole console) : TaskActivity<string, string>
 {
-    private readonly IConsole _console;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="GetUserTask"/> class.
-    /// </summary>
-    /// <param name="console">The console output helper.</param>
-    public GetUserTask(IConsole console)
-    {
-        _console = console ?? throw new ArgumentNullException(nameof(console));
-    }
+    private readonly IConsole _console = console ?? throw new ArgumentNullException(nameof(console));
 
     /// <inheritdoc />
     protected override string Execute(TaskContext context, string input)

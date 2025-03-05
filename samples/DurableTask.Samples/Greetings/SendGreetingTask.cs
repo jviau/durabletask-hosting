@@ -8,18 +8,13 @@ namespace DurableTask.Samples.Greetings;
 /// <summary>
 /// A task for sending a greeting.
 /// </summary>
-public sealed class SendGreetingTask : AsyncTaskActivity<string, string>
+/// <remarks>
+/// Initializes a new instance of the <see cref="SendGreetingTask"/> class.
+/// </remarks>
+/// <param name="console">The console output helper.</param>
+public sealed class SendGreetingTask(IConsole console) : AsyncTaskActivity<string, string>
 {
-    private readonly IConsole _console;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SendGreetingTask"/> class.
-    /// </summary>
-    /// <param name="console">The console output helper.</param>
-    public SendGreetingTask(IConsole console)
-    {
-        _console = console ?? throw new ArgumentNullException(nameof(console));
-    }
+    private readonly IConsole _console = console ?? throw new ArgumentNullException(nameof(console));
 
     /// <inheritdoc />
     protected override async Task<string> ExecuteAsync(TaskContext context, string user)

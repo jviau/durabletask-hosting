@@ -154,18 +154,11 @@ public class TaskMiddlewareRunnerTests
         public int ExecutionCount { get; set; }
     }
 
-    public class TestMiddleware : ITaskMiddleware
+    public class TestMiddleware(ExecutionTracker tracker) : ITaskMiddleware
     {
-        private readonly ExecutionTracker _tracker;
-
-        public TestMiddleware(ExecutionTracker tracker)
-        {
-            _tracker = tracker;
-        }
-
         public Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)
         {
-            _tracker.ExecutionCount++;
+            tracker.ExecutionCount++;
             return next();
         }
     }

@@ -131,18 +131,11 @@ public class EndToEndTests
         public string Input { get; set; }
     }
 
-    private class TestOrchestration : TaskOrchestration<TestPayload, string>
+    private class TestOrchestration(ExecutionTracker tracker) : TaskOrchestration<TestPayload, string>
     {
-        private readonly ExecutionTracker _tracker;
-
-        public TestOrchestration(ExecutionTracker tracker)
-        {
-            _tracker = tracker;
-        }
-
         public override Task<TestPayload> RunTask(OrchestrationContext context, string input)
         {
-            _tracker.Add(typeof(TestOrchestration), context, input);
+            tracker.Add(typeof(TestOrchestration), context, input);
             return Task.FromResult(new TestPayload
             {
                 Input = input,
@@ -152,8 +145,7 @@ public class EndToEndTests
 
     private class ExecutionTracker
     {
-        public IList<ExecutionInstance> Executions { get; }
-            = new List<ExecutionInstance>();
+        public IList<ExecutionInstance> Executions { get; } = [];
 
         public void Add(Type type, OrchestrationContext context, string input)
         {

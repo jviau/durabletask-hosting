@@ -10,19 +10,14 @@ namespace DurableTask.DependencyInjection.Middleware;
 /// <summary>
 /// Middleware that constructs and injects the real orchestration or activity at the necessary time.
 /// </summary>
-public class ServiceProviderActivityMiddleware : ITaskMiddleware
+/// <remarks>
+/// Initializes a new instance of the <see cref="ServiceProviderActivityMiddleware"/> class.
+/// A middleware that lazily sets the inner orchestration to be ran.
+/// </remarks>
+/// <param name="serviceProvider">The service provider. Not null.</param>
+public class ServiceProviderActivityMiddleware(IServiceProvider serviceProvider) : ITaskMiddleware
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ServiceProviderActivityMiddleware"/> class.
-    /// A middleware that lazily sets the inner orchestration to be ran.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider. Not null.</param>
-    public ServiceProviderActivityMiddleware(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = Check.NotNull(serviceProvider);
-    }
+    private readonly IServiceProvider _serviceProvider = Check.NotNull(serviceProvider);
 
     /// <inheritdoc />
     public async Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)

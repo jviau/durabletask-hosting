@@ -53,32 +53,21 @@ public static class OrchestrationRequest
         return request;
     }
 
-    private class Request<TOutput> : RequestCore, IOrchestrationRequest<TOutput>
+    private class Request<TOutput>(TaskOrchestrationDescriptor descriptor, object? input)
+        : RequestCore(descriptor, input), IOrchestrationRequest<TOutput>
     {
-        public Request(TaskOrchestrationDescriptor descriptor, object? input)
-            : base(descriptor, input)
-        {
-        }
     }
 
-    private class Request : RequestCore, IOrchestrationRequest
+    private class Request(TaskOrchestrationDescriptor descriptor, object? input)
+        : RequestCore(descriptor, input), IOrchestrationRequest
     {
-        public Request(TaskOrchestrationDescriptor descriptor, object? input)
-            : base(descriptor, input)
-        {
-        }
     }
 
-    private class RequestCore : IBaseOrchestrationRequest, IProvidesInput
+    private class RequestCore(TaskOrchestrationDescriptor descriptor, object? input)
+        : IBaseOrchestrationRequest, IProvidesInput
     {
-        private readonly TaskOrchestrationDescriptor _descriptor;
-        private readonly object? _input;
-
-        public RequestCore(TaskOrchestrationDescriptor descriptor, object? input)
-        {
-            _descriptor = descriptor;
-            _input = input;
-        }
+        private readonly TaskOrchestrationDescriptor _descriptor = descriptor;
+        private readonly object? _input = input;
 
         public object? GetInput() => _input;
 

@@ -65,10 +65,8 @@ internal static class TaskMiddlewareRunner
             }
             else
             {
-                ObjectFactory objectFactory = ActivatorUtilities.CreateFactory(
-                    descriptor.Type, Array.Empty<Type>());
-                factory = s_factories.GetOrAdd(
-                    descriptor, sp => (ITaskMiddleware)objectFactory.Invoke(sp, Array.Empty<object>()));
+                ObjectFactory objectFactory = ActivatorUtilities.CreateFactory(descriptor.Type, []);
+                factory = s_factories.GetOrAdd(descriptor, sp => (ITaskMiddleware)objectFactory.Invoke(sp, []));
                 return factory.Invoke(serviceProvider);
             }
         }
@@ -76,14 +74,9 @@ internal static class TaskMiddlewareRunner
         return factory.Invoke(serviceProvider);
     }
 
-    private class FuncMiddleware : ITaskMiddleware
+    private class FuncMiddleware(Func<DispatchMiddlewareContext, Func<Task>, Task> func) : ITaskMiddleware
     {
-        private readonly Func<DispatchMiddlewareContext, Func<Task>, Task> _func;
-
-        public FuncMiddleware(Func<DispatchMiddlewareContext, Func<Task>, Task> func)
-        {
-            _func = Check.NotNull(func);
-        }
+        private readonly Func<DispatchMiddlewareContext, Func<Task>, Task> _func = Check.NotNull(func);
 
         public Task InvokeAsync(DispatchMiddlewareContext context, Func<Task> next)
             => _func.Invoke(context, next);

@@ -50,7 +50,7 @@ internal static class SpanNameHelper
     /// "Namespace.Name`1[[System.String, System.Private.CoreLib]]" -> "Name`1 [String]"
     /// "Namespace.Name`2[[System.String, System.Private.CoreLib]|[System.Object, System.Private.CoreLib]]" -> "Name`1 [String, Object]".
     /// </remarks>
-    [return: NotNullIfNotNull("name")]
+    [return: NotNullIfNotNull(nameof(name))]
     public static string? SimplifyName(string? name)
     {
         if (name is null)
