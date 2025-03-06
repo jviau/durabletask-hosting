@@ -9,6 +9,7 @@ using DurableTask.DependencyInjection.Orchestrations;
 using DurableTask.DependencyInjection.Properties;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DurableTask.DependencyInjection;
 
@@ -25,6 +26,11 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     {
         Services = Check.NotNull(services);
     }
+
+    /// <summary>
+    /// Gets the name of this builder.
+    /// </summary>
+    public string Name { get; init; } = Options.DefaultName;
 
     /// <inheritdoc />
     public IServiceCollection Services { get; }
@@ -59,10 +65,7 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     {
         Check.NotNull(serviceProvider);
 
-        if (OrchestrationService is null)
-        {
-            OrchestrationService = serviceProvider.GetRequiredService<IOrchestrationService>();
-        }
+        OrchestrationService ??= serviceProvider.GetRequiredService<IOrchestrationService>();
 
         // Verify we still have our ServiceProvider middleware
         if (OrchestrationMiddleware.FirstOrDefault(x => x.Type == typeof(ServiceProviderOrchestrationMiddleware))

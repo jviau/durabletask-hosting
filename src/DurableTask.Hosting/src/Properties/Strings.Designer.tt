@@ -1,5 +1,0 @@
-<#
-    Session["ResourceFile"] = "Strings.resx";
-    Session["NoDiagnostics"] = true;
-#>
-<#@ include file="..\..\..\..\eng\Resources.tt" #>

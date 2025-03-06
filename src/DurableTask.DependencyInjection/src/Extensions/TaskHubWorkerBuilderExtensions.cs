@@ -5,6 +5,7 @@ using DurableTask.Core;
 using DurableTask.Core.Serializing;
 using DurableTask.DependencyInjection.Internal;
 using DurableTask.DependencyInjection.Properties;
+using DurableTask.Hosting.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,42 @@ namespace DurableTask.DependencyInjection;
 public static class TaskHubWorkerBuilderExtensions
 {
     /// <summary>
+    /// Gets the name of the builder.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <returns>The builder name.</returns>
+    /// <exception cref="InvalidOperationException">When the name of the builder cannot be determined.</exception>
+    /// <remarks>
+    /// This is an extension method fo avoid adding a member to the interface, making for a breaking change.
+    /// </remarks>
+    public static string GetName(this ITaskHubWorkerBuilder builder)
+    {
+        Check.NotNull(builder);
+
+        if (builder is DefaultTaskHubWorkerBuilder defaultBuilder)
+        {
+            return defaultBuilder.Name;
+        }
+
+        throw new InvalidOperationException($"Unable to find the name of the builder for builder type {builder.GetType()}.");
+    }
+
+    /// <summary>
+    /// Configures the task hub worker with the provided <paramref name="configure"/> action.
+    /// </summary>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="configure">The configure action.</param>
+    /// <returns>The original builder, with a configure action added.</returns>
+    public static ITaskHubWorkerBuilder Configure(this ITaskHubWorkerBuilder builder, Action<TaskHubOptions> configure)
+    {
+        Check.NotNull(builder);
+        Check.NotNull(configure);
+
+        builder.Services.Configure(builder.GetName(), configure);
+        return builder;
+    }
+
+    /// <summary>
     /// Sets the provided <paramref name="orchestrationService"/> to the <paramref name="builder" />.
     /// </summary>
     /// <param name="builder">The task hub builder.</param>
@@ -28,7 +65,14 @@ public static class TaskHubWorkerBuilderExtensions
     {
         Check.NotNull(builder);
         Check.NotNull(orchestrationService);
-        builder.Services.TryAddSingleton(orchestrationService);
+        builder.Configure(o => o.OrchestrationService = orchestrationService);
+
+        if (string.IsNullOrEmpty(builder.GetName()))
+        {
+            // retain legacy behavior of adding this to the service collection directly.
+            builder.Services.TryAddSingleton(orchestrationService);
+        }
+
         return builder;
     }
 
@@ -43,7 +87,15 @@ public static class TaskHubWorkerBuilderExtensions
     {
         Check.NotNull(builder);
         Check.NotNull(orchestrationServiceFactory);
-        builder.Services.TryAddSingleton(orchestrationServiceFactory);
+        builder.Services.AddOptions<TaskHubOptions>(builder.GetName())
+            .Configure<IServiceProvider>((o, s) => o.OrchestrationService = orchestrationServiceFactory(s));
+
+        if (string.IsNullOrEmpty(builder.GetName()))
+        {
+            // retain legacy behavior of adding this to the service collection directly.
+            builder.Services.TryAddSingleton(orchestrationServiceFactory);
+        }
+
         return builder;
     }
 
@@ -55,7 +107,15 @@ public static class TaskHubWorkerBuilderExtensions
     public static ITaskHubWorkerBuilder AddClient(this ITaskHubWorkerBuilder builder)
     {
         Check.NotNull(builder);
-        builder.Services.TryAddSingleton(sp => ClientFactory(builder, sp));
+
+        // TODO: Add ITaskHubClientProvider, register named clients. Need to ensure each one
+        // can have its own IOrchestrationServiceClient.
+        if (string.IsNullOrEmpty(builder.GetName()))
+        {
+            // retain legacy behavior of adding this to the service collection directly.
+            builder.Services.TryAddSingleton(sp => ClientFactory(builder, sp));
+        }
+
         return builder;
     }
 

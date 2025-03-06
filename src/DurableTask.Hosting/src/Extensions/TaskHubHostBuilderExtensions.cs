@@ -19,6 +19,7 @@ public static class TaskHubHostBuilderExtensions
     /// <param name="builder">The host builder, not null.</param>
     /// <param name="configure">The action to configure the worker, not null.</param>
     /// <returns>The original host builder with task hub worker configured.</returns>
+    [Obsolete("Use IServiceCollection.AddTaskHubWorker instead. This method will be removed in a future version.")]
     public static IHostBuilder ConfigureTaskHubWorker(
         this IHostBuilder builder, Action<ITaskHubWorkerBuilder> configure)
     {
@@ -35,6 +36,7 @@ public static class TaskHubHostBuilderExtensions
     /// <param name="configure">The action to configure the worker, not null.</param>
     /// <param name="configureOptions">The action to configure the task hub host options.</param>
     /// <returns>The original host builder with task hub worker configured.</returns>
+    [Obsolete("Use IServiceCollection.AddTaskHubWorker instead. This method will be removed in a future version.")]
     public static IHostBuilder ConfigureTaskHubWorker(
         this IHostBuilder builder,
         Action<ITaskHubWorkerBuilder> configure,
@@ -53,6 +55,7 @@ public static class TaskHubHostBuilderExtensions
     /// <param name="builder">The host builder, not null.</param>
     /// <param name="configure">The action to configure the worker, not null.</param>
     /// <returns>The original host builder with task hub worker configured.</returns>
+    [Obsolete("Use IServiceCollection.AddTaskHubWorker instead. This method will be removed in a future version.")]
     public static IHostBuilder ConfigureTaskHubWorker(
         this IHostBuilder builder, Action<HostBuilderContext, ITaskHubWorkerBuilder> configure)
     {
@@ -68,6 +71,7 @@ public static class TaskHubHostBuilderExtensions
     /// <param name="configure">The action to configure the worker, not null.</param>
     /// <param name="configureOptions">The action to configure the task hub host options.</param>
     /// <returns>The original host builder with task hub worker configured.</returns>
+    [Obsolete("Use IServiceCollection.AddTaskHubWorker instead. This method will be removed in a future version.")]
     public static IHostBuilder ConfigureTaskHubWorker(
         this IHostBuilder builder,
         Action<HostBuilderContext, ITaskHubWorkerBuilder> configure,
@@ -79,16 +83,9 @@ public static class TaskHubHostBuilderExtensions
 
         builder.ConfigureServices((context, services) =>
         {
-            services.AddOptions();
-            services.AddLogging();
-
-            services
-                .AddOptions<TaskHubOptions>()
-                .Bind(context.Configuration.GetSection("TaskHub"))
-                .Configure(configureOptions);
-
-            services.AddTaskHubWorker(taskHubBuilder => configure(context, taskHubBuilder));
-            services.AddHostedService<TaskHubBackgroundService>();
+            ITaskHubWorkerBuilder b = services.AddTaskHubWorker();
+            configure(context, b);
+            b.Configure(configureOptions);
         });
 
         return builder;

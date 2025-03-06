@@ -73,6 +73,18 @@ internal static class Strings
             name,
             CultureInfo.CurrentUICulture);
 
+    /// <summary>
+    ///     Unable to gracefully shutdown task hub worker in time.
+    /// </summary>
+    public static string ForcedShutdown
+        => GetString("ForcedShutdown");
+
+    /// <summary>
+    ///     Starting task hub worker.
+    /// </summary>
+    public static string TaskHubWorkerStarting
+        => GetString("TaskHubWorkerStarting");
+
     private static string GetString(string name, params string[] formatterNames)
     {
         var value = _resourceManager.GetString(name);

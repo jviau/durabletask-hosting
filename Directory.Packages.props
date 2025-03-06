@@ -18,7 +18,9 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsPackageVersion)" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsPackageVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(ExtensionsPackageVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(ExtensionsPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(ExtensionsPackageVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsPackageVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsPackageVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.EventLog" Version="$(ExtensionsPackageVersion)" />
