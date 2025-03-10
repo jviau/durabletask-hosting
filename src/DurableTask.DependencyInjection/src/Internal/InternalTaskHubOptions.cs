@@ -18,6 +18,8 @@ namespace DurableTask.DependencyInjection.Internal;
 /// </remarks>
 public sealed class InternalTaskHubOptions
 {
+    private DataConverter? _converter;
+
     /// <summary>
     /// Gets or sets the data converter.
     /// This is an internal API that supports the DurableTask infrastructure and not subject to
@@ -25,5 +27,22 @@ public sealed class InternalTaskHubOptions
     /// any release. You should only use it directly in your code with extreme caution and knowing that
     /// doing so can result in application failures when updating to a new DurableTask release.
     /// </summary>
-    public DataConverter DataConverter { get; set; } = JsonDataConverter.Default;
+    public DataConverter DataConverter
+    {
+        get => _converter ??= JsonDataConverter.Default;
+        set => _converter = value;
+    }
+
+    /// <summary>
+    /// Applies the <see cref="DataConverter" /> if it is not set.
+    /// This is an internal API that supports the DurableTask infrastructure and not subject to
+    /// the same compatibility standards as public APIs. It may be changed or removed without notice in
+    /// any release. You should only use it directly in your code with extreme caution and knowing that
+    /// doing so can result in application failures when updating to a new DurableTask release.
+    /// </summary>
+    /// <param name="converter">The converter to set.</param>
+    public void ApplyIfNotSet(DataConverter converter)
+    {
+        _converter ??= converter;
+    }
 }

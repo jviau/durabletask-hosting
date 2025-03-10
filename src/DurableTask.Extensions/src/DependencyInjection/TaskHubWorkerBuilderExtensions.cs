@@ -44,7 +44,7 @@ public static class TaskHubWorkerBuilderExtensions
         builder.Services.TryAddEnumerable(
             ServiceDescriptor.Singleton<IConfigureOptions<DurableExtensionsOptions>, ConfigureExtensionOptions>());
         builder.Services.TryAddEnumerable(
-            ServiceDescriptor.Singleton<IPostConfigureOptions<InternalTaskHubOptions>, PostConfigureInternalOptions>());
+            ServiceDescriptor.Singleton<IConfigureOptions<InternalTaskHubOptions>, ConfigureInternalOptions>());
         builder.Services.Configure(name, configure);
 
         return builder;
@@ -79,22 +79,27 @@ public static class TaskHubWorkerBuilderExtensions
     {
         public void Configure(string name, DurableExtensionsOptions options)
         {
-            if (converter is not null && options.DataConverter is null)
+            if (converter is not null)
             {
-                options.DataConverter = converter;
+                options.ApplyIfNotSet(converter);
             }
         }
 
         public void Configure(DurableExtensionsOptions options) => Configure(Options.DefaultName, options);
     }
 
-    private class PostConfigureInternalOptions(IOptionsMonitor<DurableExtensionsOptions> extensionOptions)
-        : IPostConfigureOptions<InternalTaskHubOptions>
+    private class ConfigureInternalOptions(IOptionsMonitor<DurableExtensionsOptions> extensionOptions)
+        : IConfigureNamedOptions<InternalTaskHubOptions>
     {
-        public void PostConfigure(string name, InternalTaskHubOptions options)
+        public void Configure(string name, InternalTaskHubOptions options)
         {
             name ??= Options.DefaultName;
-            options.DataConverter ??= extensionOptions.Get(name).DataConverter;
+            if (extensionOptions.Get(name).DataConverter is { } converter)
+            {
+                options.ApplyIfNotSet(converter);
+            }
         }
+        public void Configure(InternalTaskHubOptions options) => Configure(Options.DefaultName, options);
+
     }
 }

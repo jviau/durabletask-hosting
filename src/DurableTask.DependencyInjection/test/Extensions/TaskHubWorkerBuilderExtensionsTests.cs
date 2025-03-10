@@ -20,7 +20,7 @@ public class TaskHubWorkerBuilderExtensionsTests
             _ => TaskHubWorkerBuilderExtensions.UseOrchestrationService(null, Mock.Of<IOrchestrationService>()));
 
     [Fact]
-    public void WithOrchestration_ServiceIsSet()
+    public void UseOrchestration_ServiceIsSet()
         => RunTest(
             builder =>
             {
@@ -43,7 +43,7 @@ public class TaskHubWorkerBuilderExtensionsTests
             (mock, builder) =>
             {
                 builder.Should().Be(mock.Object);
-                builder.Services.Should().HaveCount(2);
+                builder.Services.Should().HaveCount(4);
                 var client = builder.Services.FirstOrDefault(x => x.ServiceType == typeof(TaskHubClient));
                 client.Should().NotBeNull();
                 client.Lifetime.Should().Be(ServiceLifetime.Singleton);
@@ -102,6 +102,7 @@ public class TaskHubWorkerBuilderExtensionsTests
                     .Returns(mockOrchestrationService.Object);
 #pragma warning restore CS0618 // Type or member is obsolete
 
+                builder.Services.AddOptions();
                 builder.AddClient();
                 IServiceProvider provider = builder.Services.BuildServiceProvider();
                 return provider.GetService<TaskHubClient>();
@@ -117,8 +118,7 @@ public class TaskHubWorkerBuilderExtensionsTests
             builder =>
             {
                 var mockClient = Mock.Of<IOrchestrationServiceClient>();
-                builder.Services.AddSingleton(mockClient);
-                builder.AddClient();
+                builder.AddClient(mockClient);
                 IServiceProvider provider = builder.Services.BuildServiceProvider();
                 return provider.GetService<TaskHubClient>();
             },

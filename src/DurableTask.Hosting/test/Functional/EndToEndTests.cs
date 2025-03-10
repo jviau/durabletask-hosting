@@ -26,7 +26,7 @@ public class EndToEndTests
         TaskHubWorker worker = host.Services.GetService<TaskHubWorker>();
         IEnumerable<IHostedService> hostedServices = host.Services.GetServices<IHostedService>();
 
-        worker.Should().NotBeNull();
+        worker.Should().BeNull();
         hostedServices.Should().HaveCount(1);
         hostedServices.Single().Should().BeOfType(typeof(TaskHubBackgroundService));
     }
@@ -41,7 +41,7 @@ public class EndToEndTests
         TaskHubWorker worker = host.Services.GetService<TaskHubWorker>();
         IEnumerable<IHostedService> hostedServices = host.Services.GetServices<IHostedService>();
 
-        worker.Should().NotBeNull();
+        worker.Should().BeNull();
         hostedServices.Should().HaveCount(1);
         hostedServices.Single().Should().BeOfType(typeof(TaskHubBackgroundService));
     }
@@ -58,7 +58,7 @@ public class EndToEndTests
         TaskHubWorker worker = host.Services.GetService<TaskHubWorker>();
         IEnumerable<IHostedService> hostedServices = host.Services.GetServices<IHostedService>();
 
-        worker.Should().NotBeNull();
+        worker.Should().BeNull();
         hostedServices.Should().HaveCount(1);
         hostedServices.Single().Should().BeOfType(typeof(TaskHubBackgroundService));
     }
@@ -73,9 +73,7 @@ public class EndToEndTests
         IHost host = CreateHost(
             s =>
             {
-                s.AddSingleton<IOrchestrationService>(new LocalOrchestrationService());
                 s.AddSingleton<ExecutionTracker>();
-
                 if ((int)serviceLifetime != -1)
                 {
                     s.Add(new ServiceDescriptor(
@@ -84,6 +82,7 @@ public class EndToEndTests
             },
             b =>
             {
+                b.UseOrchestrationService(new LocalOrchestrationService());
                 b.AddOrchestration<TestOrchestration>();
                 b.AddClient();
             });

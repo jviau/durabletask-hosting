@@ -8,6 +8,7 @@ using DurableTask.Hosting.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -38,7 +39,7 @@ public static class TaskHubServiceCollectionExtensions
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<TaskHubOptions>, ConfigureTaskHubOptions>());
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<TaskHubOptions>, PostConfigureTaskHubOptions>());
 
-            services.AddSingleton(sp =>
+            services.AddSingleton<IHostedService>(sp =>
             {
                 TaskHubOptions options = sp.GetOptions<TaskHubOptions>(name);
                 ILogger<TaskHubBackgroundService> logger = sp.CreateLogger<TaskHubBackgroundService>();

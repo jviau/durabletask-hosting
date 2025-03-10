@@ -8,6 +8,8 @@ using DurableTask.Extensions;
 using DurableTask.Extensions.Middleware;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
@@ -23,14 +25,24 @@ public class TaskHubWorkerBuilderExtensionsTests
     {
         // arrange
         ServiceCollection services = new();
+        services.AddOptions();
+        services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance);
         DefaultTaskHubWorkerBuilder builder = new(services);
 
         // act
         builder.AddDurableExtensions();
+        IServiceProvider provider = services.BuildServiceProvider();
 
         // assert
-        builder.ActivityMiddleware.Last().Type.Should().Be<SetActivityDataMiddleware>();
-        builder.OrchestrationMiddleware.Last().Type.Should().Be<SetOrchestrationDataMiddleware>();
+        TaskMiddlewareDescriptor descriptor = builder.ActivityMiddleware.Last();
+        descriptor.Factory.Should().NotBeNull();
+        ITaskMiddleware middleware = descriptor.Factory.Invoke(provider);
+        middleware.Should().BeOfType<SetActivityDataMiddleware>();
+
+        descriptor = builder.OrchestrationMiddleware.Last();
+        descriptor.Factory.Should().NotBeNull();
+        middleware = descriptor.Factory.Invoke(provider);
+        middleware.Should().BeOfType<SetOrchestrationDataMiddleware>();
     }
 
     [Fact]

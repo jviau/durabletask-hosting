@@ -34,12 +34,10 @@ public class TaskHubServiceCollectionExtensionsTests
             {
                 returned.Should().NotBeNull();
                 returned.Should().BeSameAs(original);
-                returned.Should().ContainSingle(sd => sd.ServiceType == typeof(ITaskHubWorkerBuilder)
-                    && sd.ImplementationInstance.GetType() == typeof(DefaultTaskHubWorkerBuilder)
-                    && sd.Lifetime == ServiceLifetime.Singleton);
 
-                returned.Should().ContainSingle(sd => sd.ServiceType == typeof(TaskHubWorker)
-                    && sd.ImplementationFactory != null && sd.Lifetime == ServiceLifetime.Singleton);
+                // Multiple worker support - verify we do not add these to the container anymore.
+                returned.Should().NotContain(sd => sd.ServiceType == typeof(ITaskHubWorkerBuilder));
+                returned.Should().NotContain(sd => sd.ServiceType == typeof(TaskHubWorker));
             });
 
     private static void RunTestException<TException>(Action<IServiceCollection> act)

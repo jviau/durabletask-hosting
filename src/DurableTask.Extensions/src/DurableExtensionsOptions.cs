@@ -10,11 +10,22 @@ namespace DurableTask.Extensions;
 /// </summary>
 public sealed class DurableExtensionsOptions
 {
+    private DataConverter? _converter;
+
     /// <summary>
     /// Gets or sets the <see cref="Core.Serializing.DataConverter" /> to use with durable extensions.
     /// </summary>
     /// <remarks>
     /// Default is <see cref="JsonDataConverter" />.
     /// </remarks>
-    public DataConverter DataConverter { get; set; } = JsonDataConverter.Default;
+    public DataConverter DataConverter
+    {
+        get => _converter ??= JsonDataConverter.Default;
+        set => _converter = value;
+    }
+
+    internal void ApplyIfNotSet(DataConverter converter)
+    {
+        _converter ??= converter;
+    }
 }
