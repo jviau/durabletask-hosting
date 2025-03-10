@@ -32,6 +32,15 @@ public sealed class TaskMiddlewareDescriptor
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="TaskMiddlewareDescriptor"/> class.
+    /// </summary>
+    /// <param name="factory">The factory to create this middleware.</param>
+    public TaskMiddlewareDescriptor(Func<IServiceProvider, ITaskMiddleware> factory)
+    {
+        Factory = Check.NotNull(factory);
+    }
+
+    /// <summary>
     /// Gets the type held by this descriptor.
     /// </summary>
     public Type? Type { get; }
@@ -40,6 +49,11 @@ public sealed class TaskMiddlewareDescriptor
     /// Gets the func to invoke for this middleware.
     /// </summary>
     public Func<DispatchMiddlewareContext, Func<Task>, Task>? Func { get; }
+
+    /// <summary>
+    /// Gets the factory to build this middleware.
+    /// </summary>
+    public Func<IServiceProvider, ITaskMiddleware>? Factory { get; }
 
     /// <summary>
     /// Creates a new <see cref="TaskMiddlewareDescriptor"/> with the provided type.

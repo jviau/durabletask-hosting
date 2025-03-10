@@ -237,4 +237,20 @@ public static class TaskHubWorkerBuilderActivityExtensions
         builder.UseActivityMiddleware(new TaskMiddlewareDescriptor(func));
         return builder;
     }
+
+    /// <summary>
+    /// Adds the provided activity middleware to the builder.
+    /// </summary>
+    /// <param name="builder">The builder to add to, not null.</param>
+    /// <param name="factory">The activity middleware factory to add, not null.</param>
+    /// <returns>The original builder with activity middleware added.</returns>
+    public static ITaskHubWorkerBuilder UseActivityMiddleware(
+        this ITaskHubWorkerBuilder builder, Func<IServiceProvider, ITaskMiddleware> factory)
+    {
+        Check.NotNull(builder);
+        Check.NotNull(factory);
+
+        builder.UseActivityMiddleware(new TaskMiddlewareDescriptor(factory));
+        return builder;
+    }
 }

@@ -15,9 +15,9 @@ namespace DurableTask.DependencyInjection.Extensions.Tests;
 public class TaskHubWorkerBuilderExtensionsTests
 {
     [Fact]
-    public void WithOrchestrationService_ArgumentNull()
+    public void UseOrchestrationService_ArgumentNull()
         => RunTestException<ArgumentNullException>(
-            _ => TaskHubWorkerBuilderExtensions.WithOrchestrationService(null, Mock.Of<IOrchestrationService>()));
+            _ => TaskHubWorkerBuilderExtensions.UseOrchestrationService(null, Mock.Of<IOrchestrationService>()));
 
     [Fact]
     public void WithOrchestration_ServiceIsSet()
@@ -25,7 +25,7 @@ public class TaskHubWorkerBuilderExtensionsTests
             builder =>
             {
                 IOrchestrationService service = Mock.Of<IOrchestrationService>();
-                ITaskHubWorkerBuilder returned = builder.WithOrchestrationService(service);
+                ITaskHubWorkerBuilder returned = builder.UseOrchestrationService(service);
 
                 builder.Should().NotBeNull();
                 builder.Should().BeSameAs(returned);
@@ -65,7 +65,7 @@ public class TaskHubWorkerBuilderExtensionsTests
             builder =>
             {
                 Mock<IOrchestrationService> mockOrchestrationService = new();
-                builder.WithOrchestrationService(mockOrchestrationService.Object);
+                builder.UseOrchestrationService(mockOrchestrationService.Object);
                 builder.AddClient();
                 IServiceProvider provider = builder.Services.BuildServiceProvider();
                 provider.GetService<TaskHubClient>();
@@ -78,7 +78,7 @@ public class TaskHubWorkerBuilderExtensionsTests
             {
                 Mock<IOrchestrationService> mockOrchestrationService = new();
                 mockOrchestrationService.As<IOrchestrationServiceClient>();
-                builder.WithOrchestrationService(mockOrchestrationService.Object);
+                builder.UseOrchestrationService(mockOrchestrationService.Object);
                 builder.AddClient();
                 IServiceProvider provider = builder.Services.BuildServiceProvider();
                 return provider.GetService<TaskHubClient>();

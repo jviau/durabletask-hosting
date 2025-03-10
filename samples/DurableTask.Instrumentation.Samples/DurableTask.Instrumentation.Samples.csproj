@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="OpenTelemetry.Exporter.Console" />
     <PackageReference Include="OpenTelemetry.Exporter.Zipkin" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
     <PackageReference Include="System.Net.Http" />
     <PackageReference Include="System.Text.RegularExpressions" />
   </ItemGroup>

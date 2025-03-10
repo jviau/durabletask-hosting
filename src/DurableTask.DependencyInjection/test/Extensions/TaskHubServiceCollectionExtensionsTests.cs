@@ -19,7 +19,7 @@ public class TaskHubServiceCollectionExtensionsTests
     [Fact]
     public void AddTaskHubWorker_ArgumentNullConfigure()
         => RunTestException<ArgumentNullException>(
-            services => TaskHubServiceCollectionExtensions.AddTaskHubWorker(services, null));
+            services => TaskHubServiceCollectionExtensions.AddTaskHubWorker(services, (Action<ITaskHubWorkerBuilder>)null));
 
     [Fact]
     public void AddTaskHubWorker_Func()

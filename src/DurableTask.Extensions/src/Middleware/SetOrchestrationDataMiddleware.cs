@@ -5,9 +5,7 @@ using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using DurableTask.Core.Serializing;
 using DurableTask.DependencyInjection;
-using DurableTask.Extensions.Abstractions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace DurableTask.Extensions.Middleware;
 
@@ -24,10 +22,10 @@ public sealed class SetOrchestrationDataMiddleware : ITaskMiddleware
     /// </summary>
     /// <param name="loggerFactory">The logger factory. Not null.</param>
     /// <param name="options">The data converter. Not null.</param>
-    public SetOrchestrationDataMiddleware(ILoggerFactory loggerFactory, IOptions<DurableExtensionsOptions> options)
+    public SetOrchestrationDataMiddleware(ILoggerFactory loggerFactory, DurableExtensionsOptions options)
     {
         _loggerFactory = Check.NotNull(loggerFactory);
-        DurableExtensionsOptions opt = Check.NotNull(options).Value;
+        DurableExtensionsOptions opt = Check.NotNull(options);
         _dataConverter = Check.NotNull(opt.DataConverter);
     }
 

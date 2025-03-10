@@ -7,39 +7,37 @@ using DurableTask.Core;
 using DurableTask.DependencyInjection;
 using DurableTask.Extensions;
 using DurableTask.Extensions.Samples;
-using DurableTask.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
-    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Sample"))
-    .AddDurableTaskInstrumentation()
-    .AddSource("DurableTask.Instrumentation.Samples")
-    .AddConsoleExporter()
-    .AddZipkinExporter()
-    .Build();
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
-    {
-        services.AddSingleton<IConsole, ConsoleWrapper>();
-        services.AddHostedService<TaskEnqueuer>();
-    })
-    .ConfigureTaskHubWorker((context, builder) =>
-    {
-        builder.WithOrchestrationService(GetOrchestrationService());
-        builder.AddDurableExtensions();
-        builder.AddDurableInstrumentation();
-        builder.AddClient();
-        builder.AddOrchestrationsFromAssembly<TopOrchestration>(includePrivate: true);
-        builder.AddActivitiesFromAssembly<TopOrchestration>(includePrivate: true);
-    })
-    .UseConsoleLifetime()
-    .Build();
+builder.Services.AddTaskHubWorker()
+    .Configure(o => o.CreateIfNotExists = true)
+    .UseOrchestrationService(GetOrchestrationService())
+    .AddOrchestrationsFromAssembly<TopOrchestration>(includePrivate: true)
+    .AddActivitiesFromAssembly<TopOrchestration>(includePrivate: true)
+    .AddDurableExtensions()
+    .AddDurableInstrumentation()
+    .AddClient();
 
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(r => r.AddService("Sample"))
+    .WithTracing(b =>
+    {
+        b.AddSource("DurableTask.Instrumentation.Samples")
+            .AddDurableTaskInstrumentation()
+            .AddConsoleExporter()
+            .AddZipkinExporter();
+    });
+
+builder.Services
+    .AddSingleton<IConsole, ConsoleWrapper>()
+    .AddHostedService<TaskEnqueuer>();
+
+IHost host = builder.Build();
 await host.RunAsync();
 
 static IOrchestrationService GetOrchestrationService()

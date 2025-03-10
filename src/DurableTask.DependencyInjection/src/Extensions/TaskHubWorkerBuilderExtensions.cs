@@ -3,6 +3,7 @@
 
 using DurableTask.Core;
 using DurableTask.Core.Serializing;
+using DurableTask.DependencyInjection.Extensions;
 using DurableTask.DependencyInjection.Internal;
 using DurableTask.DependencyInjection.Properties;
 using DurableTask.Hosting.Options;
@@ -23,7 +24,6 @@ public static class TaskHubWorkerBuilderExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <returns>The builder name.</returns>
-    /// <exception cref="InvalidOperationException">When the name of the builder cannot be determined.</exception>
     /// <remarks>
     /// This is an extension method fo avoid adding a member to the interface, making for a breaking change.
     /// </remarks>
@@ -36,7 +36,7 @@ public static class TaskHubWorkerBuilderExtensions
             return defaultBuilder.Name;
         }
 
-        throw new InvalidOperationException($"Unable to find the name of the builder for builder type {builder.GetType()}.");
+        return string.Empty;
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public static class TaskHubWorkerBuilderExtensions
     /// <param name="builder">The task hub builder.</param>
     /// <param name="orchestrationService">The orchestration service to use.</param>
     /// <returns>The original builder, with orchestration service set.</returns>
-    public static ITaskHubWorkerBuilder WithOrchestrationService(
+    public static ITaskHubWorkerBuilder UseOrchestrationService(
         this ITaskHubWorkerBuilder builder, IOrchestrationService orchestrationService)
     {
         Check.NotNull(builder);
@@ -82,7 +82,7 @@ public static class TaskHubWorkerBuilderExtensions
     /// <param name="builder">The task hub builder.</param>
     /// <param name="orchestrationServiceFactory">The orchestration service factory to use.</param>
     /// <returns>The original builder, with orchestration service set.</returns>
-    public static ITaskHubWorkerBuilder WithOrchestrationService(
+    public static ITaskHubWorkerBuilder UseOrchestrationService(
         this ITaskHubWorkerBuilder builder, Func<IServiceProvider, IOrchestrationService> orchestrationServiceFactory)
     {
         Check.NotNull(builder);
@@ -100,6 +100,45 @@ public static class TaskHubWorkerBuilderExtensions
     }
 
     /// <summary>
+    /// Sets the provided <paramref name="orchestrationService"/> to the <paramref name="builder" />.
+    /// </summary>
+    /// <param name="builder">The task hub builder.</param>
+    /// <param name="orchestrationService">The orchestration service to use.</param>
+    /// <returns>The original builder, with orchestration service set.</returns>
+    [Obsolete("Use UseOrchestrationService instead. This method will be removed in a future version.")]
+    public static ITaskHubWorkerBuilder WithOrchestrationService(
+        this ITaskHubWorkerBuilder builder, IOrchestrationService orchestrationService)
+        => builder.UseOrchestrationService(orchestrationService);
+
+    /// <summary>
+    /// Sets the provided <paramref name="orchestrationServiceFactory"/> to the <paramref name="builder" />.
+    /// </summary>
+    /// <param name="builder">The task hub builder.</param>
+    /// <param name="orchestrationServiceFactory">The orchestration service factory to use.</param>
+    /// <returns>The original builder, with orchestration service set.</returns>
+    [Obsolete("Use UseOrchestrationService instead. This method will be removed in a future version.")]
+    public static ITaskHubWorkerBuilder WithOrchestrationService(
+        this ITaskHubWorkerBuilder builder, Func<IServiceProvider, IOrchestrationService> orchestrationServiceFactory)
+        => UseOrchestrationService(builder, orchestrationServiceFactory);
+
+    /// <summary>
+    /// Adds <see cref="TaskHubClient"/> to the service collection with the specified <paramref name="serviceClient"/>.
+    /// </summary>
+    /// <param name="builder">The builder to add the client from.</param>
+    /// <param name="serviceClient">The orchestration service client to use.</param>
+    /// <returns>The original builder, with <see cref="TaskHubClient"/> added to the service collection.</returns>
+    public static ITaskHubWorkerBuilder AddClient(
+        this ITaskHubWorkerBuilder builder, IOrchestrationServiceClient serviceClient)
+    {
+        Check.NotNull(builder);
+        Check.NotNull(serviceClient);
+
+        builder.Configure(o => o.OrchestrationServiceClient = serviceClient);
+        builder.AddClient();
+        return builder;
+    }
+
+    /// <summary>
     /// Adds <see cref="TaskHubClient"/> to the service collection.
     /// </summary>
     /// <param name="builder">The builder to add the client from.</param>
@@ -108,20 +147,40 @@ public static class TaskHubWorkerBuilderExtensions
     {
         Check.NotNull(builder);
 
-        // TODO: Add ITaskHubClientProvider, register named clients. Need to ensure each one
-        // can have its own IOrchestrationServiceClient.
-        if (string.IsNullOrEmpty(builder.GetName()))
+        if (builder is DefaultTaskHubWorkerBuilder { ClientAdded: true })
         {
-            // retain legacy behavior of adding this to the service collection directly.
-            builder.Services.TryAddSingleton(sp => ClientFactory(builder, sp));
+            return builder;
+        }
+
+        string name = builder.GetName();
+        builder.Services.TryAddSingleton<ITaskHubClientProvider, DefaultTaskHubClientProvider>();
+        builder.Services.AddSingleton(sp => new DefaultTaskHubClientProvider.ClientContainer(
+                name, ClientFactory(name, builder, sp)));
+        if (builder is DefaultTaskHubWorkerBuilder b)
+        {
+            b.ClientAdded = true;
+        }
+
+        // retain legacy behavior of adding this to the service collection directly.
+        if (string.IsNullOrEmpty(name))
+        {
+            builder.Services.TryAddSingleton(sp => ClientFactory(name, builder, sp));
         }
 
         return builder;
     }
 
-    private static TaskHubClient ClientFactory(ITaskHubWorkerBuilder builder, IServiceProvider serviceProvider)
+    private static TaskHubClient ClientFactory(
+        string name, ITaskHubWorkerBuilder builder, IServiceProvider serviceProvider)
     {
-        IOrchestrationServiceClient? client = serviceProvider.GetService<IOrchestrationServiceClient>();
+        TaskHubOptions options = serviceProvider.GetOptions<TaskHubOptions>(name);
+        IOrchestrationServiceClient? client = options.GetOrchestrationServiceClient();
+
+        // retain legacy behavior of getting from service provider for default client only.
+        if (client is null && string.IsNullOrEmpty(name))
+        {
+            client = serviceProvider.GetService<IOrchestrationServiceClient>();
+        }
 
         if (client is null)
         {
@@ -139,8 +198,8 @@ public static class TaskHubWorkerBuilderExtensions
         }
 
         // Options does not have to be present.
-        IOptions<TaskHubClientOptions> options = serviceProvider.GetService<IOptions<TaskHubClientOptions>>();
-        DataConverter converter = options?.Value?.DataConverter ?? JsonDataConverter.Default;
+        InternalTaskHubOptions internalOptions = serviceProvider.GetOptions<InternalTaskHubOptions>(name);
+        DataConverter converter = internalOptions?.DataConverter ?? JsonDataConverter.Default;
         ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         return new TaskHubClient(client, converter, loggerFactory);
     }

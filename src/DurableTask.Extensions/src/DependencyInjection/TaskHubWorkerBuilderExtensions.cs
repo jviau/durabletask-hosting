@@ -6,6 +6,8 @@ using DurableTask.DependencyInjection.Internal;
 using DurableTask.Extensions;
 using DurableTask.Extensions.Middleware;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace DurableTask.DependencyInjection;
@@ -34,26 +36,65 @@ public static class TaskHubWorkerBuilderExtensions
     {
         Check.NotNull(builder);
         Check.NotNull(configure);
-        builder.UseActivityMiddleware<SetActivityDataMiddleware>();
-        builder.UseOrchestrationMiddleware<SetOrchestrationDataMiddleware>();
 
-        builder.Services.AddOptions<DurableExtensionsOptions>()
-            .Configure<IServiceProvider>((opt, sp) =>
-            {
-                DataConverter converter = sp.GetService<DataConverter>();
-                if (converter is not null)
-                {
-                    opt.DataConverter = converter;
-                }
-            })
-            .Configure(configure);
+        string name = builder.GetName();
+        builder.UseActivityMiddleware(CreateActivityMiddlewareFactory(name));
+        builder.UseOrchestrationMiddleware(CreateOrchestrationMiddlewareFactory(name));
 
-        builder.Services.AddOptions<TaskHubClientOptions>()
-            .Configure<IOptions<DurableExtensionsOptions>>((client, ext) =>
-            {
-                client.DataConverter = ext.Value.DataConverter;
-            });
+        builder.Services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IConfigureOptions<DurableExtensionsOptions>, ConfigureExtensionOptions>());
+        builder.Services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IPostConfigureOptions<InternalTaskHubOptions>, PostConfigureInternalOptions>());
+        builder.Services.Configure(name, configure);
 
         return builder;
+    }
+
+    private static Func<IServiceProvider, ITaskMiddleware> CreateActivityMiddlewareFactory(string name)
+    {
+        return sp =>
+        {
+            DurableExtensionsOptions options = sp.GetRequiredService<IOptionsMonitor<DurableExtensionsOptions>>()
+                .Get(name);
+
+            ILoggerFactory loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+            return new SetActivityDataMiddleware(loggerFactory, options);
+        };
+    }
+
+    private static Func<IServiceProvider, ITaskMiddleware> CreateOrchestrationMiddlewareFactory(string name)
+    {
+        return sp =>
+        {
+            DurableExtensionsOptions options = sp.GetRequiredService<IOptionsMonitor<DurableExtensionsOptions>>()
+                .Get(name);
+
+            ILoggerFactory loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+            return new SetOrchestrationDataMiddleware(loggerFactory, options);
+        };
+    }
+
+    private class ConfigureExtensionOptions(DataConverter? converter = null)
+        : IConfigureNamedOptions<DurableExtensionsOptions>
+    {
+        public void Configure(string name, DurableExtensionsOptions options)
+        {
+            if (converter is not null && options.DataConverter is null)
+            {
+                options.DataConverter = converter;
+            }
+        }
+
+        public void Configure(DurableExtensionsOptions options) => Configure(Options.DefaultName, options);
+    }
+
+    private class PostConfigureInternalOptions(IOptionsMonitor<DurableExtensionsOptions> extensionOptions)
+        : IPostConfigureOptions<InternalTaskHubOptions>
+    {
+        public void PostConfigure(string name, InternalTaskHubOptions options)
+        {
+            name ??= Options.DefaultName;
+            options.DataConverter ??= extensionOptions.Get(name).DataConverter;
+        }
     }
 }

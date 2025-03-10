@@ -14,7 +14,12 @@ public class TaskHubOptions
     /// <summary>
     /// Gets or sets the orchestration service for this task hub.
     /// </summary>
-    public IOrchestrationService OrchestrationService { get; set; } = null!;
+    public IOrchestrationService? OrchestrationService { get; set; }
+
+    /// <summary>
+    /// Gets or sets the orchestration service client for this task hub.
+    /// </summary>
+    public IOrchestrationServiceClient? OrchestrationServiceClient { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to create the orchestration instance resources if they
@@ -44,4 +49,7 @@ public class TaskHubOptions
     /// </para>
     /// </remarks>
     public ErrorPropagationMode ErrorPropagationMode { get; set; }
+
+    internal IOrchestrationServiceClient? GetOrchestrationServiceClient()
+        => OrchestrationServiceClient ?? OrchestrationService as IOrchestrationServiceClient;
 }

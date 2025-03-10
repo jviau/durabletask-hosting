@@ -16,7 +16,7 @@ namespace DurableTask.DependencyInjection.Internal;
 /// throughout all of DTFx. Please us Vio.DurableTask.Extensions package to properly replace the entire
 /// data converter.
 /// </remarks>
-public sealed class TaskHubClientOptions
+public sealed class InternalTaskHubOptions
 {
     /// <summary>
     /// Gets or sets the data converter.

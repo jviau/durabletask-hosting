@@ -2,10 +2,13 @@
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
 using DurableTask.Core;
+using DurableTask.DependencyInjection.Extensions;
 using DurableTask.Hosting;
 using DurableTask.Hosting.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace DurableTask.DependencyInjection;
@@ -32,13 +35,17 @@ public static class TaskHubServiceCollectionExtensions
         {
             services.AddLogging();
             services.AddOptions();
-            string section = string.IsNullOrEmpty(name) ? "TaskHub" : $"TaskHub:{name}";
-            services
-                .AddOptions<TaskHubOptions>(name)
-                .Configure<IConfiguration>((options, config) => config.Bind(section, options));
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<TaskHubOptions>, ConfigureTaskHubOptions>());
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<TaskHubOptions>, PostConfigureTaskHubOptions>());
 
             services.AddSingleton(sp =>
-                ActivatorUtilities.CreateInstance<TaskHubBackgroundService>(sp, builder.Build(sp)));
+            {
+                TaskHubOptions options = sp.GetOptions<TaskHubOptions>(name);
+                ILogger<TaskHubBackgroundService> logger = sp.CreateLogger<TaskHubBackgroundService>();
+
+                // Options.Create for back-compat / avoid adding a new ctor.
+                return new TaskHubBackgroundService(builder.Build(sp), logger, Options.Create(options));
+            });
         }
 
         return builder;
@@ -96,6 +103,8 @@ public static class TaskHubServiceCollectionExtensions
     {
         private readonly Dictionary<string, DefaultTaskHubWorkerBuilder> _builders = [];
 
+        public IReadOnlyCollection<string> Names => _builders.Keys;
+
         public DefaultTaskHubWorkerBuilder GetOrAdd(string name, out bool added)
         {
             if (string.IsNullOrEmpty(name) && _builders.Keys.Any(x => !string.IsNullOrEmpty(x)))
@@ -113,12 +122,45 @@ public static class TaskHubServiceCollectionExtensions
             added = false;
             if (!_builders.TryGetValue(name, out DefaultTaskHubWorkerBuilder builder))
             {
-                builder = new DefaultTaskHubWorkerBuilder(services);
+                builder = new DefaultTaskHubWorkerBuilder(services) { Name = name };
                 _builders[name] = builder;
                 added = true;
             }
 
             return builder;
+        }
+    }
+
+    private class ConfigureTaskHubOptions(IConfiguration configuration, BuilderContainer container)
+        : IConfigureNamedOptions<TaskHubOptions>
+    {
+        public void Configure(string name, TaskHubOptions options)
+        {
+            // [legacy behavior] When only one default TaskHub is configured, we will use just "TaskHub".
+            // Otherwise we will use "Default" for the default TaskHub.
+            if (string.IsNullOrEmpty(name) && container.Names.Count == 1)
+            {
+                configuration.Bind("TaskHub", options);
+            }
+
+            string section = string.IsNullOrEmpty(name) ? "TaskHub:Default" : $"TaskHub:{name}";
+            configuration.Bind(section, options);
+        }
+
+        public void Configure(TaskHubOptions options) => Configure(Options.DefaultName, options);
+    }
+
+    private class PostConfigureTaskHubOptions(IServiceProvider serviceProvider) : IPostConfigureOptions<TaskHubOptions>
+    {
+        public void PostConfigure(string name, TaskHubOptions options)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                return;
+            }
+
+            options.OrchestrationService ??= serviceProvider.GetService<IOrchestrationService>();
+            options.OrchestrationServiceClient ??= serviceProvider.GetService<IOrchestrationServiceClient>();
         }
     }
 }

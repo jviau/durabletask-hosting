@@ -13,6 +13,9 @@ namespace DurableTask.Hosting;
 /// <summary>
 /// A dotnet hosted service for <see cref="TaskHubWorker"/>.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="TaskHubBackgroundService"/> class.
+/// </remarks>
 public class TaskHubBackgroundService : IHostedService
 {
     private readonly TaskHubWorker _worker;
@@ -29,24 +32,10 @@ public class TaskHubBackgroundService : IHostedService
         TaskHubWorker worker,
         ILogger<TaskHubBackgroundService> logger,
         IOptions<TaskHubOptions> options)
-        : this(worker, logger, Check.NotNull(options).Value)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TaskHubBackgroundService"/> class.
-    /// </summary>
-    /// <param name="worker">The task hub worker. Not null.</param>
-    /// <param name="logger">The logger. Not null.</param>
-    /// <param name="options">The task hub options.</param>
-    public TaskHubBackgroundService(
-        TaskHubWorker worker,
-        ILogger<TaskHubBackgroundService> logger,
-        TaskHubOptions options)
     {
         _worker = Check.NotNull(worker);
         _logger = Check.NotNull(logger);
-        _options = Check.NotNull(options);
+        _options = Check.NotNull(Check.NotNull(options).Value, "options.Value");
     }
 
     /// <inheritdoc />

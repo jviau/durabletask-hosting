@@ -1,0 +1,19 @@
+<Project>
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../'))"
+          Condition="$([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../')) != ''" />
+
+  <!-- Microsoft.Extensions.* -->
+  <ItemGroup>
+    <PackageVersion Update="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageVersion Update="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1" />
+  </ItemGroup>
+
+  <!-- Telemetry -->
+  <ItemGroup>
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+  </ItemGroup>
+
+</Project>

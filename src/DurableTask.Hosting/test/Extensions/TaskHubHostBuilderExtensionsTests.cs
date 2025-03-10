@@ -11,11 +11,13 @@ namespace DurableTask.Hosting.Extensions.Tests;
 
 public class TaskHubHostBuilderExtensionsTests
 {
+#pragma warning disable CS0618 // Type or member is obsolete
     [Fact]
     public void ConfigureTaskHubWorker_ArgumentNullBuilder()
         => RunTestException<ArgumentNullException>(
             builder => TaskHubHostBuilderExtensions
                 .ConfigureTaskHubWorker(null, b => { }));
+
     [Fact]
     public void ConfigureTaskHubWorker_ArgumentNullConfigure()
         => RunTestException<ArgumentNullException>(
@@ -27,6 +29,7 @@ public class TaskHubHostBuilderExtensionsTests
         => RunTestException<ArgumentNullException>(
             builder => TaskHubHostBuilderExtensions
                 .ConfigureTaskHubWorker(null, (c, b)  => { }));
+
     [Fact]
     public void ConfigureTaskHubWorker_ArgumentNullConfigure2()
         => RunTestException<ArgumentNullException>(
@@ -64,6 +67,7 @@ public class TaskHubHostBuilderExtensionsTests
                 capturedBuilder.Should().NotBeNull();
             });
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 
     private static void RunTestException<TException>(Action<IHostBuilder> act)
         where TException : Exception

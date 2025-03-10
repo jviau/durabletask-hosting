@@ -6,29 +6,24 @@ using DurableTask.DependencyInjection;
 using DurableTask.Emulator;
 using DurableTask.Extensions;
 using DurableTask.Extensions.Samples;
-using DurableTask.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
-    {
-        // Can register DataConvert in service container, or in options below.
-        // services.AddSingleton<DataConverter>(new StjDataConverter());
-        services.AddSingleton<IConsole, ConsoleWrapper>();
-        services.AddHostedService<TaskEnqueuer>();
-    })
-    .ConfigureTaskHubWorker((context, builder) =>
-    {
-        builder.WithOrchestrationService(new LocalOrchestrationService());
-        builder.AddDurableExtensions(opt => opt.DataConverter = new StjDataConverter());
-        builder.AddClient();
-        builder.AddOrchestrationsFromAssembly<GreetingsOrchestration>(includePrivate: true);
-        builder.AddActivitiesFromAssembly<GreetingsOrchestration>(includePrivate: true);
-    })
-    .UseConsoleLifetime()
-    .Build();
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
+builder.Services.AddTaskHubWorker()
+    .Configure(o => o.CreateIfNotExists = true)
+    .UseOrchestrationService(new LocalOrchestrationService())
+    .AddOrchestrationsFromAssembly<GreetingsOrchestration>(includePrivate: true)
+    .AddActivitiesFromAssembly<GreetingsOrchestration>(includePrivate: true)
+    .AddDurableExtensions()
+    .AddClient();
+
+builder.Services
+    .AddSingleton<IConsole, ConsoleWrapper>()
+    .AddHostedService<TaskEnqueuer>();
+
+IHost host = builder.Build();
 await host.RunAsync();
 
 internal class TaskEnqueuer : BackgroundService

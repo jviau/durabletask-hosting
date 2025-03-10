@@ -51,8 +51,8 @@ public class TaskHubWorkerBuilderExtensionsTests
         IServiceProvider provider = services.BuildServiceProvider();
 
         // assert
-        TaskHubClientOptions clientOptions = provider
-            .GetRequiredService<IOptions<TaskHubClientOptions>>().Value;
+        InternalTaskHubOptions clientOptions = provider
+            .GetRequiredService<IOptions<InternalTaskHubOptions>>().Value;
         clientOptions.DataConverter.Should().Be(_converter);
         DurableExtensionsOptions extensionsOptions = provider
             .GetRequiredService<IOptions<DurableExtensionsOptions>>().Value;
@@ -78,8 +78,8 @@ public class TaskHubWorkerBuilderExtensionsTests
         IServiceProvider provider = services.BuildServiceProvider();
 
         // assert
-        TaskHubClientOptions clientOptions = provider
-            .GetRequiredService<IOptions<TaskHubClientOptions>>().Value;
+        InternalTaskHubOptions clientOptions = provider
+            .GetRequiredService<IOptions<InternalTaskHubOptions>>().Value;
         clientOptions.DataConverter.Should().Be(_converter);
         DurableExtensionsOptions extensionsOptions = provider
             .GetRequiredService<IOptions<DurableExtensionsOptions>>().Value;

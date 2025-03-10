@@ -4,9 +4,11 @@
 using DurableTask.Core;
 using DurableTask.Core.Middleware;
 using DurableTask.DependencyInjection.Activities;
+using DurableTask.DependencyInjection.Extensions;
 using DurableTask.DependencyInjection.Middleware;
 using DurableTask.DependencyInjection.Orchestrations;
 using DurableTask.DependencyInjection.Properties;
+using DurableTask.Hosting.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -57,6 +59,11 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     public IList<TaskOrchestrationDescriptor> Orchestrations { get; } = new List<TaskOrchestrationDescriptor>();
 
     /// <summary>
+    /// Gets or sets if a client as been added for this worker.
+    /// </summary>
+    internal bool ClientAdded { get; set; }
+
+    /// <summary>
     /// Builds and returns a <see cref="TaskHubWorker"/> using the configurations from this instance.
     /// </summary>
     /// <param name="serviceProvider">The service provider.</param>
@@ -65,7 +72,22 @@ public class DefaultTaskHubWorkerBuilder : ITaskHubWorkerBuilder
     {
         Check.NotNull(serviceProvider);
 
-        OrchestrationService ??= serviceProvider.GetRequiredService<IOrchestrationService>();
+        if (OrchestrationService is null)
+        {
+            TaskHubOptions options = serviceProvider.GetOptions<TaskHubOptions>(Name);
+            OrchestrationService = options.OrchestrationService;
+
+            // retain legacy behavior of getting from service provider for default worker only.
+            if (OrchestrationService is null && string.IsNullOrEmpty(Name))
+            {
+                OrchestrationService = serviceProvider.GetService<IOrchestrationService>();
+            }
+        }
+
+        if (OrchestrationService is null)
+        {
+            throw new InvalidOperationException($"OrchestrationService is not configured for TaskHubWorker '{Name}'.");
+        }
 
         // Verify we still have our ServiceProvider middleware
         if (OrchestrationMiddleware.FirstOrDefault(x => x.Type == typeof(ServiceProviderOrchestrationMiddleware))

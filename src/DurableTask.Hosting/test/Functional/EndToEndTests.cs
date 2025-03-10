@@ -21,7 +21,7 @@ public class EndToEndTests
     {
         IHost host = CreateHost(
             _ => { },
-            b => b.WithOrchestrationService(new LocalOrchestrationService()));
+            b => b.UseOrchestrationService(new LocalOrchestrationService()));
 
         TaskHubWorker worker = host.Services.GetService<TaskHubWorker>();
         IEnumerable<IHostedService> hostedServices = host.Services.GetServices<IHostedService>();
@@ -96,7 +96,7 @@ public class EndToEndTests
         OrchestrationInstance instance = await client
             .CreateOrchestrationInstanceAsync(typeof(TestOrchestration), _instanceId, input);
         OrchestrationState result = await client
-            .WaitForOrchestrationAsync(instance, TimeSpan.FromSeconds(60));
+            .WaitForOrchestrationAsync(instance, TimeSpan.FromSeconds(10));
 
         TestPayload payload = JsonConvert.DeserializeObject<TestPayload>(result.Output);
 
@@ -112,8 +112,11 @@ public class EndToEndTests
         Action<ITaskHubWorkerBuilder> configureTaskHubWorker)
     {
         IHostBuilder builder = CreateHostBuilder();
-        builder.ConfigureServices(configureServices);
-        builder.ConfigureTaskHubWorker(configureTaskHubWorker);
+        builder.ConfigureServices(services =>
+        {
+            configureServices(services);
+            services.AddTaskHubWorker(configureTaskHubWorker);
+        });
 
         return builder.Build();
     }

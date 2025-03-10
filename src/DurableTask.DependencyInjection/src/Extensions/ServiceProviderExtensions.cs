@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Jacob Viau. All rights reserved.
 // Licensed under the APACHE 2.0. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DurableTask.DependencyInjection.Extensions;
 
@@ -35,5 +37,21 @@ internal static class ServiceProviderExtensions
         Check.NotNull(serviceProvider);
         ILoggerFactory factory = serviceProvider.GetRequiredService<ILoggerFactory>();
         return factory.CreateLogger(type);
+    }
+
+    /// <summary>
+    /// Gets the options of the specified type from the service provider.
+    /// </summary>
+    /// <typeparam name="TOptions">The options type.</typeparam>
+    /// <param name="serviceProvider">The service provider.</param>
+    /// <param name="name">The name of the options.</param>
+    /// <returns>The options resolved from the <paramref name="serviceProvider"/>.</returns>
+    public static TOptions GetOptions<TOptions>(this IServiceProvider serviceProvider, string? name = null)
+    {
+        Check.NotNull(serviceProvider);
+        name ??= Options.DefaultName;
+
+        IOptionsMonitor<TOptions> optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<TOptions>>();
+        return optionsMonitor.Get(name);
     }
 }

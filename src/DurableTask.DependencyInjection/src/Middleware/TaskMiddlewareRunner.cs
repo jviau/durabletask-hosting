@@ -52,11 +52,16 @@ internal static class TaskMiddlewareRunner
     {
         if (!s_factories.TryGetValue(descriptor, out Func<IServiceProvider, ITaskMiddleware> factory))
         {
-            if (descriptor.Func is not null)
+            if (descriptor.Func is { } func)
             {
-                FuncMiddleware middleware = new(descriptor.Func);
+                FuncMiddleware middleware = new(func);
                 factory = s_factories.GetOrAdd(descriptor, _ => middleware);
                 return middleware;
+            }
+            else if (descriptor.Factory is { } middlewareFactory)
+            {
+                s_factories[descriptor] = middlewareFactory;
+                return middlewareFactory.Invoke(serviceProvider);
             }
             else if (serviceProvider.GetService(descriptor.Type) is ITaskMiddleware fetchedMiddleware)
             {

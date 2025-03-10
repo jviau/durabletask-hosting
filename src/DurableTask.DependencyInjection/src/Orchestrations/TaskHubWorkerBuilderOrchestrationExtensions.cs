@@ -207,4 +207,20 @@ public static class TaskHubWorkerBuilderOrchestrationExtensions
         builder.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(func));
         return builder;
     }
+
+    /// <summary>
+    /// Adds the provided orchestration middleware to the builder.
+    /// </summary>
+    /// <param name="builder">The builder to add to, not null.</param>
+    /// <param name="factory">The orchestration middleware factory to add, not null.</param>
+    /// <returns>The original builder with orchestration middleware added.</returns>
+    public static ITaskHubWorkerBuilder UseOrchestrationMiddleware(
+        this ITaskHubWorkerBuilder builder, Func<IServiceProvider, ITaskMiddleware> factory)
+    {
+        Check.NotNull(builder);
+        Check.NotNull(factory);
+
+        builder.UseOrchestrationMiddleware(new TaskMiddlewareDescriptor(factory));
+        return builder;
+    }
 }

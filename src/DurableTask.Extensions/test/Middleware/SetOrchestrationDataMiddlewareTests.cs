@@ -18,15 +18,12 @@ public class SetOrchestrationDataMiddlewareTests
     private readonly Mock<ILoggerFactory> _loggerFactory = new();
     private readonly ILogger _logger = Mock.Of<ILogger>();
     private readonly DataConverter _converter = Mock.Of<JsonDataConverter>();
-    private readonly IOptions<DurableExtensionsOptions> _options;
+    private readonly DurableExtensionsOptions _options;
 
     public SetOrchestrationDataMiddlewareTests()
     {
         _loggerFactory.Setup(m => m.CreateLogger(It.IsAny<string>())).Returns(_logger);
-        _options =  Options.Create(new DurableExtensionsOptions
-        {
-            DataConverter = _converter,
-        });
+        _options =  new DurableExtensionsOptions { DataConverter = _converter };
     }
 
     [Fact]
@@ -42,7 +39,7 @@ public class SetOrchestrationDataMiddlewareTests
         Action act = () => new SetOrchestrationDataMiddleware(_loggerFactory.Object, null);
         act.Should().Throw<ArgumentNullException>().WithParameterName("options");
     }
-    
+
     [Fact]
     public async Task Invoke_NoBase_Skips()
     {
